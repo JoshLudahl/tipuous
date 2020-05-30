@@ -1,2 +1,2 @@
-# tipuous
-A basic, but useful, tipping calculator for Android using Kotlin
+# Tipuous
+A basic, but useful, tipping calculator for Android using Kotlin.
