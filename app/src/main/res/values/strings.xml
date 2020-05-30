@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Tipuous</string>
+    <string name="string_amount"> Bill Amount</string>
+    <string name="enter_bill_amount">Enter Bill Amount</string>
+    <string name="string_quick_tip_label">Quick Tip</string>
+    <string name="five_percent">5%</string>
+    <string name="fifteen_percent">15%</string>
+    <string name="twenty_percent">20%</string>
+    <string name="ten_percent">10%</string>
+    <string name="other_percent">Other Tip Amount (%)</string>
+    <string name="calculate_other">+</string>
+    <string name="tip_amount_final">Tip:</string>
+    <string name="total_bill_label">Total:</string>
+    <string name="tip_amount">$25.99</string>
+    <string name="grand_bill_total">$89.99</string>
+    <string name="label">infamous</string>
+
+    <string name="toast_input_error">Please enter desired amount.</string>
+</resources>

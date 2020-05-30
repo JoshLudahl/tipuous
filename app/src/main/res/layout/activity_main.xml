@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="tips"
+            type="com.tips.tipuous.Tips" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:padding="32dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/amount_label"
+                style="@style/label"
+                android:text="@string/string_amount"
+                app:layout_constraintBottom_toTopOf="@+id/enter_amount"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/enter_amount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="24dp"
+                android:ems="10"
+                android:hint="@string/enter_bill_amount"
+                android:inputType="number|numberDecimal"
+                app:layout_constraintBottom_toTopOf="@+id/divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/amount_label" />
+
+            <TextView
+                android:id="@+id/quick_tip"
+                style="@style/label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="28dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/string_quick_tip_label"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/enter_amount" />
+
+            <Button
+                android:id="@+id/button_twenty_percent"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="74dp"
+                android:layout_height="72dp"
+                android:text="@string/twenty_percent"
+                android:textSize="@dimen/percent_font_sizes"
+                app:layout_constraintDimensionRatio="w,1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/button_fifteen_percent"
+                app:layout_constraintTop_toTopOf="@+id/button_fifteen_percent" />
+
+            <Button
+                android:id="@+id/button_fifteen_percent"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="74dp"
+                android:layout_height="72dp"
+                android:text="@string/fifteen_percent"
+                android:textSize="@dimen/percent_font_sizes"
+                app:layout_constraintBottom_toBottomOf="@+id/button_ten_percent"
+                app:layout_constraintDimensionRatio="w,1:1"
+                app:layout_constraintEnd_toStartOf="@+id/button_twenty_percent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/button_ten_percent" />
+
+            <Button
+                android:id="@+id/button_ten_percent"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="74dp"
+                android:layout_height="72dp"
+                android:text="@string/ten_percent"
+                android:textSize="@dimen/percent_font_sizes"
+                app:layout_constraintBottom_toBottomOf="@+id/button_five_percent"
+                app:layout_constraintDimensionRatio="w,1:1"
+                app:layout_constraintEnd_toStartOf="@+id/button_fifteen_percent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/button_five_percent" />
+
+            <Button
+                android:id="@+id/button_five_percent"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="74dp"
+                android:layout_height="72dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/five_percent"
+                android:textSize="@dimen/percent_font_sizes"
+                app:layout_constraintDimensionRatio="w,1:1"
+                app:layout_constraintEnd_toStartOf="@+id/button_ten_percent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/quick_tip" />
+
+            <TextView
+                android:id="@+id/other_tip_amount_label"
+                style="@style/label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/other_percent"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider2" />
+
+            <EditText
+                android:id="@+id/other_amount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                android:ems="10"
+                android:hint="Other percent?"
+                android:inputType="numberDecimal"
+                app:layout_constraintEnd_toStartOf="@+id/button_calculate"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/other_tip_amount_label" />
+
+            <Button
+                android:id="@+id/button_calculate"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="74dp"
+                android:layout_height="72dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="24dp"
+                android:text="@string/calculate_other"
+                android:textSize="@dimen/percent_font_sizes"
+                app:layout_constraintBottom_toBottomOf="@+id/other_amount"
+                app:layout_constraintDimensionRatio="w,1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/other_amount"
+                app:layout_constraintTop_toTopOf="@+id/other_amount" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="379dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="51dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/enter_amount" />
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="379dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/button_twenty_percent" />
+
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="379dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/button_calculate" />
+
+            <TextView
+                android:id="@+id/tip_amount_final_label"
+                style="@style/label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/tip_amount_final"
+                android:textAlignment="textEnd"
+                app:layout_constraintEnd_toStartOf="@+id/tip_amount"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider3" />
+
+            <TextView
+                android:id="@+id/total_bill_with_tip"
+                style="@style/label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/total_bill_label"
+                android:textAlignment="textEnd"
+                app:layout_constraintEnd_toStartOf="@+id/grand_total"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tip_amount" />
+
+            <TextView
+                android:id="@+id/tip_amount"
+                style="@style/label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@={tips.tipAmountFormatted}"
+                android:textAlignment="viewStart"
+                app:layout_constraintBaseline_toBaselineOf="@+id/tip_amount_final_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tip_amount_final_label" />
+
+            <TextView
+                android:id="@+id/grand_total"
+                style="@style/label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@={tips.totalAmountFormatted}"
+                android:textAlignment="viewStart"
+                app:layout_constraintBaseline_toBaselineOf="@+id/total_bill_with_tip"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/total_bill_with_tip" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</layout>
