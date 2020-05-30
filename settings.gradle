@@ -1,0 +1,2 @@
+rootProject.name='Tipuous'
+include ':app'
