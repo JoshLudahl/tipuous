@@ -7,6 +7,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -40,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             composeView.setContent {
                 BasicsCodelabTheme {
                     // A surface container using the 'background' color from the theme
-                    Surface() {
+                    Surface(modifier = Modifier.fillMaxWidth()) {
                         Greeting()
                     }
                 }
