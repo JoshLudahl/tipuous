@@ -5,15 +5,29 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.databinding.DataBindingUtil
 import com.tips.tipuous.databinding.ActivityMainBinding
+
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
     val tips = Tips(0.0, 0.0, 0.0)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +36,17 @@ class MainActivity : AppCompatActivity() {
         } catch (e: NullPointerException) {
         }
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding = DataBindingUtil.setContentView<ActivityMainBinding?>(this, R.layout.activity_main).apply {
+            composeView.setContent {
+                BasicsCodelabTheme {
+                    // A surface container using the 'background' color from the theme
+                    Surface() {
+                        Greeting()
+                    }
+                }
+                Spacer(modifier = Modifier.height(150.dp))
+            }
+        }
 
         binding.tips = tips
 
@@ -56,6 +80,7 @@ class MainActivity : AppCompatActivity() {
                 }
             } else Toast.makeText(this, R.string.toast_input_error, Toast.LENGTH_SHORT).show()
         }
+
     }
 
     private fun populateFields(view: View, percent: Double) {
@@ -93,4 +118,16 @@ class MainActivity : AppCompatActivity() {
         }
         return true
     }
+}
+
+@Composable
+private fun Greeting() {
+    Column(
+        Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(fontSize = 24.sp, text = "Bill Amount")
+    }
+
 }

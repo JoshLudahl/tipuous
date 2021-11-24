@@ -52,20 +52,18 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection GradleDependency
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.5.31'
-//    implementation 'androidx.appcompat:appcompat:1.4.0'
-//    implementation 'androidx.core:core-ktx:1.7.0'
-//    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
-//    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
 //    // Compose
-    implementation "androidx.compose.runtime:runtime:$rootProject.compose_version"
-    implementation "androidx.compose.ui:ui:$rootProject.compose_version"
-    implementation "androidx.compose.foundation:foundation:$rootProject.compose_version"
-    implementation "androidx.compose.foundation:foundation-layout:$rootProject.compose_version"
-    implementation "androidx.compose.material:material:$rootProject.compose_version"
-    implementation "androidx.compose.runtime:runtime-livedata:$rootProject.compose_version"
-    implementation "androidx.compose.ui:ui-tooling:$rootProject.compose_version"
-    implementation 'com.google.android.material:compose-theme-adapter-3:1.0.0'
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation "androidx.compose.ui:ui:$compose_version"
+    implementation 'androidx.activity:activity-compose:1.4.0'
+    implementation "androidx.compose.material:material:$compose_version"
+    implementation "androidx.compose.ui:ui-tooling:$compose_version"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
 
     //  Styling
     implementation "com.google.android.material:material:$material_version"
