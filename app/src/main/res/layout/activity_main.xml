@@ -22,7 +22,8 @@
             <androidx.compose.ui.platform.ComposeView
                 android:id="@+id/compose_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginTop="100dp"
                 android:paddingBottom="100dp"
                 app:layout_constraintBottom_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
