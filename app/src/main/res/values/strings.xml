@@ -16,5 +16,5 @@
     <string name="label">infamous</string>
 
     <string name="toast_input_error">Please enter desired amount.</string>
-    <string name="other_percent_input_string">Other percent?</string>
+    <string name="other_percent_input_string">Enter %</string>
 </resources>
