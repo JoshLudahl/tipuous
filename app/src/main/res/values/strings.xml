@@ -17,4 +17,6 @@
 
     <string name="toast_input_error">Please enter desired amount.</string>
     <string name="other_percent_input_string">Enter %</string>
+    <string name="bill">Bill</string>
+    <string name="tip">Tip</string>
 </resources>

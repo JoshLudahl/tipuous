@@ -9,15 +9,17 @@ plugins{
 
 
 android {
-    compileSdkVersion 34
+    def targetVersion = 34
+
+    compileSdkVersion targetVersion
 
     defaultConfig {
         applicationId "com.tips.tipuous"
         minSdkVersion 24
-        targetSdkVersion 34
+        targetSdkVersion targetVersion
         buildToolsVersion "34.0.0"
-        versionCode 5
-        versionName "1.05"
+        versionCode 6
+        versionName "1.06"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -64,6 +66,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.gridlayout:gridlayout:1.0.0'
 
 //    // Compose
     implementation 'androidx.core:core-ktx:1.10.1'
