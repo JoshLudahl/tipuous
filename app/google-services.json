@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "323440499429",
+    "project_id": "tipuous",
+    "storage_bucket": "tipuous.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:323440499429:android:39610134030fad18be520c",
+        "android_client_info": {
+          "package_name": "com.tips.tipuous"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "323440499429-orenrjbo3p5o9v9mf1uh249fu7oaofvk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1IIxnd7_doY1k_CEDMNJd4G3eI4aQdFY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "323440499429-orenrjbo3p5o9v9mf1uh249fu7oaofvk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
