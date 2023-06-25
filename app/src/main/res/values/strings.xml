@@ -10,7 +10,7 @@
     <string name="other_percent">Custom tip (%)</string>
     <string name="calculate_other">+</string>
     <string name="tip_amount_final">Tip:</string>
-    <string name="total_bill_label">Total:</string>
+    <string name="total_bill_label">Total</string>
     <string name="tip_amount">$25.99</string>
     <string name="grand_bill_total">$89.99</string>
     <string name="label">infamous</string>
