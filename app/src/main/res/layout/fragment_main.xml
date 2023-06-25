@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.tips.tipuous.MainViewModel" />
@@ -123,15 +124,15 @@
                     <com.google.android.material.chip.Chip
                         android:id="@+id/five_percent"
                         android:layout_width="wrap_content"
-                        android:checked="true"
-                        app:checkedIcon="@drawable/ic_round_check"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        app:chipIconEnabled="true"
-                        android:checkable="true"
                         android:layout_marginTop="8dp"
+                        android:checkable="true"
+                        android:checked="true"
                         android:text="@string/ten_percent"
+                        app:checkedIcon="@drawable/ic_round_check"
                         app:chipBackgroundColor="@color/colorSmokeDark"
+                        app:chipIconEnabled="true"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -170,10 +171,6 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
