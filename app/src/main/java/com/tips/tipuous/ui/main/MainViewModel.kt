@@ -1,0 +1,82 @@
+package com.tips.tipuous.ui.main
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.tips.tipuous.model.Percent
+import com.tips.tipuous.utilities.Conversion
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+
+class MainViewModel : ViewModel() {
+
+    private val _bill = MutableStateFlow(0.00)
+    val bill: StateFlow<Double>
+        get() = _bill
+
+    private val _tip = MutableStateFlow(Percent.TEN)
+    val tip: StateFlow<Percent>
+        get() = _tip
+
+    private val _total = MutableStateFlow("-")
+    val total: StateFlow<String>
+        get() = _total
+
+    private val _totalFormatted = MutableStateFlow("-")
+    val totalFormatted: StateFlow<String>
+        get() = _totalFormatted
+
+    private val _customTip = MutableStateFlow(25)
+    val customTip: StateFlow<Int>
+        get() = _customTip
+
+    private val _customTipLabel = MutableStateFlow("Custom tip (${customTip.value / 100}%)")
+    val customTipLabel: StateFlow<String>
+        get() = _customTipLabel
+
+    init {
+        viewModelScope.launch {
+            _customTip.collect {
+                _customTipLabel.value = "Other: $it%"
+            }
+        }
+    }
+
+    fun calculateTip() {
+        val tip = _bill.value * when (_tip.value) {
+            Percent.TEN -> .10
+            Percent.FIFTEEN -> .15
+            Percent.TWENTY -> .20
+            Percent.CUSTOM -> _customTip.value / 100.00
+        }
+
+        val value = Conversion.roundDoubleToTwoDecimalPlaces(_bill.value + tip)
+        if (value == 0.0) {
+            _total.value = "-"
+        } else {
+            _total.value = Conversion.formatNumberToIncludeTrailingZero(value)
+        }
+    }
+
+    fun setBill(double: Double) {
+        _bill.value = double
+    }
+
+    fun updateTipPercentage(percent: Percent) {
+        _tip.value = percent
+        calculateTip()
+    }
+
+    fun handleCustomPercentageClick() {
+        _tip.value = Percent.CUSTOM
+        calculateTip()
+    }
+
+    fun updateCustomValue(value: Int) {
+        _customTip.value = value
+    }
+
+    fun updateTotal(value: String) {
+        _total.value = value
+    }
+}

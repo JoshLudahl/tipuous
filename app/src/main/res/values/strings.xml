@@ -14,6 +14,7 @@
     <string name="tip_amount">$25.99</string>
     <string name="grand_bill_total">$89.99</string>
     <string name="label">infamous</string>
+    <string name="em_dash">&#8211;</string>
 
     <string name="toast_input_error">Please enter desired amount.</string>
     <string name="other_percent_input_string">Enter %</string>

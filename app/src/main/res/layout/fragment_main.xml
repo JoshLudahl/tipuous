@@ -7,7 +7,15 @@
 
         <variable
             name="viewModel"
-            type="com.tips.tipuous.MainViewModel" />
+            type="com.tips.tipuous.ui.main.MainViewModel" />
+
+        <variable
+            name="percentage"
+            type="com.tips.tipuous.model.Percent" />
+
+        <variable
+            name="view"
+            type="android.view.View" />
     </data>
 
     <ScrollView
@@ -117,57 +125,69 @@
                     android:layout_marginEnd="32dp"
                     android:background="@drawable/rounded_bg"
                     android:padding="8dp"
+                    android:animateLayoutChanges="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/label_tip">
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/five_percent"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:checkable="true"
-                        android:checked="true"
+                        style="@style/chip_style"
+                        android:onClick="@{() -> viewModel.updateTipPercentage(percentage.TEN)}"
+                        percentage="@{viewModel.tip == percentage.TEN}"
                         android:text="@string/ten_percent"
-                        app:checkedIcon="@drawable/ic_round_check"
-                        app:chipBackgroundColor="@color/colorSmokeDark"
-                        app:chipIconEnabled="true"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/ten_percent"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
+                        style="@style/chip_style"
+                        percentage="@{viewModel.tip == percentage.FIFTEEN}"
+                        android:onClick="@{() -> viewModel.updateTipPercentage(percentage.FIFTEEN)}"
                         android:text="@string/fifteen_percent"
-                        app:chipBackgroundColor="@color/colorSmokeDark"
                         app:layout_constraintStart_toEndOf="@+id/five_percent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/twenty_percent"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
+                        percentage="@{viewModel.tip == percentage.TWENTY}"
+                        style="@style/chip_style"
                         android:text="@string/twenty_percent"
-                        app:chipBackgroundColor="@color/colorSmokeDark"
+                        android:onClick="@{() -> viewModel.updateTipPercentage(percentage.TWENTY)}"
                         app:layout_constraintStart_toEndOf="@+id/ten_percent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/custom_percent"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/other_percent"
-                        app:chipBackgroundColor="@color/colorSmokeDark"
+                        percentage="@{viewModel.tip == percentage.CUSTOM}"
+                        android:onClick="@{() -> viewModel.handleCustomPercentageClick()}"
+                        android:text="@{viewModel.customTipLabel}"
+                        app:flow_wrapMode="chain"
+                        tools:text="Other: 5%"
+                        app:layout_constrainedWidth="true"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/twenty_percent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        style="@style/chip_style" />
+
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/custom_tip_slider"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="@{viewModel.tip == percentage.CUSTOM ? view.VISIBLE : view.GONE}"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:valueFrom="5.0"
+                        android:valueTo="100.0"
+                        android:stepSize="5.0"
+                        android:value="@{viewModel.customTip}"
+                        app:labelBehavior="@{viewModel.tip == percentage.CUSTOM ? view.VISIBLE : view.GONE}"
+                        app:trackColor="@color/colorSmokeDark"
+                        app:thumbColor="@color/colorPrimary"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/custom_percent" />
+
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -211,6 +231,32 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/label_total">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/appCompatImageView"
+                        android:layout_width="@dimen/currency_icon_size"
+                        android:layout_height="@dimen/currency_icon_size"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:src="@drawable/ic_currency"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/appCompatTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@{viewModel.total}"
+                        android:textSize="28sp"
+                        app:layout_constrainedWidth="true"
+                        app:layout_constraintBottom_toBottomOf="@+id/appCompatImageView"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/appCompatImageView"
+                        app:layout_constraintTop_toTopOf="@+id/appCompatImageView"
+                        tools:text="45.77" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
