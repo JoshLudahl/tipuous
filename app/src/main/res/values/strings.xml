@@ -20,4 +20,6 @@
     <string name="other_percent_input_string">Enter %</string>
     <string name="bill">Bill</string>
     <string name="tip">Tip</string>
+
+    <string name="version">Version: %1$s</string>
 </resources>

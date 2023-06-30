@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.tips.tipuous.BuildConfig
 import com.tips.tipuous.R
 import com.tips.tipuous.databinding.FragmentMainBinding
 
@@ -22,6 +23,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         _binding = FragmentMainBinding.bind(view)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this.viewLifecycleOwner
+
+        binding.version.text = getString(R.string.version, BuildConfig.VERSION_NAME)
 
         setUpObservers()
     }
