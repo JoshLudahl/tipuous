@@ -1,5 +1,6 @@
 package com.tips.tipuous.ui.main
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tips.tipuous.model.Percent
@@ -51,7 +52,8 @@ class MainViewModel : ViewModel() {
         }
 
         val value = Conversion.roundDoubleToTwoDecimalPlaces(_bill.value + tip)
-        if (value == 0.0) {
+        Log.i("bill", "${bill.value}")
+        if (value == 0.0 || bill.value == 0.00 || bill.value.toString().isEmpty()) {
             _total.value = "-"
         } else {
             _total.value = Conversion.formatNumberToIncludeTrailingZero(value)

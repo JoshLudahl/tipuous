@@ -47,10 +47,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                                 "MainFragment",
                                 "Failed to calculate number due to an error: \n${e.message}"
                             )
-                            viewModel.updateTotal(getString(R.string.em_dash))
                         }
                     } else {
-                        viewModel.updateTotal(getString(R.string.em_dash))
+                        clearValues()
                     }
                 }
             }
@@ -68,5 +67,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 calculateTip()
             }
         }
+    }
+
+    private fun clearValues() {
+        viewModel.setBill(0.00)
+        viewModel.updateTotal(getString(R.string.em_dash))
     }
 }
