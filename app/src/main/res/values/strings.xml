@@ -22,4 +22,6 @@
     <string name="tip">Tip</string>
 
     <string name="version">Version: %1$s</string>
+    <string name="subtotal">Subtotal</string>
+    <string name="total">Total</string>
 </resources>

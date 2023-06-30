@@ -35,6 +35,11 @@ class MainViewModel : ViewModel() {
     val customTipLabel: StateFlow<String>
         get() = _customTipLabel
 
+    private val _tipValue = MutableStateFlow("0.00")
+    val tipValue: StateFlow<String>
+        get() = _tipValue
+
+
     init {
         viewModelScope.launch {
             _customTip.collect {
@@ -56,6 +61,15 @@ class MainViewModel : ViewModel() {
         if (value == 0.0 || bill.value == 0.00 || bill.value.toString().isEmpty()) {
             _total.value = "-"
         } else {
+            try {
+                val tipAmount = Conversion.roundDoubleToTwoDecimalPlaces(tip)
+                val tipWithTrailingZero = Conversion.formatNumberToIncludeTrailingZero(tipAmount)
+                _tipValue.value = tipWithTrailingZero
+
+
+            } catch (e: Exception) {
+                Log.e("Error: ", "Error when converting string to double. \n$e")
+            }
             _total.value = Conversion.formatNumberToIncludeTrailingZero(value)
         }
     }
@@ -80,5 +94,10 @@ class MainViewModel : ViewModel() {
 
     fun updateTotal(value: String) {
         _total.value = value
+    }
+
+    fun clearValues() {
+        _bill.value = 0.00
+        _tipValue.value = "0.00"
     }
 }

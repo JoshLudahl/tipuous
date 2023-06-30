@@ -70,7 +70,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun clearValues() {
-        viewModel.setBill(0.00)
+        viewModel.clearValues()
         viewModel.updateTotal(getString(R.string.em_dash))
+
     }
 }
