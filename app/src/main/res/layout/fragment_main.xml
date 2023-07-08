@@ -145,11 +145,13 @@
                         percentage="@{viewModel.tip == percentage.TEN}"
                         android:onClick="@{() -> viewModel.updateTipPercentage(percentage.TEN)}"
                         android:text="@string/ten_percent"
+                        android:contentDescription="@string/ten_percent_button_description"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/ten_percent"
+                        android:contentDescription="@string/fifteen_percent_button_description"
                         style="@style/chip_style"
                         percentage="@{viewModel.tip == percentage.FIFTEEN}"
                         android:onClick="@{() -> viewModel.updateTipPercentage(percentage.FIFTEEN)}"
@@ -160,6 +162,7 @@
                     <com.google.android.material.chip.Chip
                         android:id="@+id/twenty_percent"
                         style="@style/chip_style"
+                        android:contentDescription="@string/twenty_percent_button_description"
                         percentage="@{viewModel.tip == percentage.TWENTY}"
                         android:onClick="@{() -> viewModel.updateTipPercentage(percentage.TWENTY)}"
                         android:text="@string/twenty_percent"
@@ -169,6 +172,7 @@
                     <com.google.android.material.chip.Chip
                         android:id="@+id/custom_percent"
                         style="@style/chip_style"
+                        android:contentDescription="@string/other_percent_button_description"
                         percentage="@{viewModel.tip == percentage.CUSTOM}"
                         android:onClick="@{() -> viewModel.handleCustomPercentageClick()}"
                         android:text="@{viewModel.customTipLabel}"
@@ -198,10 +202,8 @@
                         app:thumbColor="@color/colorPrimary"
                         app:trackColor="@color/colorSmokeDark" />
 
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
-
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/total_layout"
@@ -274,6 +276,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:text="@{viewModel.tipValue.toString()}"
+                        android:contentDescription="@string/tip_amount_description"
                         android:textSize="28sp"
                         app:fontFamily="@font/roboto_black"
                         app:layout_constrainedWidth="true"
@@ -314,6 +317,7 @@
                         android:text="@{viewModel.total}"
                         android:textSize="28sp"
                         app:fontFamily="@font/roboto_black"
+                        android:contentDescription="@string/total_amount_including_tip_description"
                         app:layout_constrainedWidth="true"
                         app:layout_constraintBottom_toBottomOf="@+id/subtotal_total_currency"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -325,6 +329,7 @@
                         android:id="@+id/share_icon"
                         android:layout_width="@dimen/currency_icon_size"
                         android:layout_height="@dimen/currency_icon_size"
+                        android:contentDescription="@string/share_button_description"
                         android:layout_marginTop="16dp"
                         android:layout_marginBottom="16dp"
                         android:src="@drawable/ic_share"
@@ -349,6 +354,7 @@
 
                     <TextView
                         android:id="@+id/version"
+                        android:contentDescription="@string/tipuous_version_number_description"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"

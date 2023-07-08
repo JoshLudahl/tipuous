@@ -28,4 +28,12 @@
     <string name="slider_description">Slide to the desired tip amount.</string>
     <string name="bill_description">Enter bill amount.</string>
     <string name="currency_icon_description">Currency icon.</string>
+    <string name="ten_percent_button_description">Ten percent</string>
+    <string name="fifteen_percent_button_description">Fifteen percent</string>
+    <string name="twenty_percent_button_description">Twenty percent</string>
+    <string name="other_percent_button_description">Custom percent</string>
+    <string name="share_button_description">Share</string>
+    <string name="tip_amount_description">Tip amount</string>
+    <string name="total_amount_including_tip_description">Total amount including tip</string>
+    <string name="tipuous_version_number_description">Tipuous version number</string>
 </resources>
