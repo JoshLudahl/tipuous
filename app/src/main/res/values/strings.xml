@@ -25,4 +25,7 @@
     <string name="subtotal">Subtotal</string>
     <string name="total">Total</string>
     <string name="bill_hint">Enter total</string>
+    <string name="slider_description">Slide to the desired tip amount.</string>
+    <string name="bill_description">Enter bill amount.</string>
+    <string name="currency_icon_description">Currency icon.</string>
 </resources>
