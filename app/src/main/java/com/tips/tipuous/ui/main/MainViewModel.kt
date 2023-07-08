@@ -107,6 +107,10 @@ class MainViewModel : ViewModel() {
     }
 
     fun formatBillWithTip(): String {
-        return "Total: $${_total.value}; $${_bill.value} + tip of $${_tipValue.value}"
+        return """
+            Bill: ${'$'}${_bill.value}
+            Tip: ${'$'}${_tipValue.value}
+            Total: ${'$'}${_total.value}
+            """.trimIndent()
     }
 }
