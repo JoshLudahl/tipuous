@@ -218,10 +218,10 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="32dp"
                     android:text="@string/total_bill_label"
-                    app:fontFamily="@font/roboto_black"
                     android:textAllCaps="true"
                     android:textColor="@color/colorPrimary"
                     android:textSize="18sp"
+                    app:fontFamily="@font/roboto_black"
                     app:layout_constrainedWidth="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -245,11 +245,11 @@
                         android:id="@+id/subtotal_label"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/colorPrimary"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
                         android:text="@string/tip"
                         android:textAllCaps="true"
+                        android:textColor="@color/colorPrimary"
                         app:layout_constrainedWidth="true"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -285,9 +285,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
-                        android:textColor="@color/colorPrimary"
                         android:text="@string/total"
                         android:textAllCaps="true"
+                        android:textColor="@color/colorPrimary"
                         app:layout_constrainedWidth="true"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/subtotal_tip_value" />
@@ -318,6 +318,18 @@
                         app:layout_constraintStart_toEndOf="@+id/subtotal_total_currency"
                         app:layout_constraintTop_toTopOf="@+id/subtotal_total_currency"
                         tools:text="45.77" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/share_icon"
+                        android:layout_width="@dimen/currency_icon_size"
+                        android:layout_height="@dimen/currency_icon_size"
+                        android:src="@drawable/ic_share"
+                        android:visibility="@{viewModel.isShareable ? view.VISIBLE : view.GONE}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/subtotal_total_value"
+                        tools:visibility="visible" />
+
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

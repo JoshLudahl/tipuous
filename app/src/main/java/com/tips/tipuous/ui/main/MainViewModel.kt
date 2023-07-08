@@ -39,6 +39,9 @@ class MainViewModel : ViewModel() {
     val tipValue: StateFlow<String>
         get() = _tipValue
 
+    private val _isShareable = MutableStateFlow(false)
+    val isShareable: StateFlow<Boolean>
+        get() = _isShareable
 
     init {
         viewModelScope.launch {
@@ -71,6 +74,7 @@ class MainViewModel : ViewModel() {
                 Log.e("Error: ", "Error when converting string to double. \n$e")
             }
             _total.value = Conversion.formatNumberToIncludeTrailingZero(value)
+            _isShareable.value = true
         }
     }
 
@@ -99,5 +103,10 @@ class MainViewModel : ViewModel() {
     fun clearValues() {
         _bill.value = 0.00
         _tipValue.value = "0.00"
+        _isShareable.value = false
+    }
+
+    fun formatBillWithTip(): String {
+        return "Total: $${_total.value}; $${_bill.value} + tip of $${_tipValue.value}"
     }
 }

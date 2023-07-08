@@ -1,5 +1,7 @@
 package com.tips.tipuous.ui.main
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -27,6 +29,26 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         binding.version.text = getString(R.string.version, BuildConfig.VERSION_NAME)
 
         setUpObservers()
+        setUpListeners()
+    }
+
+    private fun setUpListeners() {
+        binding.shareIcon.setOnClickListener {
+            requireContext().handleShareClick(viewModel.formatBillWithTip())
+        }
+    }
+
+    private fun Context.handleShareClick(info: String) {
+        val sendIntent = Intent(
+            Intent.ACTION_SEND
+        ).apply {
+            putExtra(Intent.EXTRA_TEXT, info)
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+
+        startActivity(shareIntent)
     }
 
     private fun setUpObservers() {
@@ -67,6 +89,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 calculateTip()
             }
         }
+
     }
 
     private fun clearValues() {
