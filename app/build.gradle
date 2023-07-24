@@ -124,7 +124,7 @@ dependencies {
 
     //  Testing
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
 
     //  Testing - Core Library
     androidTestImplementation 'androidx.test:core:1.5.0'
