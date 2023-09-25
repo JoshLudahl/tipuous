@@ -2,7 +2,7 @@
 buildscript {
     ext {
         compose_version = '1.5.1'
-        kotlin_version = '1.9.0'
+        kotlin_version = '1.9.10'
         material_version = '1.11.0-alpha03'
         navigation = '2.7.3'
     }
