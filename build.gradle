@@ -2,7 +2,7 @@
 buildscript {
     ext {
         compose_version = '1.5.1'
-        kotlin_version = '1.9.0'
+        kotlin_version = '1.9.23'
         material_version = '1.11.0-alpha03'
         navigation = '2.7.3'
     }
@@ -13,11 +13,11 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.1'
+        classpath libs.gradle
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.gms:google-services:4.4.0'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.9'
-        classpath 'com.google.firebase:perf-plugin:1.4.2'
+        classpath libs.google.services
+        classpath libs.firebase.crashlytics.gradle
+        classpath libs.perf.plugin
     }
 }
 
