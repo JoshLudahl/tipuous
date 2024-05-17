@@ -14,6 +14,7 @@ gridlayout = "1.0.0"
 junitJupiterApi = "5.9.3"
 junitJupiterEngine = "5.9.3"
 junitKtx = "1.1.5"
+kotlinGradlePlugin = "1.9.24"
 kotlinxSerializationJson = "1.6.0"
 legacySupportV4 = "1.0.0"
 lifecycleExtensions = "2.2.0"
@@ -28,6 +29,7 @@ navigationUiKtxVersion = "2.7.3"
 orchestrator = "1.4.2"
 perfPlugin = "1.4.2"
 runner = "1.5.2"
+ui = "1.6.7"
 uiTooling = "1.6.7"
 
 [libraries]
@@ -50,6 +52,7 @@ androidx-orchestrator = { module = "androidx.test:orchestrator", version.ref = "
 androidx-rules = { module = "androidx.test:rules", version.ref = "core" }
 androidx-runner = { module = "androidx.test:runner", version.ref = "runner" }
 androidx-truth = { module = "androidx.test.ext:truth", version.ref = "core" }
+androidx-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiTooling" }
 app-update = { module = "com.google.android.play:app-update", version.ref = "appUpdate" }
 app-update-ktx = { module = "com.google.android.play:app-update-ktx", version.ref = "appUpdate" }
@@ -67,6 +70,7 @@ gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 gridlayout = { module = "androidx.gridlayout:gridlayout", version.ref = "gridlayout" }
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junitJupiterApi" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junitJupiterEngine" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 lifecycle-extensions = { module = "androidx.lifecycle:lifecycle-extensions", version.ref = "lifecycleExtensions" }
 lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }

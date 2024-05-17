@@ -1,11 +1,5 @@
 
 buildscript {
-    ext {
-        compose_version = '1.5.1'
-        kotlin_version = '1.9.23'
-        material_version = '1.11.0-alpha03'
-        navigation = '2.7.3'
-    }
     
     repositories {
         google()
@@ -14,7 +8,7 @@ buildscript {
 
     dependencies {
         classpath libs.gradle
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath libs.kotlin.gradle.plugin
         classpath libs.google.services
         classpath libs.firebase.crashlytics.gradle
         classpath libs.perf.plugin
