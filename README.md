@@ -1,3 +1,6 @@
+[![Android CI](https://github.com/JoshLudahl/tipuous/actions/workflows/android.yml/badge.svg)](https://github.com/JoshLudahl/tipuous/actions/workflows/android.yml)
+
+
 # Tipuous
 A basic and useful, add-free, free tipping calculator for Android using Kotlin.
 
