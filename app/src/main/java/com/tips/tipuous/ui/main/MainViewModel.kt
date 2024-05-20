@@ -23,10 +23,6 @@ class MainViewModel : ViewModel() {
     val total: StateFlow<String>
         get() = _total
 
-    private val _totalFormatted = MutableStateFlow("-")
-    val totalFormatted: StateFlow<String>
-        get() = _totalFormatted
-
     private val _customTip = MutableStateFlow(25)
     val customTip: StateFlow<Int>
         get() = _customTip
@@ -117,10 +113,6 @@ class MainViewModel : ViewModel() {
         _total.value = value
     }
 
-    fun updateSplitValue(value: String) {
-        _splitValue.value = "${value} each"
-    }
-
     fun clearValues() {
         _bill.value = 0.00
         _tipValue.value = "0.00"
@@ -131,8 +123,8 @@ class MainViewModel : ViewModel() {
 
         var split = ""
 
-        if(_split.value > 1.0f) {
-            split = "Split: ${_split.value}/each"
+        if (_split.value > 1.0f) {
+            split = "Split: ${_splitValue.value}/each"
         }
 
         return """
