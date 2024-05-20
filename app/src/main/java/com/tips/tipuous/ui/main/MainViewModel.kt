@@ -71,7 +71,7 @@ class MainViewModel : ViewModel() {
 
         val splitCalculation = Conversion.roundDoubleToTwoDecimalPlaces(value / _split.value)
 
-        _splitValue.value = "$splitCalculation"
+        _splitValue.value = Conversion.formatNumberToIncludeTrailingZero(splitCalculation)
 
         Log.i("bill", "${bill.value}")
         if (value == 0.0 || bill.value == 0.00 || bill.value.toString().isEmpty()) {

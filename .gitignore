@@ -14,4 +14,8 @@
 /captures
 .externalNativeBuild
 .cxx
+
+# Security
 *.jks
+*.apk
+*.aab
