@@ -67,13 +67,13 @@
                     app:layout_constraintTop_toBottomOf="@+id/label_bill">
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:contentDescription="@string/currency_icon_description"
                         android:id="@+id/currency_icon"
                         android:layout_width="@dimen/currency_icon_size"
                         android:layout_height="@dimen/currency_icon_size"
                         android:layout_marginStart="32dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginBottom="16dp"
+                        android:contentDescription="@string/currency_icon_description"
                         android:src="@drawable/ic_currency"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -151,45 +151,46 @@
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/five_percent"
-                            percentage="@{viewModel.tip == percentage.TEN}"
                             style="@style/chip_style"
+                            percentage="@{viewModel.tip == percentage.TEN}"
                             android:contentDescription="@string/ten_percent_button_description"
                             android:onClick="@{() -> viewModel.updateTipPercentage(percentage.TEN)}"
                             android:text="@string/ten_percent" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/ten_percent"
-                            percentage="@{viewModel.tip == percentage.FIFTEEN}"
                             style="@style/chip_style"
+                            percentage="@{viewModel.tip == percentage.FIFTEEN}"
                             android:contentDescription="@string/fifteen_percent_button_description"
                             android:onClick="@{() -> viewModel.updateTipPercentage(percentage.FIFTEEN)}"
                             android:text="@string/fifteen_percent" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/twenty_percent"
-                            percentage="@{viewModel.tip == percentage.TWENTY}"
                             style="@style/chip_style"
+                            percentage="@{viewModel.tip == percentage.TWENTY}"
                             android:contentDescription="@string/twenty_percent_button_description"
                             android:onClick="@{() -> viewModel.updateTipPercentage(percentage.TWENTY)}"
                             android:text="@string/twenty_percent" />
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/custom_percent"
-                            percentage="@{viewModel.tip == percentage.CUSTOM}"
                             style="@style/chip_style"
+                            percentage="@{viewModel.tip == percentage.CUSTOM}"
                             android:contentDescription="@string/other_percent_button_description"
                             android:onClick="@{() -> viewModel.handleCustomPercentageClick()}"
                             android:text="@{viewModel.customTipLabel}"
                             tools:text="Other: 5%" />
 
                     </com.google.android.material.chip.ChipGroup>
+
                     <com.google.android.material.slider.Slider
                         android:id="@+id/custom_tip_slider"
-                        android:contentDescription="@string/slider_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
+                        android:contentDescription="@string/slider_description"
                         android:stepSize="5.0"
                         android:value="@{viewModel.customTip}"
                         android:valueFrom="5.0"
@@ -269,12 +270,12 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
                         android:background="@drawable/circle"
+                        android:backgroundTint="@color/colorPrimary"
                         android:includeFontPadding="false"
                         android:text="@{String.valueOf(Math.round(viewModel.split))}"
                         android:textAlignment="center"
                         android:textColor="@color/colorSmokeDark"
                         android:textStyle="bold"
-                        android:backgroundTint="@color/colorPrimary"
                         app:layout_constraintBottom_toBottomOf="@+id/split_slider"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/split_slider"
@@ -332,10 +333,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
-                        android:textSize="24sp"
                         android:text="@string/tip"
                         android:textAllCaps="true"
                         android:textColor="@color/colorPrimary"
+                        android:textSize="24sp"
                         app:layout_constrainedWidth="true"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -355,8 +356,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="@{viewModel.tipValue.toString()}"
                         android:contentDescription="@string/tip_amount_description"
+                        android:text="@{viewModel.tipValue.toString()}"
                         android:textSize="28sp"
                         app:fontFamily="@font/roboto_black"
                         app:layout_constrainedWidth="true"
@@ -373,9 +374,9 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
                         android:text="@string/total"
-                        android:textSize="24sp"
                         android:textAllCaps="true"
                         android:textColor="@color/colorPrimary"
+                        android:textSize="24sp"
                         app:layout_constrainedWidth="true"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/subtotal_tip_value" />
@@ -395,10 +396,10 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
+                        android:contentDescription="@string/total_amount_including_tip_description"
                         android:text="@{viewModel.total}"
                         android:textSize="28sp"
                         app:fontFamily="@font/roboto_black"
-                        android:contentDescription="@string/total_amount_including_tip_description"
                         app:layout_constrainedWidth="true"
                         app:layout_constraintBottom_toBottomOf="@+id/subtotal_total_currency"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -413,10 +414,10 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
                         android:text="@string/split"
-                        android:visibility="@{viewModel.split > 1 ? view.VISIBLE : view.GONE}"
                         android:textAllCaps="true"
-                        android:textSize="24sp"
                         android:textColor="@color/colorPrimary"
+                        android:textSize="24sp"
+                        android:visibility="@{viewModel.split > 1 ? view.VISIBLE : view.GONE}"
                         app:layout_constrainedWidth="true"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/subtotal_total_value" />
@@ -427,8 +428,8 @@
                         android:layout_height="@dimen/currency_icon_size"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
-                        android:visibility="@{viewModel.split > 1 ? view.VISIBLE : view.GONE}"
                         android:src="@drawable/ic_currency"
+                        android:visibility="@{viewModel.split > 1 ? view.VISIBLE : view.GONE}"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/split_label" />
 
@@ -455,10 +456,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
-                        android:textAllCaps="true"
                         android:text="@string/each"
-                        android:visibility="@{viewModel.split > 1 ? view.VISIBLE : view.GONE}"
+                        android:textAllCaps="true"
                         android:textColor="@color/colorPrimary"
+                        android:visibility="@{viewModel.split > 1 ? view.VISIBLE : view.GONE}"
                         app:layout_constraintBottom_toBottomOf="@+id/total_split_value"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/total_split_value"
@@ -469,9 +470,9 @@
                         android:id="@+id/share_icon"
                         android:layout_width="@dimen/currency_icon_size"
                         android:layout_height="@dimen/currency_icon_size"
-                        android:contentDescription="@string/share_button_description"
                         android:layout_marginTop="16dp"
                         android:layout_marginBottom="16dp"
+                        android:contentDescription="@string/share_button_description"
                         android:src="@drawable/ic_share"
                         android:visibility="@{viewModel.isShareable ? view.VISIBLE : view.GONE}"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -494,10 +495,10 @@
 
                     <TextView
                         android:id="@+id/version"
-                        android:contentDescription="@string/tipuous_version_number_description"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
+                        android:contentDescription="@string/tipuous_version_number_description"
                         android:fontFamily="@font/roboto"
                         android:textAlignment="center"
                         app:layout_constrainedWidth="true"
