@@ -43,6 +43,14 @@ class MainViewModel : ViewModel() {
     val isShareable: StateFlow<Boolean>
         get() = _isShareable
 
+    private val _split = MutableStateFlow(1.0f)
+    val split: StateFlow<Float>
+        get() = _split
+
+    private val _splitValue = MutableStateFlow("0.00/each")
+    val splitValue: StateFlow<String>
+        get() = _splitValue
+
     init {
         viewModelScope.launch {
             _customTip.collect {
@@ -60,6 +68,11 @@ class MainViewModel : ViewModel() {
         }
 
         val value = Conversion.roundDoubleToTwoDecimalPlaces(_bill.value + tip)
+
+        val splitCalculation = Conversion.roundDoubleToTwoDecimalPlaces(value / _split.value)
+
+        _splitValue.value = "$splitCalculation"
+
         Log.i("bill", "${bill.value}")
         if (value == 0.0 || bill.value == 0.00 || bill.value.toString().isEmpty()) {
             _total.value = "-"
@@ -96,8 +109,16 @@ class MainViewModel : ViewModel() {
         _customTip.value = value
     }
 
+    fun updateSplit(value: Float) {
+        _split.value = value
+    }
+
     fun updateTotal(value: String) {
         _total.value = value
+    }
+
+    fun updateSplitValue(value: String) {
+        _splitValue.value = "${value} each"
     }
 
     fun clearValues() {
@@ -107,10 +128,18 @@ class MainViewModel : ViewModel() {
     }
 
     fun formatBillWithTip(): String {
+
+        var split = ""
+
+        if(_split.value > 1.0f) {
+            split = "Split: ${_split.value}/each"
+        }
+
         return """
             Bill: ${'$'}${_bill.value}
             Tip: ${'$'}${_tipValue.value}
             Total: ${'$'}${_total.value}
+            ${split.trim()}
             """.trimIndent()
     }
 }

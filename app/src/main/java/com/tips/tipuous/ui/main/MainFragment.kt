@@ -90,6 +90,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             }
         }
 
+        binding.splitSlider.addOnChangeListener { _, value, _ ->
+
+            with(viewModel) {
+                updateSplit(value)
+                calculateTip()
+            }
+        }
     }
 
     private fun clearValues() {

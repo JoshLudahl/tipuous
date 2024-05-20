@@ -36,4 +36,6 @@
     <string name="tip_amount_description">Tip amount</string>
     <string name="total_amount_including_tip_description">Total amount including tip</string>
     <string name="tipuous_version_number_description">Tipuous version number</string>
+    <string name="split">Split</string>
+    <string name="each">Each</string>
 </resources>

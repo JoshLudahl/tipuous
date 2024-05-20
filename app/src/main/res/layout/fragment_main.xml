@@ -126,7 +126,7 @@
                     tools:text="Tip" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraintLayout2"
+                    android:id="@+id/tip_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
@@ -195,12 +195,91 @@
                         android:valueFrom="5.0"
                         android:valueTo="100.0"
                         android:visibility="@{viewModel.tip == percentage.CUSTOM ? view.VISIBLE : view.GONE}"
-                        app:labelBehavior="@{viewModel.tip == percentage.CUSTOM ? view.VISIBLE : view.GONE}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/chip_group"
                         app:thumbColor="@color/colorPrimary"
                         app:trackColor="@color/colorSmokeDark" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/split_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tip_layout">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/label_split"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="32dp"
+                    android:text="@string/split"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"
+                    app:fontFamily="@font/roboto_black"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Split" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/split_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="32dp"
+                    android:animateLayoutChanges="true"
+                    android:background="@drawable/rounded_bg"
+                    android:padding="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/label_split">
+
+                    <com.google.android.material.slider.Slider
+                        android:id="@+id/split_slider"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:contentDescription="@string/slider_description"
+                        android:stepSize="1.0"
+                        android:value="@{viewModel.split}"
+                        android:valueFrom="1.0"
+                        android:valueTo="15.0"
+                        app:labelBehavior="floating"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/split_value"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:thumbColor="@color/colorPrimary"
+                        app:trackColor="@color/colorSmokeDark" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/split_value"
+                        style="@style/split_text_style"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/circle"
+                        android:includeFontPadding="false"
+                        android:text="@{String.valueOf(Math.round(viewModel.split))}"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorSmokeDark"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/colorPrimary"
+                        app:layout_constraintBottom_toBottomOf="@+id/split_slider"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/split_slider"
+                        app:layout_constraintTop_toTopOf="@+id/split_slider"
+                        tools:text="1" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -212,7 +291,7 @@
                 android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tip_layout">
+                app:layout_constraintTop_toBottomOf="@+id/split_layout">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/label_total"
@@ -253,6 +332,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
+                        android:textSize="24sp"
                         android:text="@string/tip"
                         android:textAllCaps="true"
                         android:textColor="@color/colorPrimary"
@@ -293,6 +373,7 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
                         android:text="@string/total"
+                        android:textSize="24sp"
                         android:textAllCaps="true"
                         android:textColor="@color/colorPrimary"
                         app:layout_constrainedWidth="true"
@@ -325,6 +406,65 @@
                         app:layout_constraintTop_toTopOf="@+id/subtotal_total_currency"
                         tools:text="45.77" />
 
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/split_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/split"
+                        android:visibility="@{viewModel.split > 1 ? view.VISIBLE : view.GONE}"
+                        android:textAllCaps="true"
+                        android:textSize="24sp"
+                        android:textColor="@color/colorPrimary"
+                        app:layout_constrainedWidth="true"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/subtotal_total_value" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/split_currency"
+                        android:layout_width="@dimen/currency_icon_size"
+                        android:layout_height="@dimen/currency_icon_size"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:visibility="@{viewModel.split > 1 ? view.VISIBLE : view.GONE}"
+                        android:src="@drawable/ic_currency"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/split_label" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/total_split_value"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="@string/total_amount_including_tip_description"
+                        android:text="@{viewModel.splitValue}"
+                        android:textSize="28sp"
+                        android:visibility="@{viewModel.split > 1 ? view.VISIBLE : view.GONE}"
+                        app:fontFamily="@font/roboto_black"
+                        app:layout_constrainedWidth="true"
+                        app:layout_constraintBottom_toBottomOf="@+id/split_currency"
+                        app:layout_constraintStart_toEndOf="@+id/split_currency"
+                        app:layout_constraintTop_toTopOf="@+id/split_currency"
+                        tools:text="5.77" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/each_label"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:textAllCaps="true"
+                        android:text="@string/each"
+                        android:visibility="@{viewModel.split > 1 ? view.VISIBLE : view.GONE}"
+                        android:textColor="@color/colorPrimary"
+                        app:layout_constraintBottom_toBottomOf="@+id/total_split_value"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/total_split_value"
+                        app:layout_constraintTop_toTopOf="@+id/total_split_value"
+                        tools:text="Each" />
+
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/share_icon"
                         android:layout_width="@dimen/currency_icon_size"
@@ -337,7 +477,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/subtotal_total_value"
+                        app:layout_constraintTop_toBottomOf="@+id/total_split_value"
                         tools:visibility="visible" />
 
 

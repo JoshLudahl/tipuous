@@ -35,4 +35,13 @@
         <item name="android:textAlignment">center</item>
     </style>
 
+    <style name="split_text_style">
+        <item name="android:layout_width">35dp</item>
+        <item name="android:layout_height">35dp</item>
+        <item name="android:textColor">@color/colorSmokeDark</item>
+        <item name="android:textSize">@dimen/split_value_text_size</item>
+        <item name="layout_constrainedWidth">true</item>
+        <item name="android:gravity">center</item>
+    </style>
+
 </resources>
