@@ -91,7 +91,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
 
         binding.splitSlider.addOnChangeListener { _, value, _ ->
-
             with(viewModel) {
                 updateSplit(value)
                 calculateTip()
@@ -102,6 +101,5 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private fun clearValues() {
         viewModel.clearValues()
         viewModel.updateTotal(getString(R.string.em_dash))
-
     }
 }
