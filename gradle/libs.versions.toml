@@ -59,6 +59,8 @@ app-update-ktx = { module = "com.google.android.play:app-update-ktx", version.re
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+feature-delivery = { module = "com.google.android.play:feature-delivery", version.ref = "appUpdate" }
+feature-delivery-ktx = { module = "com.google.android.play:feature-delivery-ktx", version.ref = "appUpdate" }
 firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebaseCrashlyticsGradle" }

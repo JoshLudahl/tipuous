@@ -16,8 +16,8 @@ android {
         applicationId "com.tips.tipuous"
         minSdkVersion 24
         targetSdkVersion targetVersion
-        versionCode 17
-        versionName "1.17"
+        versionCode 18
+        versionName "1.18"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -118,6 +118,12 @@ dependencies {
     implementation libs.firebase.perf.ktx
 
     // Google Play
+    // This dependency is downloaded from the Google’s Maven repository.
+    // Make sure you also include that repository in your project's build.gradle file.
+    implementation(libs.feature.delivery)
+    // For Kotlin users, also import the Kotlin extensions library for Play Feature Delivery:
+    implementation(libs.feature.delivery.ktx)
+
     // In App Updates
     implementation libs.app.update
     // For Kotlin users also add the Kotlin extensions library for Play In-App Update:
