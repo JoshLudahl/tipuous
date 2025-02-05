@@ -8,16 +8,16 @@ plugins{
 }
 
 android {
-    def targetVersion = 34
+    def targetVersion = 35
 
     compileSdk targetVersion
 
     defaultConfig {
         applicationId "com.tips.tipuous"
-        minSdkVersion 24
+        minSdkVersion 29
         targetSdkVersion targetVersion
-        versionCode 17
-        versionName "1.17"
+        versionCode 18
+        versionName "1.18"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -29,6 +29,7 @@ android {
     buildFeatures {
         viewBinding true
         dataBinding true
+        buildConfig true
     }
 
     kotlinOptions {
