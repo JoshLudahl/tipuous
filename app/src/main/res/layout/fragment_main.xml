@@ -200,8 +200,6 @@
                         app:layout_constraintTop_toBottomOf="@+id/chip_group"
                         app:thumbColor="@color/colorPrimary"
                         app:trackColor="@color/colorPrimary"
-                        app:thumbWidth="35dp"
-                        app:thumbHeight="35dp"
                         />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -264,8 +262,6 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:thumbColor="@color/colorPrimary"
                         app:trackColor="@color/colorPrimary"
-                        app:thumbWidth="35dp"
-                        app:thumbHeight="35dp"
                         />
 
                     <androidx.appcompat.widget.AppCompatTextView
