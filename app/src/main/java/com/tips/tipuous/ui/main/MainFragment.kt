@@ -1,12 +1,14 @@
 package com.tips.tipuous.ui.main
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.tips.tipuous.BuildConfig
@@ -95,6 +97,16 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 updateSplit(value)
                 calculateTip()
             }
+        }
+
+        binding.infoSplit.setOnClickListener {
+            val alert: AlertDialog = AlertDialog.Builder(requireContext())
+                .setTitle("Splitting Information")
+                .setMessage("Split tips are rounded and may not be exact.")
+                .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+                .create()
+
+            alert.show()
         }
     }
 

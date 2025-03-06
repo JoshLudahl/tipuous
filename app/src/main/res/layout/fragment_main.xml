@@ -452,13 +452,11 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
                         android:text="@string/each"
                         android:textAllCaps="true"
                         android:textColor="@color/colorPrimary"
                         android:visibility="@{viewModel.split > 1 ? view.VISIBLE : view.GONE}"
                         app:layout_constraintBottom_toBottomOf="@+id/total_split_value"
-                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/total_split_value"
                         app:layout_constraintTop_toTopOf="@+id/total_split_value"
                         tools:text="Each" />
@@ -478,6 +476,16 @@
                         app:layout_constraintTop_toBottomOf="@+id/total_split_value"
                         tools:visibility="visible" />
 
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/info_split"
+                        android:layout_width="@dimen/currency_icon_size"
+                        android:layout_height="@dimen/currency_icon_size"
+                        android:visibility="@{viewModel.split > 1 ? view.VISIBLE : view.GONE}"
+                        android:layout_marginStart="16dp"
+                        android:src="@drawable/ic_info"
+                        app:layout_constraintBottom_toBottomOf="@+id/each_label"
+                        app:layout_constraintStart_toEndOf="@+id/each_label"
+                        app:layout_constraintTop_toTopOf="@+id/each_label" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
