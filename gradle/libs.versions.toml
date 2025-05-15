@@ -6,10 +6,10 @@ constraintlayout = "2.2.1"
 core = "1.6.1"
 coreKtx = "1.16.0"
 espressoCore = "3.6.1"
-firebaseBom = "33.12.0"
+firebaseBom = "33.13.0"
 firebaseCrashlyticsGradle = "3.0.3"
 googleServices = "4.4.2"
-gradle = "8.9.1"
+gradle = "8.10.0"
 gridlayout = "1.1.0"
 junitJupiterApi = "5.11.3"
 junitJupiterEngine = "5.11.3"
@@ -19,19 +19,20 @@ kotlinGradlePlugin = "2.1.10"
 kotlinxSerializationJson = "1.8.0"
 legacySupportV4 = "1.0.0"
 lifecycleExtensions = "2.2.0"
-lifecycleLivedataKtx = "2.8.7"
-lifecycleLivedataKtxVersion = "2.8.7"
-lifecycleViewmodelKtx = "2.8.7"
+lifecycleLivedataKtx = "2.9.0"
+lifecycleLivedataKtxVersion = "2.9.0"
+lifecycleViewmodelKtx = "2.9.0"
 material = "1.12.0"
-materialVersion = "1.7.8"
-navigation = "2.8.9"
-navigationUiKtx = "2.8.9"
-navigationUiKtxVersion = "2.8.9"
+materialVersion = "1.8.1"
+materialIconsExtended = "1.7.8"
+navigation = "2.9.0"
+navigationUiKtx = "2.9.0"
+navigationUiKtxVersion = "2.9.0"
 orchestrator = "1.5.1"
 perfPlugin = "1.4.2"
 runner = "1.6.2"
-ui = "1.7.8"
-uiTooling = "1.7.8"
+ui = "1.8.1"
+uiTooling = "1.8.1"
 
 [libraries]
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -43,7 +44,7 @@ androidx-legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", ver
 androidx-lifecycle-livedata-ktx-v262 = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtxVersion" }
 androidx-lifecycle-viewmodel-ktx-v262 = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 androidx-material = { module = "androidx.compose.material:material", version.ref = "materialVersion" }
-androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialVersion" }
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-navigation-dynamic-features-fragment = { module = "androidx.navigation:navigation-dynamic-features-fragment", version.ref = "navigation" }
 androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation" }
 androidx-navigation-testing = { module = "androidx.navigation:navigation-testing", version.ref = "navigation" }
