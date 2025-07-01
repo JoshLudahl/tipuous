@@ -15,7 +15,7 @@ junitJupiterApi = "5.13.2"
 junitJupiterEngine = "5.13.2"
 junitKtx = "1.2.1"
 junitExt = "1.6.0"
-kotlinGradlePlugin = "2.1.10"
+kotlinGradlePlugin = "2.2.0"
 kotlinxSerializationJson = "1.9.0"
 legacySupportV4 = "1.0.0"
 lifecycleExtensions = "2.2.0"
@@ -81,3 +81,9 @@ material = { module = "com.google.android.material:material", version.ref = "mat
 perf-plugin = { module = "com.google.firebase:perf-plugin", version.ref = "perfPlugin" }
 
 [plugins]
+android-application = { id = "com.android.application", version.ref = "gradle" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlinGradlePlugin" }
+firebase-crashlytics-gradle = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsGradle" }
+firebase-perf-ktx = { id = "com.google.firebase.firebase-perf" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinGradlePlugin" }
