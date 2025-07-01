@@ -8,7 +8,7 @@ plugins{
 }
 
 android {
-    def targetVersion = 35
+    def targetVersion = 36
 
     compileSdk targetVersion
 
@@ -16,7 +16,7 @@ android {
         applicationId "com.tips.tipuous"
         minSdkVersion 27
         targetSdkVersion targetVersion
-        versionCode 23
+        versionCode 24
         versionName "1.$versionCode"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
