@@ -91,13 +91,10 @@ dependencies {
 
     // Databinding & other
     implementation(libs.androidx.legacy.support.v4)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx.v262)
-    implementation(libs.androidx.lifecycle.livedata.ktx.v262)
     implementation(libs.androidx.navigation.ui.ktx)
 
     // Kotlin
     implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx.v273)
     implementation(libs.kotlinx.serialization.json)
 
     // Feature module Support
@@ -109,17 +106,17 @@ dependencies {
 
     // Add the dependencies for the Crashlytics and Analytics libraries
     // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation(libs.firebase.crashlytics.ktx)
+    implementation(libs.firebase.crashlytics)
 
     // Add the dependency for the Realtime Database library
     // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation(libs.firebase.database.ktx)
+    implementation(libs.firebase.database)
 
     // Add the dependency for the Firebase SDK for Google Analytics
-    implementation(libs.firebase.analytics.ktx)
+    implementation(libs.firebase.analytics)
 
     // Add Performance lib
-    implementation(libs.firebase.perf.ktx)
+    implementation(libs.firebase.perf)
 
     // In App Updates
     implementation(libs.app.update)
