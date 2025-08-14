@@ -1,15 +1,18 @@
 package com.tips.tipuous.ui.main
 
+import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,12 +30,16 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
     val customTipPercentValue by mainViewModel.customTip.collectAsStateWithLifecycle()
     val splitCount by mainViewModel.split.collectAsStateWithLifecycle()
     val splitValue by mainViewModel.splitValue.collectAsStateWithLifecycle()
+    val tipAmountValue by mainViewModel.tipValue.collectAsStateWithLifecycle() // Observe tipValue (FIXED)
+    val totalAmountValue by mainViewModel.total.collectAsStateWithLifecycle() // Observe totalAmount
 
 
     // Local state for the TextField to manage text input directly
     var billText by remember(billAmount) {
         mutableStateOf(if (billAmount == 0.0 || billAmount.toString() == "0.0") "" else billAmount.toString())
     }
+
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -55,7 +62,8 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
             OutlinedTextField(
                 value = billText,
                 onValueChange = { newText ->
-                    if (newText.isEmpty() || newText.matches(Regex("^\\d*\\.?\\d*\$"))) {
+                    // Regex updated to use raw string and match standard decimal input
+                    if (newText.isEmpty() || newText.matches(Regex("""^\d*\.?\d*$"""))) {
                         billText = newText
                         val newBill = newText.toDoubleOrNull() ?: 0.0
                         if (billAmount != newBill) {
@@ -89,7 +97,6 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        // Assuming Percent.FIVE, Percent.TEN, Percent.FIFTEEN exist
                         val tipOptions = listOf(
                             "5%" to Percent.FIVE, 
                             "10%" to Percent.TEN, 
@@ -122,13 +129,12 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
                             value = customTipPercentValue.toFloat(),
                             onValueChange = { newValue ->
                                 mainViewModel.updateCustomValue(newValue.toInt())
-                                // No need to call calculateTip here if updateCustomValue triggers it or if onValueChangeFinished is used
                             },
                             onValueChangeFinished = {
-                                mainViewModel.calculateTip() // Calculate tip when slider interaction finishes
+                                mainViewModel.calculateTip() 
                             },
-                            valueRange = 1f..50f, // e.g., 1% to 50%
-                            steps = (50 - 1) - 1, // (End - Start) - 1 for discrete steps
+                            valueRange = 1f..50f, 
+                            steps = (50 - 1) - 1, 
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
@@ -155,10 +161,10 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
                             mainViewModel.updateSplit(newValue)
                         },
                         onValueChangeFinished = {
-                            mainViewModel.calculateTip() // Recalculate everything including split value
+                            mainViewModel.calculateTip() 
                         },
                         valueRange = 1f..75f,
-                        steps = (75 - 1) - 1, // For discrete steps from 1 to 75
+                        steps = (75 - 1) - 1, 
                         modifier = Modifier.fillMaxWidth()
                     )
                     if (splitCount > 1f) {
@@ -171,10 +177,55 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
                 }
             }
 
-            // Placeholder for Total Section
+            // Total Section
             Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Total Section - Placeholder", style = MaterialTheme.typography.titleMedium)
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "Totals",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Tip Amount: $${tipAmountValue}",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Text(
+                        text = "Total Bill (with Tip): $${totalAmountValue}",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    if (splitCount > 1f) {
+                        Text(
+                            text = "Amount Per Person: $${splitValue}",
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = {
+                            val shareMessage = if (splitCount > 1f) {
+                                "Total bill (including tip): $${totalAmountValue}. Your share is $${splitValue}."
+                            } else {
+                                "Total bill (including tip): $${totalAmountValue}"
+                            }
+                            val sendIntent: Intent = Intent().apply {
+                                action = Intent.ACTION_SEND
+                                putExtra(Intent.EXTRA_TEXT, shareMessage)
+                                type = "text/plain"
+                            }
+                            val shareIntent = Intent.createChooser(sendIntent, null)
+                            context.startActivity(shareIntent)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Icon(Icons.Filled.Share, contentDescription = "Share Bill", modifier = Modifier.size(ButtonDefaults.IconSize))
+                        Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                        Text("Share Bill")
+                    }
                 }
             }
         }
