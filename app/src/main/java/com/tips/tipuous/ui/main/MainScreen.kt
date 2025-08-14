@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tips.tipuous.model.Percent // Import Percent
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,6 +25,9 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
     val billAmount by mainViewModel.bill.collectAsStateWithLifecycle()
     val selectedTipType by mainViewModel.tip.collectAsStateWithLifecycle()
     val customTipPercentValue by mainViewModel.customTip.collectAsStateWithLifecycle()
+    val splitCount by mainViewModel.split.collectAsStateWithLifecycle()
+    val splitValue by mainViewModel.splitValue.collectAsStateWithLifecycle()
+
 
     // Local state for the TextField to manage text input directly
     var billText by remember(billAmount) {
@@ -132,10 +136,38 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
             }
 
 
-            // Placeholder for Split Section
+            // Split Section
             Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Split Section - Placeholder", style = MaterialTheme.typography.titleMedium)
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "Split Bill",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Number of people: ${splitCount.roundToInt()}", fontSize = 16.sp)
+                    Slider(
+                        value = splitCount,
+                        onValueChange = { newValue ->
+                            mainViewModel.updateSplit(newValue)
+                        },
+                        onValueChangeFinished = {
+                            mainViewModel.calculateTip() // Recalculate everything including split value
+                        },
+                        valueRange = 1f..75f,
+                        steps = (75 - 1) - 1, // For discrete steps from 1 to 75
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    if (splitCount > 1f) {
+                        Text(
+                            text = "Amount per person: $${splitValue}",
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
                 }
             }
 
