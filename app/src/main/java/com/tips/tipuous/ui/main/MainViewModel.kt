@@ -57,6 +57,7 @@ class MainViewModel : ViewModel() {
 
     fun calculateTip() {
         val tip = _bill.value * when (_tip.value) {
+            Percent.FIVE -> 0.05 // Added this case
             Percent.TEN -> .10
             Percent.FIFTEEN -> .15
             Percent.TWENTY -> .20

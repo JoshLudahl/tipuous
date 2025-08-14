@@ -12,14 +12,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.tips.tipuous.model.Percent // Import Percent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
     // Observe StateFlows from ViewModel
     val billAmount by mainViewModel.bill.collectAsStateWithLifecycle()
+    val selectedTipType by mainViewModel.tip.collectAsStateWithLifecycle()
+    val customTipPercentValue by mainViewModel.customTip.collectAsStateWithLifecycle()
 
     // Local state for the TextField to manage text input directly
     var billText by remember(billAmount) {
@@ -47,16 +51,13 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
             OutlinedTextField(
                 value = billText,
                 onValueChange = { newText ->
-                    // Allow empty, or numbers with optional decimal point
                     if (newText.isEmpty() || newText.matches(Regex("^\\d*\\.?\\d*\$"))) {
                         billText = newText
                         val newBill = newText.toDoubleOrNull() ?: 0.0
                         if (billAmount != newBill) {
                            mainViewModel.setBill(newBill)
-                           // Trigger calculation when bill amount changes and is valid
                            mainViewModel.calculateTip()
                         } else if (newText.isEmpty() && billAmount != 0.0) {
-                            // Handle case where field is cleared
                             mainViewModel.setBill(0.0)
                             mainViewModel.calculateTip()
                         }
@@ -69,12 +70,67 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // Placeholder for Tip Section
+            // Tip Section
             Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Tip Section - Placeholder", style = MaterialTheme.typography.titleMedium)
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "Tip Percentage",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        // Assuming Percent.FIVE, Percent.TEN, Percent.FIFTEEN exist
+                        val tipOptions = listOf(
+                            "5%" to Percent.FIVE, 
+                            "10%" to Percent.TEN, 
+                            "15%" to Percent.FIFTEEN
+                        )
+
+                        tipOptions.forEach { (label, percentEnum) ->
+                            AssistChip(
+                                onClick = { mainViewModel.updateTipPercentage(percentEnum) },
+                                label = { Text(label) },
+                                colors = AssistChipDefaults.assistChipColors(
+                                    containerColor = if (selectedTipType == percentEnum && selectedTipType != Percent.CUSTOM) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
+                                )
+                            )
+                        }
+
+                        AssistChip(
+                            onClick = { mainViewModel.handleCustomPercentageClick() },
+                            label = { Text("Other") },
+                            colors = AssistChipDefaults.assistChipColors(
+                                containerColor = if (selectedTipType == Percent.CUSTOM) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
+                            )
+                        )
+                    }
+
+                    if (selectedTipType == Percent.CUSTOM) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("Custom Tip: ${customTipPercentValue}%", fontSize = 16.sp)
+                        Slider(
+                            value = customTipPercentValue.toFloat(),
+                            onValueChange = { newValue ->
+                                mainViewModel.updateCustomValue(newValue.toInt())
+                                // No need to call calculateTip here if updateCustomValue triggers it or if onValueChangeFinished is used
+                            },
+                            onValueChangeFinished = {
+                                mainViewModel.calculateTip() // Calculate tip when slider interaction finishes
+                            },
+                            valueRange = 1f..50f, // e.g., 1% to 50%
+                            steps = (50 - 1) - 1, // (End - Start) - 1 for discrete steps
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                 }
             }
+
 
             // Placeholder for Split Section
             Card(modifier = Modifier.fillMaxWidth()) {
