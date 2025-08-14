@@ -2,6 +2,7 @@
 activityCompose = "1.10.1"
 appcompat = "1.7.1"
 appUpdate = "2.1.0"
+composeBom = "2025.08.00"
 constraintlayout = "2.2.1"
 core = "1.7.0"
 coreKtx = "1.16.0"
@@ -20,6 +21,8 @@ kotlinxSerializationJson = "1.9.0"
 legacySupportV4 = "1.0.0"
 lifecycleExtensions = "2.2.0"
 lifecycleLivedataKtx = "2.9.2"
+lifecycleRuntimeCompose = "2.9.2"
+lifecycleViewmodelCompose = "2.9.2"
 material = "1.12.0"
 materialVersion = "1.8.3"
 materialIconsExtended = "1.7.8"
@@ -29,17 +32,23 @@ orchestrator = "1.6.1"
 perfPlugin = "2.0.1"
 runner = "1.7.0"
 ui = "1.8.3"
+uiText = "1.9.0"
 uiTooling = "1.8.3"
 
 [libraries]
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 androidx-core = { module = "androidx.test:core", version.ref = "core" }
 androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
 androidx-junit = { module = "androidx.test.ext:junit", version.ref = "junitKtx" }
 androidx-junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "junitKtx" }
 androidx-legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacySupportV4" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 androidx-material = { module = "androidx.compose.material:material", version.ref = "materialVersion" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
+androidx-material3 = { module = "androidx.compose.material3:material3" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
 androidx-navigation-dynamic-features-fragment = { module = "androidx.navigation:navigation-dynamic-features-fragment", version.ref = "navigation" }
 androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation" }
 androidx-navigation-testing = { module = "androidx.navigation:navigation-testing", version.ref = "navigation" }
@@ -49,7 +58,10 @@ androidx-rules = { module = "androidx.test:rules", version.ref = "core" }
 androidx-runner = { module = "androidx.test:runner", version.ref = "runner" }
 androidx-truth = { module = "androidx.test.ext:truth", version.ref = "junitExt" }
 androidx-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
+androidx-ui-text = { module = "androidx.compose.ui:ui-text", version.ref = "uiText" }
+androidx-ui-text-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts" }
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiTooling" }
+androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 app-update = { module = "com.google.android.play:app-update", version.ref = "appUpdate" }
 app-update-ktx = { module = "com.google.android.play:app-update-ktx", version.ref = "appUpdate" }
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }

@@ -3,12 +3,12 @@ package com.tips.tipuous
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
 import com.google.android.gms.tasks.Task
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -18,26 +18,19 @@ import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
-import com.tips.tipuous.databinding.ActivityMainBinding
+import com.tips.tipuous.navigation.AppNavigation // Added import
+import com.tips.tipuous.ui.main.MainScreen
+import com.tips.tipuous.ui.theme.TipuousTheme
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var navHostFragment: NavHostFragment
-    private lateinit var navController: NavController
-
     private lateinit var appUpdateManager: AppUpdateManager
-
-    // Returns an intent object that you use to check for an update.
     private lateinit var aut: Task<AppUpdateInfo>
-
     private val updateType = AppUpdateType.FLEXIBLE
 
-    val listener = InstallStateUpdatedListener { state ->
+    private val listener = InstallStateUpdatedListener { state ->
         if (state.installStatus() == InstallStatus.DOWNLOADED) {
-            // After the update is downloaded, show a notification
-            // and request user confirmation to restart the app.
             Log.i("MainActivity", "Update has been downloaded.")
             Toast.makeText(
                 this,
@@ -50,7 +43,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -58,14 +50,11 @@ class MainActivity : AppCompatActivity() {
         aut = appUpdateManager.appUpdateInfo
         checkIsUpdateAvailable()
 
-        setupNavHost()
-    }
-
-    private fun setupNavHost() {
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
-        navController = navHostFragment.navController
+        setContent {
+            TipuousTheme { // Replace with your actual theme
+                AppNavigation() // Changed to use AppNavigation
+            }
+        }
     }
 
     private fun checkIsUpdateAvailable() {
@@ -87,18 +76,24 @@ class MainActivity : AppCompatActivity() {
                 appUpdateManager.registerListener(listener)
                 Log.i("MainActivity", "Starting Update.")
                 appUpdateManager.startUpdateFlowForResult(
-                    // Pass the intent that is returned by 'getAppUpdateInfo()'.
                     appUpdateInfo,
-                    // an activity result launcher registered via registerForActivityResult
                     activityResultLauncher,
-                    // Or pass 'AppUpdateType.FLEXIBLE' to newBuilder() for
-                    // flexible updates.
                     AppUpdateOptions.newBuilder(updateType).build()
-
                 )
             } else {
                 Log.i("MainActivity", "No Update Available.")
             }
         }
+    }
+}
+
+// Preview for MainScreen (Optional - if you want to preview MainActivity content directly)
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    TipuousTheme {
+        // You could put a simplified version of your NavHost here for preview
+        // or directly preview MainScreen if it doesn't have complex dependencies
+        MainScreen()
     }
 }

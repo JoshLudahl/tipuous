@@ -5,6 +5,7 @@ plugins {
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
     id("com.google.firebase.firebase-perf")
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -30,6 +31,7 @@ android {
         viewBinding = true
         dataBinding = true
         buildConfig = true
+        compose = true
     }
 
     buildTypes {
@@ -78,14 +80,22 @@ dependencies {
     implementation(libs.gridlayout)
 
     // Compose
+    implementation(platform(libs.androidx.compose.bom)) // Added Compose BOM
     implementation(libs.core.ktx)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.ui)
     implementation(libs.activity.compose)
-    implementation(libs.androidx.material)
-    implementation(libs.androidx.ui.tooling)
+    implementation(libs.androidx.ui.text)
+    implementation(libs.androidx.ui.text.google.fonts) // Added this line
+    implementation(libs.androidx.material3) // Changed to material3
+    implementation(libs.androidx.ui.tooling.preview) // Changed to ui-tooling-preview
+    debugImplementation(libs.androidx.ui.tooling) // Added debugImplementation for ui-tooling
     implementation(libs.androidx.material.icons.extended)
+    implementation(libs.androidx.lifecycle.runtime.compose) // For collectAsStateWithLifecycle
+    implementation(libs.androidx.lifecycle.viewmodel.compose) // For viewModel() Composable
+    implementation(libs.androidx.navigation.compose)      // For Compose Navigation
+
 
     // Styling
     implementation(libs.material)
