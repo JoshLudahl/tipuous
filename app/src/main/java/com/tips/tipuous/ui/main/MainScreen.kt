@@ -37,8 +37,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -112,8 +110,8 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors (
-                   focusedBorderColor = MaterialTheme.colorScheme.tertiary
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.tertiary
                 )
             )
 
@@ -173,7 +171,12 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
                     if (selectedTipType == Percent.CUSTOM) {
                         Spacer(modifier = Modifier.height(8.dp))
                         Row(
-                            modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 8.dp), // Added bottom padding to the Row
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    top = 8.dp,
+                                    bottom = 8.dp
+                                ), // Added bottom padding to the Row
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Slider(
@@ -184,7 +187,9 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
                                 colors = SliderDefaults.colors(
                                     thumbColor = MaterialTheme.colorScheme.tertiary,
                                     activeTrackColor = MaterialTheme.colorScheme.tertiary,
-                                    inactiveTrackColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.24f),
+                                    inactiveTrackColor = MaterialTheme.colorScheme.tertiary.copy(
+                                        alpha = 0.24f
+                                    ),
                                     inactiveTickColor = Color.Transparent,
                                     activeTickColor = MaterialTheme.colorScheme.surfaceBright
                                 ),
@@ -228,7 +233,9 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 8.dp), // Added bottom padding to the Row
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp, bottom = 8.dp), // Added bottom padding to the Row
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Slider(
