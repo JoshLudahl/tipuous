@@ -99,8 +99,7 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
                 label = { Text("Enter Bill Amount") },
                 leadingIcon = {
                     Icon(
-                        Icons.Filled.AttachMoney,
-                        contentDescription = "Bill Amount"
+                        Icons.Filled.AttachMoney, contentDescription = "Bill Amount"
                     )
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -112,8 +111,7 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
 
             // Tip Section
             Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
+                modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surfaceContainer,
                     contentColor = MaterialTheme.colorScheme.onSurface
                 )
@@ -128,9 +126,7 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                         val tipOptions = listOf(
-                            "5%" to Percent.FIVE,
-                            "10%" to Percent.TEN,
-                            "15%" to Percent.FIFTEEN
+                            "5%" to Percent.FIVE, "10%" to Percent.TEN, "15%" to Percent.FIFTEEN
                         )
 
                         tipOptions.forEach { (label, percentEnum) ->
@@ -188,8 +184,7 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
 
             // Split Section
             Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
+                modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surfaceContainer,
                     contentColor = MaterialTheme.colorScheme.onSurface
                 )
@@ -229,8 +224,7 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
 
             // Total Section
             Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
+                modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surfaceContainer,
                     contentColor = MaterialTheme.colorScheme.onSurface
                 )
@@ -241,24 +235,27 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Spacer(modifier = Modifier.height(8.dp))
+
                     Text(
-                        text = "Tip Amount: $${tipAmountValue}",
-                        style = MaterialTheme.typography.bodyLarge
+                        text = "Tip Amount $${tipAmountValue}",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.tertiary
                     )
+
                     Text(
-                        text = "Total Bill: $${totalAmountValue}",
-                        style = MaterialTheme.typography.titleMedium
+                        text = "Total Amount $${totalAmountValue}",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.tertiary
                     )
                     if (splitCount > 1f) {
                         HorizontalDivider(
-                            Modifier,
-                            DividerDefaults.Thickness,
-                            DividerDefaults.color
+                            Modifier, DividerDefaults.Thickness, DividerDefaults.color
                         )
                         Text(
                             text = "Amount Per Person: $${splitValue}",
                             style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.padding(top = 8.dp)
+                            modifier = Modifier.padding(top = 8.dp),
+                            color = MaterialTheme.colorScheme.tertiary
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
