@@ -19,13 +19,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.FormatListBulleted
 import androidx.compose.material.icons.automirrored.rounded.List
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AttachMoney
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.rounded.FormatListBulleted
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
@@ -91,7 +88,7 @@ fun MainScreen(
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = { onAddReceipt?.invoke() }) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = "Add receipt")
+                Icon(imageVector = Icons.Rounded.Add, contentDescription = "Add receipt")
             }
         },
         bottomBar = {

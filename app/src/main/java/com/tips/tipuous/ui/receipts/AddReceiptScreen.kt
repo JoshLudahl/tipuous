@@ -53,7 +53,13 @@ import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
+import androidx.core.graphics.scale
 
 @androidx.compose.material3.ExperimentalMaterial3Api
 @Composable
@@ -67,6 +73,7 @@ fun AddReceiptScreen(navController: NavController) {
     var dateMillis by remember { mutableStateOf<Long?>(System.currentTimeMillis()) }
     var location by remember { mutableStateOf("") }
     var previewBitmap by remember { mutableStateOf<Bitmap?>(null) }
+        var showDatePicker by remember { mutableStateOf(false) }
 
     val isFormValid by remember(bill, tip, total) {
         derivedStateOf {
@@ -126,7 +133,7 @@ fun AddReceiptScreen(navController: NavController) {
                     val ratio = maxDim.toFloat() / maxSize
                     val newW = (w / ratio).toInt().coerceAtLeast(1)
                     val newH = (h / ratio).toInt().coerceAtLeast(1)
-                    Bitmap.createScaledBitmap(original, newW, newH, true)
+                    original.scale(newW, newH)
                 } else original
             } else {
                 // Two-pass decode with inSampleSize
@@ -214,7 +221,7 @@ fun AddReceiptScreen(navController: NavController) {
                 title = { Text("Add Receipt") },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
@@ -225,8 +232,6 @@ fun AddReceiptScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text("Add Tip / Receipt", style = MaterialTheme.typography.titleLarge)
-
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(onClick = {
                     val hasPermission = ContextCompat.checkSelfPermission(
@@ -301,9 +306,32 @@ fun AddReceiptScreen(navController: NavController) {
 
                     val dateText = remember(dateMillis) {
                         val fmt = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+                        // Use UTC to prevent off-by-one errors when DatePicker returns midnight UTC
+                        fmt.timeZone = TimeZone.getTimeZone("UTC")
                         fmt.format(Date(dateMillis ?: System.currentTimeMillis()))
                     }
-                    Text("Date: $dateText", style = MaterialTheme.typography.bodyMedium)
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                        Text("Date: $dateText", style = MaterialTheme.typography.bodyMedium)
+                        TextButton(onClick = { showDatePicker = true }) { Text("Select Date") }
+                    }
+
+                    if (showDatePicker) {
+                        val dpState = rememberDatePickerState(initialSelectedDateMillis = dateMillis ?: System.currentTimeMillis())
+                        DatePickerDialog(
+                            onDismissRequest = { showDatePicker = false },
+                            confirmButton = {
+                                TextButton(onClick = {
+                                    dateMillis = dpState.selectedDateMillis ?: dateMillis
+                                    showDatePicker = false
+                                }) { Text("OK") }
+                            },
+                            dismissButton = {
+                                TextButton(onClick = { showDatePicker = false }) { Text("Cancel") }
+                            }
+                        ) {
+                            DatePicker(state = dpState)
+                        }
+                    }
                 }
             }
 
