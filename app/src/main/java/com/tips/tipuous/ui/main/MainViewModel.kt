@@ -43,7 +43,7 @@ class MainViewModel : ViewModel() {
     val split: StateFlow<Float>
         get() = _split
 
-    private val _splitValue = MutableStateFlow("0.00/each")
+    private val _splitValue = MutableStateFlow("0.00")
     val splitValue: StateFlow<String>
         get() = _splitValue
 
