@@ -142,6 +142,9 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
                                     containerColor = if (selectedTipType == percentEnum && selectedTipType != Percent.CUSTOM) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.surface.copy(
                                         alpha = 0.24f
                                     ),
+                                ),
+                                border = AssistChipDefaults.assistChipBorder(
+                                    enabled = false
                                 )
                             )
                         }
@@ -154,6 +157,9 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
                                 containerColor = if (selectedTipType == Percent.CUSTOM) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.surface.copy(
                                     alpha = 0.24f
                                 ),
+                            ),
+                            border = AssistChipDefaults.assistChipBorder(
+                                enabled = false
                             )
                         )
                     }
