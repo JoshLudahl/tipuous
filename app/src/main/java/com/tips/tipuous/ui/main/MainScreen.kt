@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,18 +19,27 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.FormatListBulleted
+import androidx.compose.material.icons.automirrored.rounded.List
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.rounded.FormatListBulleted
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -78,7 +88,38 @@ fun MainScreen(
 
     val context = LocalContext.current
 
-    Scaffold { paddingValues ->
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(onClick = { onAddReceipt?.invoke() }) {
+                Icon(imageVector = Icons.Filled.Add, contentDescription = "Add receipt")
+            }
+        },
+        bottomBar = {
+            BottomAppBar(
+                modifier = Modifier.height(56.dp),
+                containerColor = MaterialTheme.colorScheme.surface,
+                windowInsets =
+                    WindowInsets(
+                        left = 8.dp,
+                        top = 0.dp,
+                        right = 0.dp,
+                        bottom = 16.dp,
+                    ),
+            ) {
+                IconButton(onClick = { onViewReceipts?.invoke() }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Rounded.List,
+                        contentDescription = "Saved items")
+                }
+
+                IconButton(onClick = {  }) {
+                    Icon(
+                        imageVector = Icons.Rounded.Settings,
+                        contentDescription = "Settings")
+                }
+            }
+        }
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
@@ -87,15 +128,7 @@ fun MainScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Entry points for receipt features
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(onClick = { onAddReceipt?.invoke() }, modifier = Modifier.weight(1f), colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary)) {
-                    Text("Add Tip from Receipt")
-                }
-                Button(onClick = { onViewReceipts?.invoke() }, modifier = Modifier.weight(1f)) {
-                    Text("Saved Receipts")
-                }
-            }
+            // Bottom bar added; removed top buttons
 
             SectionTitle("Bill Amount")
             OutlinedTextField(
