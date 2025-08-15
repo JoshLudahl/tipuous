@@ -1,7 +1,9 @@
 package com.tips.tipuous.ui.main
 
 import android.content.Intent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -194,29 +198,44 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("Number of people: ${splitCount.roundToInt()}", fontSize = 16.sp)
-                    Slider(
-                        value = splitCount,
-                        onValueChange = { newValue ->
-                            mainViewModel.updateSplit(newValue)
-                        },
-                        onValueChangeFinished = {
-                            mainViewModel.calculateTip()
-                        },
-                        colors = SliderDefaults.colors(
-                            thumbColor = MaterialTheme.colorScheme.tertiary,
-                            activeTrackColor = MaterialTheme.colorScheme.tertiary,
-                            inactiveTrackColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.24f),
-                            inactiveTickColor = Color.Transparent,
-                            activeTickColor = MaterialTheme.colorScheme.surfaceBright
-                        ),
-                        valueRange = 1f..20f,
-                        steps = (20 - 1) - 1,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 16.dp)
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 8.dp), // Added bottom padding to the Row
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Slider(
+                            value = splitCount,
+                            onValueChange = { newValue ->
+                                mainViewModel.updateSplit(newValue)
+                            },
+                            onValueChangeFinished = {
+                                mainViewModel.calculateTip()
+                            },
+                            colors = SliderDefaults.colors(
+                                thumbColor = MaterialTheme.colorScheme.tertiary,
+                                activeTrackColor = MaterialTheme.colorScheme.tertiary,
+                                inactiveTrackColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.24f),
+                                inactiveTickColor = Color.Transparent,
+                                activeTickColor = MaterialTheme.colorScheme.surfaceBright
+                            ),
+                            valueRange = 1f..75f, // Updated range
+                            steps = (75 - 1) - 1, // Updated steps (73 steps for 75 values)
+                            modifier = Modifier.weight(1f)
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Box(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .background(MaterialTheme.colorScheme.tertiary, CircleShape),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = splitCount.roundToInt().toString(),
+                                color = MaterialTheme.colorScheme.surface, // Text color as requested
+                                fontSize = 16.sp,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                    }
                 }
             }
 
