@@ -34,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
@@ -66,6 +67,18 @@ fun AddReceiptScreen(navController: NavController) {
     var dateMillis by remember { mutableStateOf<Long?>(System.currentTimeMillis()) }
     var location by remember { mutableStateOf("") }
     var previewBitmap by remember { mutableStateOf<Bitmap?>(null) }
+
+    val isFormValid by remember(bill, tip, total) {
+        derivedStateOf {
+            val billD = bill.toDoubleOrNull()
+            val tipD = tip.toDoubleOrNull()
+            val totalD = total.toDoubleOrNull()
+            if (bill.isBlank() || tip.isBlank() || total.isBlank()) return@derivedStateOf false
+            if (billD == null || tipD == null || totalD == null) return@derivedStateOf false
+            if (billD <= 0.0 || tipD < 0.0 || totalD <= 0.0) return@derivedStateOf false
+            kotlin.math.abs((billD + tipD) - totalD) < 0.01
+        }
+    }
 
     val takePictureLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.TakePicturePreview()
@@ -296,11 +309,12 @@ fun AddReceiptScreen(navController: NavController) {
 
             Button(
                 onClick = {
+                    if (!isFormValid) return@Button
                     val bmp = previewBitmap
                     val path = if (bmp != null) saveBitmapToInternal(bmp) else null
-                    val billD = parseDoubleOrZero(bill)
-                    val tipD = parseDoubleOrZero(tip)
-                    val totalD = if (total.isNotBlank()) parseDoubleOrZero(total) else billD + tipD
+                    val billD = bill.toDoubleOrNull() ?: return@Button
+                    val tipD = tip.toDoubleOrNull() ?: return@Button
+                    val totalD = total.toDoubleOrNull() ?: return@Button
                     val receipt = Receipt(
                         dateEpochMillis = dateMillis ?: System.currentTimeMillis(),
                         billTotal = billD,
@@ -312,6 +326,7 @@ fun AddReceiptScreen(navController: NavController) {
                     repo.add(receipt)
                     navController.popBackStack()
                 },
+                enabled = isFormValid,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary)
             ) {
