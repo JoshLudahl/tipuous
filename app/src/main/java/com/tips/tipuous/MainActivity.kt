@@ -6,8 +6,6 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.tasks.Task
 import com.google.android.play.core.appupdate.AppUpdateInfo
@@ -18,8 +16,7 @@ import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
-import com.tips.tipuous.navigation.AppNavigation // Added import
-import com.tips.tipuous.ui.main.MainScreen
+import com.tips.tipuous.navigation.AppNavigation
 import com.tips.tipuous.ui.theme.TipuousTheme
 import kotlinx.coroutines.launch
 
@@ -84,16 +81,5 @@ class MainActivity : AppCompatActivity() {
                 Log.i("MainActivity", "No Update Available.")
             }
         }
-    }
-}
-
-// Preview for MainScreen (Optional - if you want to preview MainActivity content directly)
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    TipuousTheme {
-        // You could put a simplified version of your NavHost here for preview
-        // or directly preview MainScreen if it doesn't have complex dependencies
-        MainScreen()
     }
 }

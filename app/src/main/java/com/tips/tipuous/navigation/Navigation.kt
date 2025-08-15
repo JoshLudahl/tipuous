@@ -13,6 +13,5 @@ fun AppNavigation() {
         composable("main") {
             MainScreen() // ViewModel will be provided by viewModel()
         }
-        // Add other composable destinations here
     }
 }
