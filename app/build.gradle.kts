@@ -6,6 +6,7 @@ plugins {
     id("com.google.firebase.firebase-perf")
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serializable)
 }
 
 android {
@@ -89,6 +90,7 @@ dependencies {
     implementation(libs.androidx.ui.text)
     implementation(libs.androidx.ui.text.google.fonts) // Added this line
     implementation(libs.androidx.material3) // Changed to material3
+    implementation(libs.androidx.material3.android)
     implementation(libs.androidx.ui.tooling.preview) // Changed to ui-tooling-preview
     debugImplementation(libs.androidx.ui.tooling) // Added debugImplementation for ui-tooling
     implementation(libs.androidx.material.icons.extended)

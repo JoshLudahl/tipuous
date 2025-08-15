@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.tasks.Task
 import com.google.android.play.core.appupdate.AppUpdateInfo
@@ -17,6 +18,7 @@ import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.tips.tipuous.navigation.AppNavigation
+import com.tips.tipuous.ui.theme.ThemeManager
 import com.tips.tipuous.ui.theme.TipuousTheme
 import kotlinx.coroutines.launch
 
@@ -25,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appUpdateManager: AppUpdateManager
     private lateinit var aut: Task<AppUpdateInfo>
     private val updateType = AppUpdateType.FLEXIBLE
+    private lateinit var themeManager: ThemeManager
 
     private val listener = InstallStateUpdatedListener { state ->
         if (state.installStatus() == InstallStatus.DOWNLOADED) {
@@ -47,8 +50,13 @@ class MainActivity : AppCompatActivity() {
         aut = appUpdateManager.appUpdateInfo
         checkIsUpdateAvailable()
 
+        themeManager = ThemeManager.getInstance(this)
+
         setContent {
-            TipuousTheme { // Replace with your actual theme
+            TipuousTheme(
+                darkTheme = themeManager.isDarkTheme(),
+                dynamicColor = themeManager.dynamicColor.collectAsState().value,
+            ) { // Replace with your actual theme
                 AppNavigation() // Changed to use AppNavigation
             }
         }

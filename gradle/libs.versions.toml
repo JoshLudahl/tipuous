@@ -25,7 +25,8 @@ lifecycleLivedataKtx = "2.9.2"
 lifecycleRuntimeCompose = "2.9.2"
 lifecycleViewmodelCompose = "2.9.2"
 material = "1.12.0"
-materialVersion = "1.8.3"
+material3Android = "1.5.0-alpha02"
+materialVersion = "1.9.0"
 materialIconsExtended = "1.7.8"
 navigation = "2.9.3"
 navigationUiKtx = "2.9.3"
@@ -49,6 +50,7 @@ androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-
 androidx-material = { module = "androidx.compose.material:material", version.ref = "materialVersion" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-material3 = { module = "androidx.compose.material3:material3" }
+androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
 androidx-navigation-dynamic-features-fragment = { module = "androidx.navigation:navigation-dynamic-features-fragment", version.ref = "navigation" }
 androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation" }
@@ -94,3 +96,4 @@ firebase-perf = { id = "com.google.firebase.firebase-perf" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinGradlePlugin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+kotlin-serializable = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinGradlePlugin" }

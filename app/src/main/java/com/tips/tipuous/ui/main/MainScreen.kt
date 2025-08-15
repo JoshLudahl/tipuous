@@ -66,8 +66,9 @@ import kotlin.math.roundToInt
 @Composable
 fun MainScreen(
     mainViewModel: MainViewModel = viewModel(),
-    onAddReceipt: (() -> Unit)? = null,
-    onViewReceipts: (() -> Unit)? = null
+    onAddReceipt: () -> Unit,
+    onViewReceipts: () -> Unit,
+    onNavigateToSettings: () -> Unit
 ) {
     // Observe StateFlows from ViewModel
     val billAmount by mainViewModel.bill.collectAsStateWithLifecycle()
@@ -87,7 +88,7 @@ fun MainScreen(
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = { onAddReceipt?.invoke() }) {
+            FloatingActionButton(onClick = onAddReceipt) {
                 Icon(imageVector = Icons.Rounded.Add, contentDescription = "Add receipt")
             }
         },
@@ -103,14 +104,14 @@ fun MainScreen(
                         bottom = 16.dp,
                     ),
             ) {
-                IconButton(onClick = { onViewReceipts?.invoke() }) {
+                IconButton(onClick = onViewReceipts) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Rounded.List,
                         contentDescription = "Saved items"
                     )
                 }
 
-                IconButton(onClick = { }) {
+                IconButton(onClick = onNavigateToSettings) {
                     Icon(
                         imageVector = Icons.Rounded.Settings,
                         contentDescription = "Settings"
