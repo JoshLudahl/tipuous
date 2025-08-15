@@ -1,11 +1,11 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("kotlin-kapt")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
     id("com.google.firebase.firebase-perf")
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -71,7 +71,7 @@ kotlin {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    //noinspection GradleDependency
+
     implementation(libs.constraintlayout)
     implementation(libs.lifecycle.extensions)
     implementation(libs.lifecycle.livedata.ktx)
@@ -99,6 +99,11 @@ dependencies {
 
     // Styling
     implementation(libs.material)
+
+    // Room
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
 
     // Databinding & other
     implementation(libs.androidx.legacy.support.v4)
@@ -133,6 +138,9 @@ dependencies {
     implementation(libs.app.update)
     // For Kotlin users also add the Kotlin extensions library for Play In-App Update:
     implementation(libs.app.update.ktx)
+
+    // ML Kit OCR (on-device)
+    implementation("com.google.mlkit:text-recognition:16.0.0")
 
     // Testing Navigation
     androidTestImplementation(libs.androidx.navigation.testing)

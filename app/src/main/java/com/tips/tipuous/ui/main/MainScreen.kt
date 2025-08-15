@@ -57,7 +57,11 @@ import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
+fun MainScreen(
+    mainViewModel: MainViewModel = viewModel(),
+    onAddReceipt: (() -> Unit)? = null,
+    onViewReceipts: (() -> Unit)? = null
+) {
     // Observe StateFlows from ViewModel
     val billAmount by mainViewModel.bill.collectAsStateWithLifecycle()
     val selectedTipType by mainViewModel.tip.collectAsStateWithLifecycle()
@@ -83,6 +87,16 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // Entry points for receipt features
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(onClick = { onAddReceipt?.invoke() }, modifier = Modifier.weight(1f), colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary)) {
+                    Text("Add Tip from Receipt")
+                }
+                Button(onClick = { onViewReceipts?.invoke() }, modifier = Modifier.weight(1f)) {
+                    Text("Saved Receipts")
+                }
+            }
+
             SectionTitle("Bill Amount")
             OutlinedTextField(
                 value = billText,
