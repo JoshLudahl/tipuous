@@ -17,10 +17,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,19 +32,22 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.scale
 import androidx.navigation.NavController
 import com.tips.tipuous.data.ReceiptRepository
 import com.tips.tipuous.model.Receipt
@@ -52,14 +59,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberDatePickerState
-import androidx.core.graphics.scale
 
 @androidx.compose.material3.ExperimentalMaterial3Api
 @Composable
@@ -73,7 +72,7 @@ fun AddReceiptScreen(navController: NavController) {
     var dateMillis by remember { mutableStateOf<Long?>(System.currentTimeMillis()) }
     var location by remember { mutableStateOf("") }
     var previewBitmap by remember { mutableStateOf<Bitmap?>(null) }
-        var showDatePicker by remember { mutableStateOf(false) }
+    var showDatePicker by remember { mutableStateOf(false) }
 
     val isFormValid by remember(bill, tip, total) {
         derivedStateOf {
@@ -210,7 +209,9 @@ fun AddReceiptScreen(navController: NavController) {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
             }
             file.absolutePath
-        } catch (e: Exception) { null }
+        } catch (e: Exception) {
+            null
+        }
     }
 
     fun parseDoubleOrZero(s: String): Double = s.toDoubleOrNull() ?: 0.0
@@ -228,22 +229,27 @@ fun AddReceiptScreen(navController: NavController) {
         }
     ) { padding ->
         Column(
-            Modifier.padding(padding).padding(16.dp),
+            Modifier
+                .padding(padding)
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(onClick = {
-                    val hasPermission = ContextCompat.checkSelfPermission(
-                        context, Manifest.permission.CAMERA
-                    ) == PackageManager.PERMISSION_GRANTED
-                    if (hasPermission) {
-                        takePictureLauncher.launch(null)
-                    } else {
-                        pendingCameraAction = true
-                        requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
-                    }
-                }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary)) {
+                Button(
+                    onClick = {
+                        val hasPermission = ContextCompat.checkSelfPermission(
+                            context, Manifest.permission.CAMERA
+                        ) == PackageManager.PERMISSION_GRANTED
+                        if (hasPermission) {
+                            takePictureLauncher.launch(null)
+                        } else {
+                            pendingCameraAction = true
+                            requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary)
+                ) {
                     Text("Capture Receipt")
                 }
                 Button(onClick = {
@@ -263,7 +269,13 @@ fun AddReceiptScreen(navController: NavController) {
             }
 
             if (previewBitmap != null) {
-                Image(bitmap = previewBitmap!!.asImageBitmap(), contentDescription = null, modifier = Modifier.fillMaxWidth().height(200.dp))
+                Image(
+                    bitmap = previewBitmap!!.asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                )
             }
 
             Card(
@@ -310,13 +322,19 @@ fun AddReceiptScreen(navController: NavController) {
                         fmt.timeZone = TimeZone.getTimeZone("UTC")
                         fmt.format(Date(dateMillis ?: System.currentTimeMillis()))
                     }
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Text("Date: $dateText", style = MaterialTheme.typography.bodyMedium)
                         TextButton(onClick = { showDatePicker = true }) { Text("Select Date") }
                     }
 
                     if (showDatePicker) {
-                        val dpState = rememberDatePickerState(initialSelectedDateMillis = dateMillis ?: System.currentTimeMillis())
+                        val dpState = rememberDatePickerState(
+                            initialSelectedDateMillis = dateMillis ?: System.currentTimeMillis()
+                        )
                         DatePickerDialog(
                             onDismissRequest = { showDatePicker = false },
                             confirmButton = {

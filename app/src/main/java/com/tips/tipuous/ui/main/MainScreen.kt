@@ -106,13 +106,15 @@ fun MainScreen(
                 IconButton(onClick = { onViewReceipts?.invoke() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Rounded.List,
-                        contentDescription = "Saved items")
+                        contentDescription = "Saved items"
+                    )
                 }
 
-                IconButton(onClick = {  }) {
+                IconButton(onClick = { }) {
                     Icon(
                         imageVector = Icons.Rounded.Settings,
-                        contentDescription = "Settings")
+                        contentDescription = "Settings"
+                    )
                 }
             }
         }
