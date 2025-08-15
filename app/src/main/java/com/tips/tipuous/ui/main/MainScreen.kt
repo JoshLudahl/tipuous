@@ -166,26 +166,43 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
 
                     if (selectedTipType == Percent.CUSTOM) {
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text("Custom Tip: ${customTipPercentValue}%", fontSize = 16.sp)
-                        Slider(
-                            value = customTipPercentValue.toFloat(),
-                            onValueChange = { newValue ->
-                                mainViewModel.updateCustomValue(newValue.toInt())
-                            },
-                            colors = SliderDefaults.colors(
-                                thumbColor = MaterialTheme.colorScheme.tertiary,
-                                activeTrackColor = MaterialTheme.colorScheme.tertiary,
-                                inactiveTrackColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.24f),
-                                inactiveTickColor = Color.Transparent,
-                                activeTickColor = MaterialTheme.colorScheme.surfaceBright
-                            ),
-                            onValueChangeFinished = {
-                                mainViewModel.calculateTip()
-                            },
-                            valueRange = 1f..50f,
-                            steps = (50 - 1) - 1,
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 8.dp), // Added bottom padding to the Row
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Slider(
+                                value = customTipPercentValue.toFloat(),
+                                onValueChange = { newValue ->
+                                    mainViewModel.updateCustomValue(newValue.toInt())
+                                },
+                                colors = SliderDefaults.colors(
+                                    thumbColor = MaterialTheme.colorScheme.tertiary,
+                                    activeTrackColor = MaterialTheme.colorScheme.tertiary,
+                                    inactiveTrackColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.24f),
+                                    inactiveTickColor = Color.Transparent,
+                                    activeTickColor = MaterialTheme.colorScheme.surfaceBright
+                                ),
+                                onValueChangeFinished = {
+                                    mainViewModel.calculateTip()
+                                },
+                                valueRange = 1f..50f,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Box(
+                                modifier = Modifier
+                                    .size(48.dp)
+                                    .background(MaterialTheme.colorScheme.tertiary, CircleShape),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "$customTipPercentValue%",
+                                    color = MaterialTheme.colorScheme.surface, // Text color as requested
+                                    fontSize = 16.sp,
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -224,7 +241,6 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
                                 activeTickColor = MaterialTheme.colorScheme.surfaceBright
                             ),
                             valueRange = 1f..75f, // Updated range
-                            steps = (75 - 1) - 1, // Updated steps (73 steps for 75 values)
                             modifier = Modifier.weight(1f)
                         )
                         Spacer(modifier = Modifier.width(16.dp))
