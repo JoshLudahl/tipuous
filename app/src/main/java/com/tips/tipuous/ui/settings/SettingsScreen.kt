@@ -320,14 +320,15 @@ fun AttributionAnnotatedText() {
 }
 
 fun shareAppIntent(context: Context) {
+    val applicationName = "Tipuous"
     val packageName = context.packageName
-    val shareText = "Check out Lazuli: https://play.google.com/store/apps/details?id=$packageName"
+    val shareText = "Check out $applicationName on Google Play: https://play.google.com/store/apps/details?id=$packageName"
     val sendIntent =
         Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
-            putExtra(Intent.EXTRA_SUBJECT, "Lazuli")
+            putExtra(Intent.EXTRA_SUBJECT, applicationName)
             putExtra(Intent.EXTRA_TEXT, shareText)
         }
-    val chooser = Intent.createChooser(sendIntent, "Share Lazuli")
+    val chooser = Intent.createChooser(sendIntent, "Share $applicationName")
     context.startActivity(chooser, null)
 }
