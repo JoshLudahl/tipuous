@@ -23,7 +23,7 @@ class MainViewModel : ViewModel() {
     val total: StateFlow<String>
         get() = _total
 
-    private val _customTip = MutableStateFlow(25)
+    private val _customTip = MutableStateFlow(20)
     val customTip: StateFlow<Int>
         get() = _customTip
 

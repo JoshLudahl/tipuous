@@ -216,8 +216,8 @@ fun MainScreen(mainViewModel: MainViewModel = viewModel()) {
                             inactiveTickColor = Color.Transparent,
                             activeTickColor = MaterialTheme.colorScheme.surfaceBright
                         ),
-                        valueRange = 1f..75f,
-                        steps = (30 - 1) - 1,
+                        valueRange = 1f..20f,
+                        steps = (20 - 1) - 1,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 16.dp)
