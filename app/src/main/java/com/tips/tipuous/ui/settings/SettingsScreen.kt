@@ -36,7 +36,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -49,7 +48,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import com.tips.tipuous.BuildConfig
-import com.tips.tipuous.R
 import com.tips.tipuous.ui.composeables.ReusableTopAppBar
 import com.tips.tipuous.ui.composeables.TopAppBarIcon
 import com.tips.tipuous.ui.theme.ThemeManager
