@@ -81,8 +81,9 @@ fun AddReceiptScreen(navController: NavController) {
             val totalD = total.toDoubleOrNull()
             if (bill.isBlank() || tip.isBlank() || total.isBlank()) return@derivedStateOf false
             if (billD == null || tipD == null || totalD == null) return@derivedStateOf false
+            // Bill and Total must be positive, Tip can be zero or positive.
             if (billD <= 0.0 || tipD < 0.0 || totalD <= 0.0) return@derivedStateOf false
-            kotlin.math.abs((billD + tipD) - totalD) < 0.01
+            true // Form is valid if all required fields are filled and valid
         }
     }
 
@@ -355,12 +356,15 @@ fun AddReceiptScreen(navController: NavController) {
 
             Button(
                 onClick = {
-                    if (!isFormValid) return@Button
+                    if (!isFormValid) return@Button 
+                    
                     val bmp = previewBitmap
                     val path = if (bmp != null) saveBitmapToInternal(bmp) else null
-                    val billD = bill.toDoubleOrNull() ?: return@Button
-                    val tipD = tip.toDoubleOrNull() ?: return@Button
-                    val totalD = total.toDoubleOrNull() ?: return@Button
+                    // Values should be valid due to isFormValid check, but defensive non-null assertions are good.
+                    val billD = bill.toDoubleOrNull() ?: 0.0 
+                    val tipD = tip.toDoubleOrNull() ?: 0.0
+                    val totalD = total.toDoubleOrNull() ?: 0.0
+                    
                     val receipt = Receipt(
                         dateEpochMillis = dateMillis ?: System.currentTimeMillis(),
                         billTotal = billD,
