@@ -4,9 +4,13 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ReceiptDao {
+    @Query("SELECT * FROM receipts ORDER BY date_epoch_millis DESC")
+    fun getAllFlow(): Flow<List<ReceiptEntity>>
+
     @Query("SELECT * FROM receipts ORDER BY date_epoch_millis DESC")
     fun getAll(): List<ReceiptEntity>
 
