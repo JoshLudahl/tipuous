@@ -39,6 +39,7 @@ import java.util.Date
 import java.util.Locale
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Image
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 
@@ -118,8 +119,15 @@ fun ReceiptsListScreen(navController: NavController, viewModel: ReceiptsListView
                             }
                             if (bmp != null) {
                                 Image(bitmap = bmp.asImageBitmap(), contentDescription = null, modifier = Modifier.height(64.dp))
-                                Spacer(Modifier.padding(horizontal = 8.dp))
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Filled.Image,
+                                    contentDescription = null,
+                                    modifier = Modifier.height(64.dp),
+                                    tint = MaterialTheme.colorScheme.outline
+                                )
                             }
+                            Spacer(Modifier.padding(horizontal = 8.dp))
                             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                                 val fmt = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
                                 Text(r.locationName ?: "Receipt", style = MaterialTheme.typography.titleMedium)
