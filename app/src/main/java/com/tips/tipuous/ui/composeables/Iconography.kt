@@ -11,9 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 
 @Composable
-fun TopAppBarIcon(
-    onClickIcon: () -> Unit,
-) {
+fun TopAppBarIcon(onClickIcon: () -> Unit) {
     FilledIconButton(
         onClick = onClickIcon,
         colors =

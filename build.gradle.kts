@@ -15,6 +15,8 @@ plugins {
     alias(libs.plugins.ksp) apply false
 }
 
+apply(from = "ktlint.gradle")
+
 tasks.register("clean", Delete::class) {
     delete(rootProject.layout.buildDirectory.get())
 }

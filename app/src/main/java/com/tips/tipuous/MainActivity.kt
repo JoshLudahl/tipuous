@@ -23,25 +23,25 @@ import com.tips.tipuous.ui.theme.TipuousTheme
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var appUpdateManager: AppUpdateManager
     private lateinit var aut: Task<AppUpdateInfo>
     private val updateType = AppUpdateType.FLEXIBLE
     private lateinit var themeManager: ThemeManager
 
-    private val listener = InstallStateUpdatedListener { state ->
-        if (state.installStatus() == InstallStatus.DOWNLOADED) {
-            Log.i("MainActivity", "Update has been downloaded.")
-            Toast.makeText(
-                this,
-                "Update Completed. Restarting application.",
-                Toast.LENGTH_SHORT
-            ).show()
-            lifecycleScope.launch {
-                appUpdateManager.completeUpdate()
+    private val listener =
+        InstallStateUpdatedListener { state ->
+            if (state.installStatus() == InstallStatus.DOWNLOADED) {
+                Log.i("MainActivity", "Update has been downloaded.")
+                Toast.makeText(
+                    this,
+                    "Update Completed. Restarting application.",
+                    Toast.LENGTH_SHORT,
+                ).show()
+                lifecycleScope.launch {
+                    appUpdateManager.completeUpdate()
+                }
             }
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
     private fun checkIsUpdateAvailable() {
         val activityResultLauncher =
             registerForActivityResult(
-                ActivityResultContracts.StartIntentSenderForResult()
+                ActivityResultContracts.StartIntentSenderForResult(),
             ) { result ->
                 if (result.resultCode != RESULT_OK) {
                     Log.i("MainActivity", "The Update has failed.")
@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity() {
                 appUpdateManager.startUpdateFlowForResult(
                     appUpdateInfo,
                     activityResultLauncher,
-                    AppUpdateOptions.newBuilder(updateType).build()
+                    AppUpdateOptions.newBuilder(updateType).build(),
                 )
             } else {
                 Log.i("MainActivity", "No Update Available.")

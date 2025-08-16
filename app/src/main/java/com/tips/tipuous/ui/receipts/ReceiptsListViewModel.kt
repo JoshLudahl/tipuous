@@ -12,13 +12,14 @@ import kotlinx.coroutines.flow.stateIn
 class ReceiptsListViewModel(application: Application) : AndroidViewModel(application) {
     private val repo = ReceiptRepository(application)
 
-    val receipts: StateFlow<List<Receipt>> = repo
-        .getAllFlow()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = emptyList()
-        )
+    val receipts: StateFlow<List<Receipt>> =
+        repo
+            .getAllFlow()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = emptyList(),
+            )
 
     fun delete(receipt: Receipt) {
         repo.remove(receipt.id)

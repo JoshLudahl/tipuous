@@ -54,9 +54,7 @@ import com.tips.tipuous.ui.theme.ThemeManager
 import com.tips.tipuous.ui.theme.ThemeMode
 
 @Composable
-fun SettingsScreen(
-    onBack: () -> Unit,
-) {
+fun SettingsScreen(onBack: () -> Unit) {
     val context = LocalContext.current
 
     Scaffold(

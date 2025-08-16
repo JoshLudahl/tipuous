@@ -12,7 +12,7 @@ object Conversion {
         Log.i("value", "$value")
         val string = value.toString().split('.')
 
-        if(string[1].length == 1) {
+        if (string[1].length == 1) {
             return "${string[0]}.${string[1]}0"
         }
         return "${string[0]}.${string[1]}"

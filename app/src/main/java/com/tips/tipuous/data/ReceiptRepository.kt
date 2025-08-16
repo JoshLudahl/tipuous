@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.map
  * Persistence using Room database. Kept synchronous via allowMainThreadQueries for minimal changes.
  */
 class ReceiptRepository(context: Context) {
-
     private val dao = AppDatabase.getInstance(context).receiptDao()
 
     fun getAll(): List<Receipt> {
@@ -29,22 +28,24 @@ class ReceiptRepository(context: Context) {
     }
 }
 
-private fun ReceiptEntity.toModel(): Receipt = Receipt(
-    id = id,
-    dateEpochMillis = dateEpochMillis,
-    billTotal = billTotal,
-    tipAmount = tipAmount,
-    grandTotal = grandTotal,
-    locationName = locationName,
-    imagePath = imagePath
-)
+private fun ReceiptEntity.toModel(): Receipt =
+    Receipt(
+        id = id,
+        dateEpochMillis = dateEpochMillis,
+        billTotal = billTotal,
+        tipAmount = tipAmount,
+        grandTotal = grandTotal,
+        locationName = locationName,
+        imagePath = imagePath,
+    )
 
-private fun Receipt.toEntity(): ReceiptEntity = ReceiptEntity(
-    id = id,
-    dateEpochMillis = dateEpochMillis,
-    billTotal = billTotal,
-    tipAmount = tipAmount,
-    grandTotal = grandTotal,
-    locationName = locationName,
-    imagePath = imagePath
-)
+private fun Receipt.toEntity(): ReceiptEntity =
+    ReceiptEntity(
+        id = id,
+        dateEpochMillis = dateEpochMillis,
+        billTotal = billTotal,
+        tipAmount = tipAmount,
+        grandTotal = grandTotal,
+        locationName = locationName,
+        imagePath = imagePath,
+    )

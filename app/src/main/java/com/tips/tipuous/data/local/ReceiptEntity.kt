@@ -12,5 +12,5 @@ data class ReceiptEntity(
     @ColumnInfo(name = "tip_amount") val tipAmount: Double,
     @ColumnInfo(name = "grand_total") val grandTotal: Double,
     @ColumnInfo(name = "location_name") val locationName: String?,
-    @ColumnInfo(name = "image_path") val imagePath: String?
+    @ColumnInfo(name = "image_path") val imagePath: String?,
 )

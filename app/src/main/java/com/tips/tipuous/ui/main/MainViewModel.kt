@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
-
     private val _bill = MutableStateFlow(0.00)
     val bill: StateFlow<Double>
         get() = _bill
@@ -56,13 +55,15 @@ class MainViewModel : ViewModel() {
     }
 
     fun calculateTip() {
-        val tip = _bill.value * when (_tip.value) {
-            Percent.FIVE -> 0.05 // Added this case
-            Percent.TEN -> .10
-            Percent.FIFTEEN -> .15
-            Percent.TWENTY -> .20
-            Percent.CUSTOM -> _customTip.value / 100.00
-        }
+        val tip =
+            _bill.value *
+                when (_tip.value) {
+                    Percent.FIVE -> 0.05 // Added this case
+                    Percent.TEN -> .10
+                    Percent.FIFTEEN -> .15
+                    Percent.TWENTY -> .20
+                    Percent.CUSTOM -> _customTip.value / 100.00
+                }
 
         val value = Conversion.roundDoubleToTwoDecimalPlaces(_bill.value + tip)
 
@@ -78,8 +79,6 @@ class MainViewModel : ViewModel() {
                 val tipAmount = Conversion.roundDoubleToTwoDecimalPlaces(tip)
                 val tipWithTrailingZero = Conversion.formatNumberToIncludeTrailingZero(tipAmount)
                 _tipValue.value = tipWithTrailingZero
-
-
             } catch (e: Exception) {
                 Log.e("Error: ", "Error when converting string to double. \n$e")
             }
@@ -121,7 +120,6 @@ class MainViewModel : ViewModel() {
     }
 
     fun formatBillWithTip(): String {
-
         var split = ""
 
         if (_split.value > 1.0f) {

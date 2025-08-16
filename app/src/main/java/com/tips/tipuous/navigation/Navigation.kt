@@ -16,10 +16,13 @@ import kotlinx.serialization.Serializable
 sealed interface Navigation {
     @Serializable
     object Main : Navigation
+
     @Serializable
     object AddReceipt : Navigation
+
     @Serializable
     object Receipts : Navigation
+
     @Serializable
     object Settings : Navigation
 }
@@ -34,14 +37,16 @@ fun AppNavigation() {
                 mainViewModel = viewModel(),
                 onAddReceipt = { navController.navigate(Navigation.AddReceipt) },
                 onViewReceipts = { navController.navigate(Navigation.Receipts) },
-                onNavigateToSettings = { navController.navigate(Navigation.Settings) }
+                onNavigateToSettings = { navController.navigate(Navigation.Settings) },
             )
         }
 
         composable<Navigation.AddReceipt> { AddReceiptScreen(navController) }
         composable<Navigation.Receipts> { ReceiptsListScreen(navController) }
-        composable<Navigation.Settings> { SettingsScreen(
-            onBack = { navController.popBackStack() },
-        ) }
+        composable<Navigation.Settings> {
+            SettingsScreen(
+                onBack = { navController.popBackStack() },
+            )
+        }
     }
 }

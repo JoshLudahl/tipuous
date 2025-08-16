@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
 @Database(
     entities = [ReceiptEntity::class],
     version = 1,
-    exportSchema = false
+    exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun receiptDao(): ReceiptDao
@@ -21,7 +21,7 @@ abstract class AppDatabase : RoomDatabase() {
                 INSTANCE ?: Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "tipuous.db"
+                    "tipuous.db",
                 ).fallbackToDestructiveMigration()
                     .allowMainThreadQueries() // keep API non-suspend for minimal changes
                     .build().also { INSTANCE = it }

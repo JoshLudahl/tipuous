@@ -68,7 +68,7 @@ fun MainScreen(
     mainViewModel: MainViewModel = viewModel(),
     onAddReceipt: () -> Unit,
     onViewReceipts: () -> Unit,
-    onNavigateToSettings: () -> Unit
+    onNavigateToSettings: () -> Unit,
 ) {
     // Observe StateFlows from ViewModel
     val billAmount by mainViewModel.bill.collectAsStateWithLifecycle()
@@ -107,26 +107,27 @@ fun MainScreen(
                 IconButton(onClick = onViewReceipts) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Rounded.List,
-                        contentDescription = "Saved items"
+                        contentDescription = "Saved items",
                     )
                 }
 
                 IconButton(onClick = onNavigateToSettings) {
                     Icon(
                         imageVector = Icons.Rounded.Settings,
-                        contentDescription = "Settings"
+                        contentDescription = "Settings",
                     )
                 }
             }
-        }
+        },
     ) { paddingValues ->
         Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
+            modifier =
+                Modifier
+                    .padding(paddingValues)
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             // Bottom bar added; removed top buttons
 
@@ -151,25 +152,29 @@ fun MainScreen(
                 label = { Text("Enter Bill Amount") },
                 leadingIcon = {
                     Icon(
-                        Icons.Filled.AttachMoney, contentDescription = "Bill Amount"
+                        Icons.Filled.AttachMoney,
+                        contentDescription = "Bill Amount",
                     )
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.tertiary
-                )
+                colors =
+                    OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.tertiary,
+                    ),
             )
 
             SectionTitle("Tip Percentage")
 
             // Tip Section
             Card(
-                modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    contentColor = MaterialTheme.colorScheme.onSurface
-                )
+                modifier = Modifier.fillMaxWidth(),
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
+                    ),
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp),
@@ -178,52 +183,71 @@ fun MainScreen(
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
+                        horizontalArrangement = Arrangement.SpaceEvenly,
                     ) {
-                        val tipOptions = listOf(
-                            "5%" to Percent.FIVE, "10%" to Percent.TEN, "15%" to Percent.FIFTEEN
-                        )
+                        val tipOptions =
+                            listOf(
+                                "5%" to Percent.FIVE,
+                                "10%" to Percent.TEN,
+                                "15%" to Percent.FIFTEEN,
+                            )
 
                         tipOptions.forEach { (label, percentEnum) ->
                             AssistChip(
                                 onClick = { mainViewModel.updateTipPercentage(percentEnum) },
                                 label = { Text(label) },
-                                colors = AssistChipDefaults.assistChipColors(
-                                    labelColor = if (selectedTipType == percentEnum && selectedTipType != Percent.CUSTOM) MaterialTheme.colorScheme.onTertiary else MaterialTheme.colorScheme.onSurface,
-                                    containerColor = if (selectedTipType == percentEnum && selectedTipType != Percent.CUSTOM) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.surface.copy(
-                                        alpha = 0.24f
+                                colors =
+                                    AssistChipDefaults.assistChipColors(
+                                        labelColor = if (selectedTipType == percentEnum && selectedTipType != Percent.CUSTOM) MaterialTheme.colorScheme.onTertiary else MaterialTheme.colorScheme.onSurface,
+                                        containerColor =
+                                            if (selectedTipType == percentEnum && selectedTipType != Percent.CUSTOM) {
+                                                MaterialTheme.colorScheme.tertiary
+                                            } else {
+                                                MaterialTheme.colorScheme.surface.copy(
+                                                    alpha = 0.24f,
+                                                )
+                                            },
                                     ),
-                                ),
-                                border = AssistChipDefaults.assistChipBorder(
-                                    enabled = false
-                                )
+                                border =
+                                    AssistChipDefaults.assistChipBorder(
+                                        enabled = false,
+                                    ),
                             )
                         }
 
                         AssistChip(
                             onClick = { mainViewModel.handleCustomPercentageClick() },
                             label = { Text("Other") },
-                            colors = AssistChipDefaults.assistChipColors(
-                                labelColor = if (selectedTipType == Percent.CUSTOM) MaterialTheme.colorScheme.onTertiary else MaterialTheme.colorScheme.onSurface,
-                                containerColor = if (selectedTipType == Percent.CUSTOM) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.surface.copy(
-                                    alpha = 0.24f
+                            colors =
+                                AssistChipDefaults.assistChipColors(
+                                    labelColor = if (selectedTipType == Percent.CUSTOM) MaterialTheme.colorScheme.onTertiary else MaterialTheme.colorScheme.onSurface,
+                                    containerColor =
+                                        if (selectedTipType == Percent.CUSTOM) {
+                                            MaterialTheme.colorScheme.tertiary
+                                        } else {
+                                            MaterialTheme.colorScheme.surface.copy(
+                                                alpha = 0.24f,
+                                            )
+                                        },
                                 ),
-                            ),
-                            border = AssistChipDefaults.assistChipBorder(
-                                enabled = false
-                            )
+                            border =
+                                AssistChipDefaults.assistChipBorder(
+                                    enabled = false,
+                                ),
                         )
                     }
 
                     if (selectedTipType == Percent.CUSTOM) {
                         Spacer(modifier = Modifier.height(8.dp))
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(
-                                    top = 8.dp,
-                                    bottom = 8.dp
-                                ), // Added bottom padding to the Row
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(
+                                        top = 8.dp,
+                                        bottom = 8.dp,
+                                    ),
+                            // Added bottom padding to the Row
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Slider(
@@ -231,33 +255,36 @@ fun MainScreen(
                                 onValueChange = { newValue ->
                                     mainViewModel.updateCustomValue(newValue.toInt())
                                 },
-                                colors = SliderDefaults.colors(
-                                    thumbColor = MaterialTheme.colorScheme.tertiary,
-                                    activeTrackColor = MaterialTheme.colorScheme.tertiary,
-                                    inactiveTrackColor = MaterialTheme.colorScheme.tertiary.copy(
-                                        alpha = 0.24f
+                                colors =
+                                    SliderDefaults.colors(
+                                        thumbColor = MaterialTheme.colorScheme.tertiary,
+                                        activeTrackColor = MaterialTheme.colorScheme.tertiary,
+                                        inactiveTrackColor =
+                                            MaterialTheme.colorScheme.tertiary.copy(
+                                                alpha = 0.24f,
+                                            ),
+                                        inactiveTickColor = Color.Transparent,
+                                        activeTickColor = MaterialTheme.colorScheme.surfaceBright,
                                     ),
-                                    inactiveTickColor = Color.Transparent,
-                                    activeTickColor = MaterialTheme.colorScheme.surfaceBright
-                                ),
                                 onValueChangeFinished = {
                                     mainViewModel.calculateTip()
                                 },
                                 valueRange = 1f..50f,
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                             Box(
-                                modifier = Modifier
-                                    .size(48.dp)
-                                    .background(MaterialTheme.colorScheme.tertiary, CircleShape),
-                                contentAlignment = Alignment.Center
+                                modifier =
+                                    Modifier
+                                        .size(48.dp)
+                                        .background(MaterialTheme.colorScheme.tertiary, CircleShape),
+                                contentAlignment = Alignment.Center,
                             ) {
                                 Text(
                                     text = "$customTipPercentValue%",
                                     color = MaterialTheme.colorScheme.surface, // Text color as requested
                                     fontSize = 16.sp,
-                                    style = MaterialTheme.typography.bodyLarge
+                                    style = MaterialTheme.typography.bodyLarge,
                                 )
                             }
                         }
@@ -269,20 +296,24 @@ fun MainScreen(
 
             // Split Section
             Card(
-                modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    contentColor = MaterialTheme.colorScheme.onSurface
-                )
+                modifier = Modifier.fillMaxWidth(),
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
+                    ),
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp, bottom = 8.dp), // Added bottom padding to the Row
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp, bottom = 8.dp),
+                        // Added bottom padding to the Row
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Slider(
@@ -293,28 +324,30 @@ fun MainScreen(
                             onValueChangeFinished = {
                                 mainViewModel.calculateTip()
                             },
-                            colors = SliderDefaults.colors(
-                                thumbColor = MaterialTheme.colorScheme.tertiary,
-                                activeTrackColor = MaterialTheme.colorScheme.tertiary,
-                                inactiveTrackColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.24f),
-                                inactiveTickColor = Color.Transparent,
-                                activeTickColor = MaterialTheme.colorScheme.surfaceBright
-                            ),
+                            colors =
+                                SliderDefaults.colors(
+                                    thumbColor = MaterialTheme.colorScheme.tertiary,
+                                    activeTrackColor = MaterialTheme.colorScheme.tertiary,
+                                    inactiveTrackColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.24f),
+                                    inactiveTickColor = Color.Transparent,
+                                    activeTickColor = MaterialTheme.colorScheme.surfaceBright,
+                                ),
                             valueRange = 1f..75f, // Updated range
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         Box(
-                            modifier = Modifier
-                                .size(48.dp)
-                                .background(MaterialTheme.colorScheme.tertiary, CircleShape),
-                            contentAlignment = Alignment.Center
+                            modifier =
+                                Modifier
+                                    .size(48.dp)
+                                    .background(MaterialTheme.colorScheme.tertiary, CircleShape),
+                            contentAlignment = Alignment.Center,
                         ) {
                             Text(
                                 text = splitCount.roundToInt().toString(),
                                 color = MaterialTheme.colorScheme.surface, // Text color as requested
                                 fontSize = 16.sp,
-                                style = MaterialTheme.typography.bodyLarge
+                                style = MaterialTheme.typography.bodyLarge,
                             )
                         }
                     }
@@ -325,67 +358,74 @@ fun MainScreen(
 
             // Total Section
             Card(
-                modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    contentColor = MaterialTheme.colorScheme.onSurface
-                )
+                modifier = Modifier.fillMaxWidth(),
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
+                    ),
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = "Tip Amount $${tipAmountValue}",
+                        text = "Tip Amount $$tipAmountValue",
                         style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.tertiary
+                        color = MaterialTheme.colorScheme.tertiary,
                     )
 
                     Text(
-                        text = "Total Amount $${totalAmountValue}",
+                        text = "Total Amount $$totalAmountValue",
                         style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.tertiary
+                        color = MaterialTheme.colorScheme.tertiary,
                     )
                     if (splitCount > 1f) {
                         HorizontalDivider(
-                            Modifier, DividerDefaults.Thickness, DividerDefaults.color
+                            Modifier,
+                            DividerDefaults.Thickness,
+                            DividerDefaults.color,
                         )
                         Text(
-                            text = "Amount Per Person: $${splitValue}",
+                            text = "Amount Per Person: $$splitValue",
                             style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier.padding(top = 8.dp),
-                            color = MaterialTheme.colorScheme.tertiary
+                            color = MaterialTheme.colorScheme.tertiary,
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = {
-                            val shareMessage = if (splitCount > 1f) {
-                                "Total bill (including tip): $${totalAmountValue}. Your share is $${splitValue}."
-                            } else {
-                                "Total bill (including tip): $${totalAmountValue}"
-                            }
-                            val sendIntent: Intent = Intent().apply {
-                                action = Intent.ACTION_SEND
-                                putExtra(Intent.EXTRA_TEXT, shareMessage)
-                                type = "text/plain"
-                            }
+                            val shareMessage =
+                                if (splitCount > 1f) {
+                                    "Total bill (including tip): $$totalAmountValue. Your share is $$splitValue."
+                                } else {
+                                    "Total bill (including tip): $$totalAmountValue"
+                                }
+                            val sendIntent: Intent =
+                                Intent().apply {
+                                    action = Intent.ACTION_SEND
+                                    putExtra(Intent.EXTRA_TEXT, shareMessage)
+                                    type = "text/plain"
+                                }
                             val shareIntent = Intent.createChooser(sendIntent, null)
                             context.startActivity(shareIntent)
                         },
                         enabled = totalAmountValue != "-",
                         modifier = Modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.tertiary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary
-                        )
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.tertiary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary,
+                            ),
                     ) {
                         Icon(
                             Icons.Filled.Share,
                             contentDescription = "Share Bill",
-                            modifier = Modifier.size(ButtonDefaults.IconSize)
+                            modifier = Modifier.size(ButtonDefaults.IconSize),
                         )
                         Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                         Text("Share Bill")
@@ -402,6 +442,6 @@ fun SectionTitle(text: String) {
         text = text,
         style = MaterialTheme.typography.labelLarge,
         textAlign = TextAlign.Left,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     )
 }

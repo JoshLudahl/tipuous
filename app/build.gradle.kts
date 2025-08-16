@@ -57,10 +57,14 @@ android {
 
     testOptions {
         execution = "ANDROIDX_TEST_ORCHESTRATOR"
+        unitTests.all {
+            // Enable JUnit 5 platform for unit tests
+            it.useJUnitPlatform()
+        }
     }
-    
+
     namespace = "com.tips.tipuous"
-    
+
     packaging {
         jniLibs {
             excludes += listOf("META-INF/*")
@@ -155,6 +159,7 @@ dependencies {
     // Testing
     testImplementation(libs.junit.jupiter.api)
     testRuntimeOnly(libs.junit.jupiter.engine)
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.13.4")
 
     // Testing - Core Library
     androidTestImplementation(libs.androidx.core)

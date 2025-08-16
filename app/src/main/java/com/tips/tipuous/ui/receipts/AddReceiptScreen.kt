@@ -33,10 +33,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,38 +53,42 @@ fun AddReceiptScreen(navController: NavController) {
     val viewModel: AddReceiptViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
     val state by viewModel.state.collectAsState()
 
-    val takePictureLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.TakePicturePreview()
-    ) { bmp ->
-        if (bmp != null) {
-            viewModel.handleCaptureBitmap(bmp)
+    val takePictureLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.TakePicturePreview(),
+        ) { bmp ->
+            if (bmp != null) {
+                viewModel.handleCaptureBitmap(bmp)
+            }
         }
-    }
 
     // Request CAMERA permission and proceed to capture when granted
     var pendingCameraAction by remember { mutableStateOf(false) }
-    val requestCameraPermissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-            takePictureLauncher.launch(null)
-        } else {
-            // Permission denied; reset any pending action
-            pendingCameraAction = false
+    val requestCameraPermissionLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestPermission(),
+        ) { isGranted ->
+            if (isGranted) {
+                takePictureLauncher.launch(null)
+            } else {
+                // Permission denied; reset any pending action
+                pendingCameraAction = false
+            }
         }
-    }
 
-    val pickImageLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.PickVisualMedia()
-    ) { uri ->
-        viewModel.handlePickedImage(uri)
-    }
+    val pickImageLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.PickVisualMedia(),
+        ) { uri ->
+            viewModel.handlePickedImage(uri)
+        }
 
-    val getContentLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { uri ->
-        viewModel.handlePickedImage(uri)
-    }
+    val getContentLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.GetContent(),
+        ) { uri ->
+            viewModel.handlePickedImage(uri)
+        }
 
     Scaffold(
         topBar = {
@@ -94,26 +98,28 @@ fun AddReceiptScreen(navController: NavController) {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
-                }
+                },
             )
-        }
+        },
     ) { padding ->
         Column(
             Modifier
                 .padding(padding)
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Button(
                     onClick = {
-                        val hasPermission = ContextCompat.checkSelfPermission(
-                            context, Manifest.permission.CAMERA
-                        ) == PackageManager.PERMISSION_GRANTED
+                        val hasPermission =
+                            ContextCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.CAMERA,
+                            ) == PackageManager.PERMISSION_GRANTED
                         if (hasPermission) {
                             takePictureLauncher.launch(null)
                         } else {
@@ -127,18 +133,19 @@ fun AddReceiptScreen(navController: NavController) {
                     Icon(Icons.Rounded.CameraEnhance, contentDescription = "Capture Receipt", modifier = Modifier.padding(end = 8.dp))
                     Text("Capture Receipt")
                 }
-                Button(onClick = {
-                    if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(context)) {
-                        try {
-                            pickImageLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                        } catch (e: Exception) {
+                Button(
+                    onClick = {
+                        if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(context)) {
+                            try {
+                                pickImageLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                            } catch (e: Exception) {
+                                getContentLauncher.launch("image/*")
+                            }
+                        } else {
                             getContentLauncher.launch("image/*")
                         }
-                    } else {
-                        getContentLauncher.launch("image/*")
-                    }
-                },
-                    modifier = Modifier.weight(.5f)
+                    },
+                    modifier = Modifier.weight(.5f),
                 ) {
                     Icon(Icons.Rounded.PhotoLibrary, contentDescription = "Pick Image", modifier = Modifier.padding(end = 8.dp))
                     Text("Pick Image")
@@ -149,15 +156,16 @@ fun AddReceiptScreen(navController: NavController) {
                 Image(
                     bitmap = state.previewBitmap!!.asImageBitmap(),
                     contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(200.dp),
                 )
             }
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
             ) {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedTextField(
@@ -166,7 +174,7 @@ fun AddReceiptScreen(navController: NavController) {
                         label = { Text("Bill Total") },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.tertiary)
+                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.tertiary),
                     )
                     OutlinedTextField(
                         value = state.tip,
@@ -174,7 +182,7 @@ fun AddReceiptScreen(navController: NavController) {
                         label = { Text("Tip Amount") },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.tertiary)
+                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.tertiary),
                     )
                     OutlinedTextField(
                         value = state.total,
@@ -182,7 +190,7 @@ fun AddReceiptScreen(navController: NavController) {
                         label = { Text("Grand Total") },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.tertiary)
+                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.tertiary),
                     )
                     OutlinedTextField(
                         value = state.location,
@@ -190,27 +198,29 @@ fun AddReceiptScreen(navController: NavController) {
                         label = { Text("Location (optional)") },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.tertiary)
+                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.tertiary),
                     )
 
-                    val dateText = remember(state.dateMillis) {
-                        val fmt = java.text.SimpleDateFormat("MMM dd, yyyy", java.util.Locale.getDefault())
-                        fmt.timeZone = java.util.TimeZone.getTimeZone("UTC")
-                        fmt.format(java.util.Date(state.dateMillis ?: System.currentTimeMillis()))
-                    }
+                    val dateText =
+                        remember(state.dateMillis) {
+                            val fmt = java.text.SimpleDateFormat("MMM dd, yyyy", java.util.Locale.getDefault())
+                            fmt.timeZone = java.util.TimeZone.getTimeZone("UTC")
+                            fmt.format(java.util.Date(state.dateMillis ?: System.currentTimeMillis()))
+                        }
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text("Date: $dateText", style = MaterialTheme.typography.bodyMedium)
                         TextButton(onClick = { viewModel.setShowDatePicker(true) }) { Text("Select Date") }
                     }
 
                     if (state.showDatePicker) {
-                        val dpState = rememberDatePickerState(
-                            initialSelectedDateMillis = state.dateMillis ?: System.currentTimeMillis()
-                        )
+                        val dpState =
+                            rememberDatePickerState(
+                                initialSelectedDateMillis = state.dateMillis ?: System.currentTimeMillis(),
+                            )
                         DatePickerDialog(
                             onDismissRequest = { viewModel.setShowDatePicker(false) },
                             confirmButton = {
@@ -221,7 +231,7 @@ fun AddReceiptScreen(navController: NavController) {
                             },
                             dismissButton = {
                                 TextButton(onClick = { viewModel.setShowDatePicker(false) }) { Text("Cancel") }
-                            }
+                            },
                         ) {
                             DatePicker(state = dpState)
                         }
@@ -235,7 +245,7 @@ fun AddReceiptScreen(navController: NavController) {
                 },
                 enabled = state.isFormValid,
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary)
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
             ) {
                 Text("Save Receipt")
             }

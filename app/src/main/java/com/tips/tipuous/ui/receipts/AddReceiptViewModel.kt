@@ -40,27 +40,30 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
         val showDatePicker: Boolean = false,
         val isFormValid: Boolean = false,
         val saved: Boolean = false,
-        val errorMessage: String? = null
+        val errorMessage: String? = null,
     )
 
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> = _state.asStateFlow()
 
     // ------- Field updates -------
-    fun onBillChange(input: String) = _state.update {
-        val filtered = input.filter { ch -> ch.isDigit() || ch == '.' }
-        it.copy(bill = filtered).recomputeValidity()
-    }
+    fun onBillChange(input: String) =
+        _state.update {
+            val filtered = input.filter { ch -> ch.isDigit() || ch == '.' }
+            it.copy(bill = filtered).recomputeValidity()
+        }
 
-    fun onTipChange(input: String) = _state.update {
-        val filtered = input.filter { ch -> ch.isDigit() || ch == '.' }
-        it.copy(tip = filtered).recomputeValidity()
-    }
+    fun onTipChange(input: String) =
+        _state.update {
+            val filtered = input.filter { ch -> ch.isDigit() || ch == '.' }
+            it.copy(tip = filtered).recomputeValidity()
+        }
 
-    fun onTotalChange(input: String) = _state.update {
-        val filtered = input.filter { ch -> ch.isDigit() || ch == '.' }
-        it.copy(total = filtered).recomputeValidity()
-    }
+    fun onTotalChange(input: String) =
+        _state.update {
+            val filtered = input.filter { ch -> ch.isDigit() || ch == '.' }
+            it.copy(total = filtered).recomputeValidity()
+        }
 
     fun onLocationChange(input: String) = _state.update { it.copy(location = input) }
 
@@ -111,14 +114,15 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
 
         viewModelScope.launch(Dispatchers.IO) {
             val imagePath = snapshot.previewBitmap?.let { saveBitmapToInternal(it) }
-            val receipt = Receipt(
-                dateEpochMillis = millis,
-                billTotal = billD,
-                tipAmount = tipD,
-                grandTotal = totalD,
-                locationName = snapshot.location.ifBlank { null },
-                imagePath = imagePath
-            )
+            val receipt =
+                Receipt(
+                    dateEpochMillis = millis,
+                    billTotal = billD,
+                    tipAmount = tipD,
+                    grandTotal = totalD,
+                    locationName = snapshot.location.ifBlank { null },
+                    imagePath = imagePath,
+                )
             try {
                 repo.add(receipt)
                 _state.update { it.copy(saved = true) }
@@ -129,14 +133,18 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     // ------- Helpers -------
-    private fun decodeBitmapFromUri(uri: Uri, maxSize: Int = 2048): Bitmap? {
+    private fun decodeBitmapFromUri(
+        uri: Uri,
+        maxSize: Int = 2048,
+    ): Bitmap? {
         val context = getApplication<Application>()
         return try {
             if (Build.VERSION.SDK_INT >= 28) {
                 val source = ImageDecoder.createSource(context.contentResolver, uri)
-                val original = ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
-                    decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
-                }
+                val original =
+                    ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
+                        decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
+                    }
                 val w = original.width
                 val h = original.height
                 val maxDim = maxOf(w, h)
@@ -145,7 +153,9 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
                     val newW = (w / ratio).toInt().coerceAtLeast(1)
                     val newH = (h / ratio).toInt().coerceAtLeast(1)
                     Bitmap.createScaledBitmap(original, newW, newH, true)
-                } else original
+                } else {
+                    original
+                }
             } else {
                 // Two-pass decode with inSampleSize
                 context.contentResolver.openInputStream(uri)?.use { stream1 ->
@@ -159,15 +169,19 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
                 val outW = bounds.outWidth
                 val outH = bounds.outHeight
                 val maxDim = maxOf(outW, outH).coerceAtLeast(1)
-                val sample = if (maxDim > maxSize) {
-                    var s = 1
-                    while (maxDim / s > maxSize) s *= 2
-                    s
-                } else 1
-                val opts = BitmapFactory.Options().apply {
-                    inSampleSize = sample
-                    inPreferredConfig = Bitmap.Config.ARGB_8888
-                }
+                val sample =
+                    if (maxDim > maxSize) {
+                        var s = 1
+                        while (maxDim / s > maxSize) s *= 2
+                        s
+                    } else {
+                        1
+                    }
+                val opts =
+                    BitmapFactory.Options().apply {
+                        inSampleSize = sample
+                        inPreferredConfig = Bitmap.Config.ARGB_8888
+                    }
                 context.contentResolver.openInputStream(uri)?.use { stream3 ->
                     BitmapFactory.decodeStream(stream3, null, opts)
                 }
@@ -208,8 +222,9 @@ private fun AddReceiptViewModel.UiState.recomputeValidity(): AddReceiptViewModel
     val billD = bill.toDoubleOrNull()
     val tipD = tip.toDoubleOrNull()
     val totalD = total.toDoubleOrNull()
-    val valid = !bill.isBlank() && !tip.isBlank() && !total.isBlank() &&
-        billD != null && tipD != null && totalD != null &&
-        billD > 0.0 && tipD >= 0.0 && totalD > 0.0
+    val valid =
+        !bill.isBlank() && !tip.isBlank() && !total.isBlank() &&
+            billD != null && tipD != null && totalD != null &&
+            billD > 0.0 && tipD >= 0.0 && totalD > 0.0
     return copy(isFormValid = valid)
 }

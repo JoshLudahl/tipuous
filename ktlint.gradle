@@ -1,21 +1,34 @@
-repositories {
-    jcenter()
-}
 configurations {
-    ktlint
+    ktlint {
+        attributes {
+            // Prefer the shadowed (fat-jar) variant to avoid variant ambiguity on Gradle 9
+            attribute(org.gradle.api.attributes.Bundling.BUNDLING_ATTRIBUTE,
+                    project.objects.named(org.gradle.api.attributes.Bundling, org.gradle.api.attributes.Bundling.SHADOWED))
+        }
+    }
 }
 dependencies {
-    ktlint 'com.pinterest:ktlint:0.49.1'
+    ktlint("com.pinterest.ktlint:ktlint-cli:1.2.1")
 }
+// Check Kotlin code style for the app module sources
 task ktlint(type: JavaExec, group: "verification") {
     description = "Check Kotlin code style."
     classpath = configurations.ktlint
-    main = "com.pinterest.ktlint.Main"
-    args "src/**/*.kt"
+    mainClass = "com.pinterest.ktlint.Main"
+    args "lint", "app/src/**/*.kt"
 }
+
+// Format Kotlin sources in the app module
 task ktlintFormat(type: JavaExec, group: "formatting") {
     description = "Fix Kotlin code style deviations."
     classpath = configurations.ktlint
-    main = "com.pinterest.ktlint.Main"
-    args "-F", "src/**/*.kt"
+    mainClass = "com.pinterest.ktlint.Main"
+    args "format", "app/src/**/*.kt"
+}
+
+// Alias to match project guidelines
+tasks.register("ktlintCheck") {
+    group = "verification"
+    description = "Alias for ktlint task to match guidelines."
+    dependsOn("ktlint")
 }
