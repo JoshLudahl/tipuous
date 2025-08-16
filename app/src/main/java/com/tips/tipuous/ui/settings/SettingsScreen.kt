@@ -320,7 +320,8 @@ fun AttributionAnnotatedText() {
 fun shareAppIntent(context: Context) {
     val applicationName = "Tipuous"
     val packageName = context.packageName
-    val shareText = "Check out $applicationName on Google Play: https://play.google.com/store/apps/details?id=$packageName"
+    val shareText =
+        "Check out $applicationName on Google Play: https://play.google.com/store/apps/details?id=$packageName"
     val sendIntent =
         Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
