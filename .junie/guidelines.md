@@ -1,6 +1,6 @@
 # Tipuous Project Guidelines for Junie
 
-Last updated: 2025-08-15 18:49
+Last updated: 2025-08-17 09:46
 
 ## Overview
 Tipuous is an Android application written in Kotlin using Jetpack Compose for UI, Room for local persistence, and standard Android/Gradle tooling. The project follows a single-module structure (app module) and includes unit tests and instrumentation tests.
@@ -79,3 +79,59 @@ Notes for Junie automation:
 - Make minimal, targeted changes to satisfy issues.
 - When modifying code, run unit tests and ktlintCheck locally.
 - Provide clear updates and a brief summary of what changed and why.
+
+## Architecture & Separation of Concerns (MVVM)
+
+This project follows a layered architecture that separates responsibilities and promotes testability and scalability.
+
+- Data layer (data/)
+  - Responsibilities: persistence (Room DAOs/Entities), remote data sources (if added), repositories that expose suspend functions/Flows.
+  - Rules:
+    - No Android UI or Compose imports.
+    - Map storage models (e.g., ReceiptEntity) to domain models (e.g., Receipt) in repositories.
+    - Prefer Flow for streams and suspend for one‑off operations.
+
+- Domain layer (domain/)
+  - Responsibilities: business logic and use cases (interactors), pure Kotlin utilities like TipCalculator.
+  - Rules:
+    - No Android framework or data storage details.
+    - Operate on domain models only; do not depend on Room entities.
+    - Keep functions pure where possible for easy unit testing.
+
+- Presentation layer (ui/)
+  - Responsibilities: Compose screens and ViewModels (MVVM) that manage UI state and user intents.
+  - Rules:
+    - Composables are stateless where possible; state is provided by ViewModel via StateFlow/Flow.
+    - ViewModels depend on domain (use cases) and repositories via interfaces.
+    - Emit one‑off events (navigation, toasts) via Channels/SharedFlows or equivalent.
+
+- Model (model/)
+  - Domain models shared across layers, without Android dependencies.
+
+- Utilities (utilities/)
+  - Helper code with careful boundaries; avoid leaking into business or presentation logic.
+
+Dependency direction
+- ui -> domain -> data (no reverse dependencies)
+- model can be used by domain and ui, but data should map to domain models (avoid exposing entities).
+
+When adding a new feature
+1. Define/extend domain model(s) in model/ as needed.
+2. Create/extend use case(s) in domain/ that encapsulate business logic.
+3. Implement/extend repository functions in data/; map entities to domain models in the repository.
+4. Create/extend ViewModel in ui/... handling:
+   - State as data classes (immutable snapshots) exposed via StateFlow.
+   - User intents that call use cases/repositories via coroutines.
+   - UI‑only formatting in ViewModel (keep Composables as thin as possible).
+5. Build Composables in ui/... that render state and call ViewModel intents.
+6. Add tests:
+   - Unit tests for use cases (pure Kotlin)
+   - Unit tests for ViewModel (using coroutine test, fake repos)
+
+Best practices
+- Coroutines/Flow: use viewModelScope in ViewModels; prefer Flow for streams; collect as state in Compose.
+- Error handling: represent domain errors via sealed classes or Result wrappers; surface UI messages as part of state.
+- Room: keep @Entity classes in data/local; map to domain models in repository.
+- Navigation: keep navigation in navigation/; trigger from UI based on ViewModel events.
+- Naming: FooRepository, FooDao, FooEntity, FooUseCase, FooViewModel, FooScreen.
+- Tests: place JVM unit tests under app/src/test and instrumentation tests under app/src/androidTest.
