@@ -6,6 +6,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.tips.tipuous.ui.main.MainScreen
 import com.tips.tipuous.ui.receipts.AddReceiptScreen
 import com.tips.tipuous.ui.receipts.ReceiptsListScreen
@@ -18,7 +19,7 @@ sealed interface Navigation {
     object Main : Navigation
 
     @Serializable
-    object AddReceipt : Navigation
+    data class AddReceipt(val receiptId: String? = null) : Navigation
 
     @Serializable
     object Receipts : Navigation
@@ -35,13 +36,16 @@ fun AppNavigation() {
         composable<Navigation.Main> {
             MainScreen(
                 mainViewModel = viewModel(),
-                onAddReceipt = { navController.navigate(Navigation.AddReceipt) },
+                onAddReceipt = { navController.navigate(Navigation.AddReceipt()) },
                 onViewReceipts = { navController.navigate(Navigation.Receipts) },
                 onNavigateToSettings = { navController.navigate(Navigation.Settings) },
             )
         }
 
-        composable<Navigation.AddReceipt> { AddReceiptScreen(navController) }
+        composable<Navigation.AddReceipt> { entry ->
+            val args = entry.toRoute<Navigation.AddReceipt>()
+            AddReceiptScreen(navController, receiptId = args.receiptId)
+        }
         composable<Navigation.Receipts> { ReceiptsListScreen(navController) }
         composable<Navigation.Settings> {
             SettingsScreen(

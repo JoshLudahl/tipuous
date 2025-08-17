@@ -54,6 +54,7 @@ Notes for Junie automation:
 - Follow Jetpack Compose best practices (state hoisting, previews for composables when practical).
 - Use MVVM architecture
 - Use DRY principles
+- Ensure proper architecture for Android by separating concerns (separate data, domain, presentation, etc.)
 
 ## CI/CD (general guidance)
 - Ensure build, unit tests, and ktlintCheck pass on every change.

@@ -14,6 +14,9 @@ interface ReceiptDao {
     @Query("SELECT * FROM receipts ORDER BY date_epoch_millis DESC")
     fun getAll(): List<ReceiptEntity>
 
+    @Query("SELECT * FROM receipts WHERE id = :id LIMIT 1")
+    fun getById(id: String): ReceiptEntity?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(entity: ReceiptEntity)
 

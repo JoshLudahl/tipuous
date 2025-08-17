@@ -19,6 +19,8 @@ class ReceiptRepository(context: Context) {
 
     fun getAllFlow(): Flow<List<Receipt>> = dao.getAllFlow().map { list -> list.map { it.toModel() } }
 
+    fun getById(id: String): Receipt? = dao.getById(id)?.toModel()
+
     fun add(receipt: Receipt) {
         dao.insert(receipt.toEntity())
     }

@@ -29,6 +29,7 @@ import java.util.TimeZone
  */
 class AddReceiptViewModel(application: Application) : AndroidViewModel(application) {
     private val repo = ReceiptRepository(application)
+    private var editingId: String? = null
 
     data class UiState(
         val bill: String = "",
@@ -72,6 +73,33 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
     fun setDate(millis: Long?) = _state.update { it.copy(dateMillis = millis) }
 
     // ------- Image handling / OCR -------
+    fun loadForEdit(id: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val rec = repo.getById(id)
+            if (rec != null) {
+                editingId = rec.id
+                val bmp = try {
+                    rec.imagePath?.let { path ->
+                        val file = File(path)
+                        if (file.exists()) BitmapFactory.decodeFile(path) else null
+                    }
+                } catch (_: Exception) {
+                    null
+                }
+                _state.update {
+                    it.copy(
+                        bill = rec.billTotal.toString(),
+                        tip = rec.tipAmount.toString(),
+                        total = rec.grandTotal.toString(),
+                        dateMillis = rec.dateEpochMillis,
+                        location = rec.locationName ?: "",
+                        previewBitmap = bmp ?: it.previewBitmap,
+                    ).recomputeValidity()
+                }
+            }
+        }
+    }
+
     fun handleCaptureBitmap(bitmap: Bitmap) {
         _state.update { it.copy(previewBitmap = bitmap) }
         parseReceiptFromBitmap(bitmap)
@@ -116,6 +144,7 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
             val imagePath = snapshot.previewBitmap?.let { saveBitmapToInternal(it) }
             val receipt =
                 Receipt(
+                    id = editingId ?: java.util.UUID.randomUUID().toString(),
                     dateEpochMillis = millis,
                     billTotal = billD,
                     tipAmount = tipD,

@@ -38,6 +38,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.tips.tipuous.model.Receipt
+import com.tips.tipuous.navigation.Navigation
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -106,7 +107,7 @@ fun ReceiptsListScreen(
                                 .fillMaxWidth()
                                 .padding(bottom = 12.dp)
                                 .combinedClickable(
-                                    onClick = { /* future: open detail */ },
+                                    onClick = { navController.navigate(Navigation.AddReceipt(r.id)) },
                                     onLongClick = {
                                         receiptToDelete = r
                                         showDeleteDialog = true
