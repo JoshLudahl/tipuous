@@ -53,11 +53,6 @@ class MainViewModel : ViewModel() {
         result?.isShareable ?: false
     }.stateIn(viewModelScope, SharingStarted.Lazily, false)
 
-    val customTipLabel: StateFlow<String> = _customTipPercent.map {
-        "Other: $it%"
-    }.stateIn(viewModelScope, SharingStarted.Lazily, "Other: ${_customTipPercent.value}%")
-
-
     init {
         // Recalculate whenever an input changes
         viewModelScope.launch {
@@ -67,12 +62,9 @@ class MainViewModel : ViewModel() {
                 _customTipPercent,
                 _splitCount
             ) { bill, tipEnum, customPercent, split ->
-                // Trigger calculation only if bill is not zero to avoid initial null result if not desired
-                // or simply call calculate() and let the mapping handle null/zero states
                 performCalculation()
-            }.collect {} // Terminal operator to keep the flow active
+            }.collect {}
         }
-        // Initial calculation
         performCalculation()
     }
 
@@ -87,43 +79,23 @@ class MainViewModel : ViewModel() {
 
     fun setBill(amount: Double) {
         _bill.value = amount
-        // Calculation is triggered by the combine flow
     }
 
     fun updateTipPercentage(percent: Percent) {
         _tipPercentEnum.value = percent
-        if (percent != Percent.CUSTOM) {
-             // Calculation is triggered by the combine flow
-        }
     }
 
     fun handleCustomPercentageClick() {
         _tipPercentEnum.value = Percent.CUSTOM
-        // Calculation is triggered by the combine flow
+
     }
 
     fun updateCustomTipValue(value: Int) {
         _customTipPercent.value = value
-        if (_tipPercentEnum.value == Percent.CUSTOM) {
-            // Calculation is triggered by the combine flow
-        }
     }
 
     fun updateSplitCount(count: Int) {
-        _splitCount.value = if (count > 0) count else 1 // Ensure split count is at least 1
-        // Calculation is triggered by the combine flow
-    }
-    
-    // updateSplit was taking a Float, assuming it should be Int for count
-    // If it was meant for the split *value* (amount per person), that's now derived.
-    // Clarify if _split (Float) was for something else. For now, I've used _splitCount (Int).
-
-    fun clearValues() {
-        _bill.value = 0.00
-        _tipPercentEnum.value = Percent.TEN
-        _customTipPercent.value = 20 // Reset to default
-        _splitCount.value = 1
-        // Calculation is triggered by the combine flow, which will reset derived states
+        _splitCount.value = if (count > 0) count else 1
     }
 
     fun formatBillWithTipForSharing(): String {
