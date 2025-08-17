@@ -72,12 +72,15 @@ fun MainScreen(
 ) {
     // Observe StateFlows from ViewModel
     val billAmount by mainViewModel.bill.collectAsStateWithLifecycle()
-    val selectedTipType by mainViewModel.tip.collectAsStateWithLifecycle()
-    val customTipPercentValue by mainViewModel.customTip.collectAsStateWithLifecycle()
-    val splitCount by mainViewModel.split.collectAsStateWithLifecycle()
-    val splitValue by mainViewModel.splitValue.collectAsStateWithLifecycle()
-    val tipAmountValue by mainViewModel.tipValue.collectAsStateWithLifecycle() // Observe tipValue (FIXED)
-    val totalAmountValue by mainViewModel.total.collectAsStateWithLifecycle() // Observe totalAmount
+    val selectedTipPercentEnum by mainViewModel.tipPercentEnum.collectAsStateWithLifecycle()
+    val customTipPercentState by mainViewModel.customTipPercent.collectAsStateWithLifecycle()
+    val splitCountState by mainViewModel.splitCount.collectAsStateWithLifecycle()
+
+    val tipAmountFormatted by mainViewModel.tipAmountFormatted.collectAsStateWithLifecycle()
+    val totalAmountFormatted by mainViewModel.totalAmountFormatted.collectAsStateWithLifecycle()
+    val amountPerPersonFormatted by mainViewModel.amountPerPersonFormatted.collectAsStateWithLifecycle()
+    val isShareEnabled by mainViewModel.isShareable.collectAsStateWithLifecycle()
+
 
     // Local state for the TextField to manage text input directly
     var billText by remember(billAmount) {
@@ -129,24 +132,17 @@ fun MainScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            // Bottom bar added; removed top buttons
 
             SectionTitle("Bill Amount")
             OutlinedTextField(
                 value = billText,
                 shape = RoundedCornerShape(16.dp),
                 onValueChange = { newText ->
-                    // Regex updated to use raw string and match standard decimal input
                     if (newText.isEmpty() || newText.matches(Regex("""^\d*\.?\d*$"""))) {
                         billText = newText
                         val newBill = newText.toDoubleOrNull() ?: 0.0
-                        if (billAmount != newBill) {
-                            mainViewModel.setBill(newBill)
-                            mainViewModel.calculateTip()
-                        } else if (newText.isEmpty() && billAmount != 0.0) {
-                            mainViewModel.setBill(0.0)
-                            mainViewModel.calculateTip()
-                        }
+                        // ViewModel now handles recalculation internally via combine flow
+                        mainViewModel.setBill(newBill)
                     }
                 },
                 label = { Text("Enter Bill Amount") },
@@ -167,7 +163,6 @@ fun MainScreen(
 
             SectionTitle("Tip Percentage")
 
-            // Tip Section
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors =
@@ -198,9 +193,9 @@ fun MainScreen(
                                 label = { Text(label) },
                                 colors =
                                     AssistChipDefaults.assistChipColors(
-                                        labelColor = if (selectedTipType == percentEnum && selectedTipType != Percent.CUSTOM) MaterialTheme.colorScheme.onTertiary else MaterialTheme.colorScheme.onSurface,
+                                        labelColor = if (selectedTipPercentEnum == percentEnum && selectedTipPercentEnum != Percent.CUSTOM) MaterialTheme.colorScheme.onTertiary else MaterialTheme.colorScheme.onSurface,
                                         containerColor =
-                                            if (selectedTipType == percentEnum && selectedTipType != Percent.CUSTOM) {
+                                            if (selectedTipPercentEnum == percentEnum && selectedTipPercentEnum != Percent.CUSTOM) {
                                                 MaterialTheme.colorScheme.tertiary
                                             } else {
                                                 MaterialTheme.colorScheme.surface.copy(
@@ -217,12 +212,12 @@ fun MainScreen(
 
                         AssistChip(
                             onClick = { mainViewModel.handleCustomPercentageClick() },
-                            label = { Text("Other") },
+                            label = { Text("Other") }, // Or use mainViewModel.customTipLabel.collectAsStateWithLifecycle() if it provides more dynamic text
                             colors =
                                 AssistChipDefaults.assistChipColors(
-                                    labelColor = if (selectedTipType == Percent.CUSTOM) MaterialTheme.colorScheme.onTertiary else MaterialTheme.colorScheme.onSurface,
+                                    labelColor = if (selectedTipPercentEnum == Percent.CUSTOM) MaterialTheme.colorScheme.onTertiary else MaterialTheme.colorScheme.onSurface,
                                     containerColor =
-                                        if (selectedTipType == Percent.CUSTOM) {
+                                        if (selectedTipPercentEnum == Percent.CUSTOM) {
                                             MaterialTheme.colorScheme.tertiary
                                         } else {
                                             MaterialTheme.colorScheme.surface.copy(
@@ -237,7 +232,7 @@ fun MainScreen(
                         )
                     }
 
-                    if (selectedTipType == Percent.CUSTOM) {
+                    if (selectedTipPercentEnum == Percent.CUSTOM) {
                         Spacer(modifier = Modifier.height(8.dp))
                         Row(
                             modifier =
@@ -247,13 +242,12 @@ fun MainScreen(
                                         top = 8.dp,
                                         bottom = 8.dp,
                                     ),
-                            // Added bottom padding to the Row
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Slider(
-                                value = customTipPercentValue.toFloat(),
+                                value = customTipPercentState.toFloat(),
                                 onValueChange = { newValue ->
-                                    mainViewModel.updateCustomValue(newValue.toInt())
+                                    mainViewModel.updateCustomTipValue(newValue.toInt())
                                 },
                                 colors =
                                     SliderDefaults.colors(
@@ -266,9 +260,7 @@ fun MainScreen(
                                         inactiveTickColor = Color.Transparent,
                                         activeTickColor = MaterialTheme.colorScheme.surfaceBright,
                                     ),
-                                onValueChangeFinished = {
-                                    mainViewModel.calculateTip()
-                                },
+                                // onValueChangeFinished removed as ViewModel recalculates automatically
                                 valueRange = 1f..50f,
                                 modifier = Modifier.weight(1f),
                             )
@@ -281,8 +273,8 @@ fun MainScreen(
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Text(
-                                    text = "$customTipPercentValue%",
-                                    color = MaterialTheme.colorScheme.surface, // Text color as requested
+                                    text = "$customTipPercentState%",
+                                    color = MaterialTheme.colorScheme.surface,
                                     fontSize = 16.sp,
                                     style = MaterialTheme.typography.bodyLarge,
                                 )
@@ -294,7 +286,6 @@ fun MainScreen(
 
             SectionTitle("Split Bill")
 
-            // Split Section
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors =
@@ -313,17 +304,14 @@ fun MainScreen(
                             Modifier
                                 .fillMaxWidth()
                                 .padding(top = 8.dp, bottom = 8.dp),
-                        // Added bottom padding to the Row
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Slider(
-                            value = splitCount,
+                            value = splitCountState.toFloat(),
                             onValueChange = { newValue ->
-                                mainViewModel.updateSplit(newValue)
+                                mainViewModel.updateSplitCount(newValue.roundToInt())
                             },
-                            onValueChangeFinished = {
-                                mainViewModel.calculateTip()
-                            },
+                            // onValueChangeFinished removed
                             colors =
                                 SliderDefaults.colors(
                                     thumbColor = MaterialTheme.colorScheme.tertiary,
@@ -332,7 +320,7 @@ fun MainScreen(
                                     inactiveTickColor = Color.Transparent,
                                     activeTickColor = MaterialTheme.colorScheme.surfaceBright,
                                 ),
-                            valueRange = 1f..75f, // Updated range
+                            valueRange = 1f..75f, // Keep range, ViewModel ensures count >= 1
                             modifier = Modifier.weight(1f),
                         )
                         Spacer(modifier = Modifier.width(16.dp))
@@ -344,8 +332,8 @@ fun MainScreen(
                             contentAlignment = Alignment.Center,
                         ) {
                             Text(
-                                text = splitCount.roundToInt().toString(),
-                                color = MaterialTheme.colorScheme.surface, // Text color as requested
+                                text = splitCountState.toString(),
+                                color = MaterialTheme.colorScheme.surface,
                                 fontSize = 16.sp,
                                 style = MaterialTheme.typography.bodyLarge,
                             )
@@ -356,7 +344,6 @@ fun MainScreen(
 
             SectionTitle("Totals")
 
-            // Total Section
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors =
@@ -373,24 +360,24 @@ fun MainScreen(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = "Tip Amount $$tipAmountValue",
+                        text = "Tip Amount $$tipAmountFormatted",
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.tertiary,
                     )
 
                     Text(
-                        text = "Total Amount $$totalAmountValue",
+                        text = "Total Amount $$totalAmountFormatted",
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.tertiary,
                     )
-                    if (splitCount > 1f) {
+                    if (splitCountState > 1) { // Use Int state for logic
                         HorizontalDivider(
-                            Modifier,
-                            DividerDefaults.Thickness,
-                            DividerDefaults.color,
+                            Modifier.padding(vertical = 8.dp), // Added padding for visual separation
+                            thickness = DividerDefaults.Thickness,
+                            color = DividerDefaults.color,
                         )
                         Text(
-                            text = "Amount Per Person: $$splitValue",
+                            text = "Amount Per Person: $$amountPerPersonFormatted",
                             style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier.padding(top = 8.dp),
                             color = MaterialTheme.colorScheme.tertiary,
@@ -399,12 +386,7 @@ fun MainScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = {
-                            val shareMessage =
-                                if (splitCount > 1f) {
-                                    "Total bill (including tip): $$totalAmountValue. Your share is $$splitValue."
-                                } else {
-                                    "Total bill (including tip): $$totalAmountValue"
-                                }
+                            val shareMessage = mainViewModel.formatBillWithTipForSharing()
                             val sendIntent: Intent =
                                 Intent().apply {
                                     action = Intent.ACTION_SEND
@@ -414,7 +396,7 @@ fun MainScreen(
                             val shareIntent = Intent.createChooser(sendIntent, null)
                             context.startActivity(shareIntent)
                         },
-                        enabled = totalAmountValue != "-",
+                        enabled = isShareEnabled, // Use new StateFlow
                         modifier = Modifier.fillMaxWidth(),
                         colors =
                             ButtonDefaults.buttonColors(
