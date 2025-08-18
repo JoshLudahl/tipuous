@@ -112,9 +112,9 @@ dependencies {
     implementation(libs.material)
 
     // Room
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
-    ksp("androidx.room:room-compiler:2.6.1")
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 
     // Databinding & other
     implementation(libs.androidx.legacy.support.v4)
@@ -151,7 +151,7 @@ dependencies {
     implementation(libs.app.update.ktx)
 
     // ML Kit OCR (on-device)
-    implementation("com.google.mlkit:text-recognition:16.0.0")
+    implementation(libs.text.recognition)
 
     // Testing Navigation
     androidTestImplementation(libs.androidx.navigation.testing)
@@ -159,7 +159,7 @@ dependencies {
     // Testing
     testImplementation(libs.junit.jupiter.api)
     testRuntimeOnly(libs.junit.jupiter.engine)
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.13.4")
+    testRuntimeOnly(libs.junit.platform.launcher)
 
     // Testing - Core Library
     androidTestImplementation(libs.androidx.core)
