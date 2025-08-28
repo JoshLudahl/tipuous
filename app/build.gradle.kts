@@ -116,7 +116,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
-    // Databinding & other
+    // Data-binding & other
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.navigation.ui.ktx)
 

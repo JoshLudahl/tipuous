@@ -2,15 +2,15 @@
 activityCompose = "1.10.1"
 appcompat = "1.7.1"
 appUpdate = "2.1.0"
-composeBom = "2025.08.00"
+composeBom = "2025.08.01"
 constraintlayout = "2.2.1"
 core = "1.7.0"
 coreKtx = "1.17.0"
 espressoCore = "3.7.0"
-firebaseBom = "34.1.0"
+firebaseBom = "34.2.0"
 firebaseCrashlyticsGradle = "3.0.6"
 googleServices = "4.4.3"
-gradle = "8.12.1"
+gradle = "8.12.2"
 gridlayout = "1.1.0"
 junitJupiterApi = "5.13.4"
 junitJupiterEngine = "5.13.4"
@@ -22,12 +22,11 @@ kotlinxSerializationJson = "1.9.0"
 ksp = "2.2.10-2.0.2"
 legacySupportV4 = "1.0.0"
 lifecycleExtensions = "2.2.0"
-lifecycleLivedataKtx = "2.9.2"
-lifecycleRuntimeCompose = "2.9.2"
-lifecycleViewmodelCompose = "2.9.2"
+lifecycleLivedataKtx = "2.9.3"
+lifecycleRuntimeCompose = "2.9.3"
+lifecycleViewmodelCompose = "2.9.3"
 material = "1.12.0"
-material3Android = "1.5.0-alpha02"
-materialVersion = "1.9.0"
+material3Android = "1.5.0-alpha03"
 materialIconsExtended = "1.7.8"
 navigation = "2.9.3"
 navigationUiKtx = "2.9.3"
@@ -52,7 +51,6 @@ androidx-junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "ju
 androidx-legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacySupportV4" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
-androidx-material = { module = "androidx.compose.material:material", version.ref = "materialVersion" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-material3 = { module = "androidx.compose.material3:material3" }
 androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
@@ -101,9 +99,6 @@ text-recognition = { module = "com.google.mlkit:text-recognition", version.ref =
 [plugins]
 android-application = { id = "com.android.application", version.ref = "gradle" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlinGradlePlugin" }
-firebase-crashlytics-gradle = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsGradle" }
-firebase-perf = { id = "com.google.firebase.firebase-perf" }
-google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinGradlePlugin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-serializable = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinGradlePlugin" }
