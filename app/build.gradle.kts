@@ -18,7 +18,7 @@ android {
         applicationId = "com.tips.tipuous"
         minSdk = 27
         targetSdk = targetVersion
-        versionCode = 28
+        versionCode = 30
         versionName = "1.$versionCode"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -29,8 +29,6 @@ android {
     }
 
     buildFeatures {
-        viewBinding = true
-        dataBinding = true
         buildConfig = true
         compose = true
     }
@@ -106,7 +104,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose) // For collectAsStateWithLifecycle
     implementation(libs.androidx.lifecycle.viewmodel.compose) // For viewModel() Composable
     implementation(libs.androidx.navigation.compose)      // For Compose Navigation
-
 
     // Styling
     implementation(libs.material)
