@@ -18,7 +18,7 @@ android {
         applicationId = "com.tips.tipuous"
         minSdk = 27
         targetSdk = targetVersion
-        versionCode = 30
+        versionCode = 31
         versionName = "1.$versionCode"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -88,22 +88,22 @@ dependencies {
     implementation(libs.gridlayout)
 
     // Compose
-    implementation(platform(libs.androidx.compose.bom)) // Added Compose BOM
+    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.core.ktx)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.ui)
     implementation(libs.activity.compose)
     implementation(libs.androidx.ui.text)
-    implementation(libs.androidx.ui.text.google.fonts) // Added this line
-    implementation(libs.androidx.material3) // Changed to material3
+    implementation(libs.androidx.ui.text.google.fonts)
+    implementation(libs.androidx.material3)
     implementation(libs.androidx.material3.android)
-    implementation(libs.androidx.ui.tooling.preview) // Changed to ui-tooling-preview
-    debugImplementation(libs.androidx.ui.tooling) // Added debugImplementation for ui-tooling
+    implementation(libs.androidx.ui.tooling.preview)
+    debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.material.icons.extended)
-    implementation(libs.androidx.lifecycle.runtime.compose) // For collectAsStateWithLifecycle
-    implementation(libs.androidx.lifecycle.viewmodel.compose) // For viewModel() Composable
-    implementation(libs.androidx.navigation.compose)      // For Compose Navigation
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.navigation.compose)
 
     // Styling
     implementation(libs.material)
@@ -124,27 +124,15 @@ dependencies {
     // Feature module Support
     implementation(libs.androidx.navigation.dynamic.features.fragment)
 
-    //Firebase
-    // Import the BoM for the Firebase platform
+    // Firebase
     implementation(platform(libs.firebase.bom))
-
-    // Add the dependencies for the Crashlytics and Analytics libraries
-    // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation(libs.firebase.crashlytics)
-
-    // Add the dependency for the Realtime Database library
-    // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation(libs.firebase.database)
-
-    // Add the dependency for the Firebase SDK for Google Analytics
     implementation(libs.firebase.analytics)
-
-    // Add Performance lib
     implementation(libs.firebase.perf)
 
-    // In App Updates
+    // IAU
     implementation(libs.app.update)
-    // For Kotlin users also add the Kotlin extensions library for Play In-App Update:
     implementation(libs.app.update.ktx)
 
     // ML Kit OCR (on-device)
