@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.ApplicationExtension
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -9,8 +11,8 @@ plugins {
     alias(libs.plugins.kotlin.serializable)
 }
 
-android {
-    val targetVersion = 36
+configure<ApplicationExtension> {
+    val targetVersion = 37
 
     compileSdk = targetVersion
 
@@ -18,7 +20,7 @@ android {
         applicationId = "com.tips.tipuous"
         minSdk = 27
         targetSdk = targetVersion
-        versionCode = 31
+        versionCode = 32
         versionName = "1.$versionCode"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -36,6 +38,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -84,7 +87,6 @@ dependencies {
     implementation(libs.lifecycle.extensions)
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.viewmodel.ktx)
-    implementation(libs.constraintlayout)
     implementation(libs.gridlayout)
 
     // Compose
@@ -106,7 +108,6 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
     // Styling
-    implementation(libs.material)
 
     // Room
     implementation(libs.androidx.room.runtime)
