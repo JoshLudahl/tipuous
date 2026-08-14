@@ -1,5 +1,3 @@
-import com.android.build.api.dsl.ApplicationExtension
-
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -11,7 +9,7 @@ plugins {
     alias(libs.plugins.kotlin.serializable)
 }
 
-configure<ApplicationExtension> {
+android {
     val targetVersion = 37
 
     compileSdk = targetVersion
@@ -21,7 +19,7 @@ configure<ApplicationExtension> {
         minSdk = 27
         targetSdk = targetVersion
         versionCode = 32
-        versionName = "1.$versionCode"
+        versionName = "2026.08.14"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -83,10 +81,10 @@ kotlin {
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
-    implementation(libs.constraintlayout)
     implementation(libs.lifecycle.extensions)
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.constraintlayout)
     implementation(libs.gridlayout)
 
     // Compose
@@ -106,8 +104,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
-
-    // Styling
 
     // Room
     implementation(libs.androidx.room.runtime)

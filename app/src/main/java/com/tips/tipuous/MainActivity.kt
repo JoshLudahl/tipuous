@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
@@ -63,9 +64,9 @@ class MainActivity : AppCompatActivity() {
             TipuousTheme(
                 darkTheme = themeManager.isDarkTheme(),
                 dynamicColor = themeManager.dynamicColor.collectAsState().value,
-            ) { // Replace with your actual theme
+            ) {
                 Surface(
-                    modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
+                    modifier = Modifier.systemBarsPadding()
                 ) {
                     AppNavigation() // Changed to use AppNavigation
                 }
