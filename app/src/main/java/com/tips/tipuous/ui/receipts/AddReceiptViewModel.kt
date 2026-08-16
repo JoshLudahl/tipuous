@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+import androidx.core.graphics.scale
 
 /**
  * ViewModel for AddReceiptScreen. Holds form state, image preview, parsing, validation and saving.
@@ -194,7 +195,7 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
                     val ratio = maxDim.toFloat() / maxSize
                     val newW = (w / ratio).toInt().coerceAtLeast(1)
                     val newH = (h / ratio).toInt().coerceAtLeast(1)
-                    Bitmap.createScaledBitmap(original, newW, newH, true)
+                    original.scale(newW, newH)
                 } else {
                     original
                 }

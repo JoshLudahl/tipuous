@@ -74,6 +74,13 @@ fun AddReceiptScreen(
         }
     }
 
+    // Navigate back once saved
+    androidx.compose.runtime.LaunchedEffect(state.saved) {
+        if (state.saved) {
+            navigator.goBack()
+        }
+    }
+
     val takePictureLauncher =
         rememberLauncherForActivityResult(
             ActivityResultContracts.TakePicturePreview(),
@@ -270,11 +277,6 @@ fun AddReceiptScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
             ) {
                 Text("Save Receipt")
-            }
-
-            // Navigate back once saved
-            if (state.saved) {
-                navigator.goBack()
             }
         }
     }
