@@ -138,7 +138,7 @@ fun MainScreen(
             SectionTitle("Bill Amount")
             OutlinedTextField(
                 value = billText,
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(30.dp),
                 onValueChange = { newText ->
                     if (newText.isEmpty() || newText.matches(Regex("""^\d*\.?\d*$"""))) {
                         billText = newText
@@ -167,6 +167,7 @@ fun MainScreen(
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(30.dp),
                 colors =
                     CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -290,6 +291,7 @@ fun MainScreen(
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(30.dp),
                 colors =
                     CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -348,6 +350,7 @@ fun MainScreen(
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(30.dp),
                 colors =
                     CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainer,

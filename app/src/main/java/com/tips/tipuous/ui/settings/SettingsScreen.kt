@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Done
@@ -108,6 +109,7 @@ fun SettingsContent(
         // Color Selection
         Card(
             modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(30.dp),
         ) {
             Column(
                 modifier = Modifier.padding(16.dp),
@@ -147,6 +149,7 @@ fun SettingsContent(
         // Theme Selection
         Card(
             modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(30.dp),
         ) {
             Column(
                 modifier = Modifier.padding(16.dp),
@@ -185,6 +188,7 @@ fun SettingsContent(
 
         Card(
             modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(30.dp),
         ) {
             Column(
                 modifier = Modifier.padding(16.dp),
