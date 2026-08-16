@@ -103,7 +103,9 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 
     // Room
     implementation(libs.androidx.room.runtime)
@@ -112,15 +114,11 @@ dependencies {
 
     // Data-binding & other
     implementation(libs.androidx.legacy.support.v4)
-    implementation(libs.androidx.navigation.ui.ktx)
 
     // Kotlin
-    implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.kotlinx.serialization.json)
 
     // Feature module Support
-    implementation(libs.androidx.navigation.dynamic.features.fragment)
-
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
@@ -134,9 +132,6 @@ dependencies {
 
     // ML Kit OCR (on-device)
     implementation(libs.text.recognition)
-
-    // Testing Navigation
-    androidTestImplementation(libs.androidx.navigation.testing)
 
     // Testing
     testImplementation(libs.junit.jupiter.api)

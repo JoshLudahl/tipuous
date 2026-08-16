@@ -45,12 +45,12 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import androidx.navigation.NavController
+import com.tips.tipuous.navigation.Navigator
 
 @androidx.compose.material3.ExperimentalMaterial3Api
 @Composable
 fun AddReceiptScreen(
-    navController: NavController,
+    navigator: Navigator,
     receiptId: String? = null,
     bill: String? = null,
     tip: String? = null,
@@ -116,7 +116,7 @@ fun AddReceiptScreen(
             TopAppBar(
                 title = { Text(if (receiptId != null) "Edit Receipt" else "Add Receipt") },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
+                    IconButton(onClick = { navigator.goBack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
@@ -274,7 +274,7 @@ fun AddReceiptScreen(
 
             // Navigate back once saved
             if (state.saved) {
-                navController.popBackStack()
+                navigator.goBack()
             }
         }
     }

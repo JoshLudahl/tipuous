@@ -2,11 +2,11 @@ package com.tips.tipuous.navigation
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.ui.NavDisplay
 import com.tips.tipuous.ui.main.MainScreen
 import com.tips.tipuous.ui.receipts.AddReceiptScreen
 import com.tips.tipuous.ui.receipts.ReceiptsListScreen
@@ -14,7 +14,7 @@ import com.tips.tipuous.ui.settings.SettingsScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed interface Navigation {
+sealed interface Navigation : NavKey {
     @Serializable
     object Main : Navigation
 
@@ -36,35 +36,48 @@ sealed interface Navigation {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavigation() {
-    val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Navigation.Main) {
-        composable<Navigation.Main> {
+    val navigationState = rememberNavigationState(
+        startRoute = Navigation.Main,
+        topLevelRoutes = setOf(Navigation.Main, Navigation.Receipts, Navigation.Settings)
+    )
+    val navigator = remember { Navigator(navigationState) }
+
+    val entryProvider = entryProvider<NavKey> {
+        entry<Navigation.Main> {
             MainScreen(
                 mainViewModel = viewModel(),
-                onAddReceipt = { navController.navigate(Navigation.AddReceipt()) },
-                onViewReceipts = { navController.navigate(Navigation.Receipts) },
-                onNavigateToSettings = { navController.navigate(Navigation.Settings) },
+                onAddReceipt = { navigator.navigate(Navigation.AddReceipt()) },
+                onViewReceipts = { navigator.navigate(Navigation.Receipts) },
+                onNavigateToSettings = { navigator.navigate(Navigation.Settings) },
                 onSaveBill = { bill, tip, total ->
-                    navController.navigate(Navigation.AddReceipt(bill = bill, tip = tip, total = total))
+                    navigator.navigate(Navigation.AddReceipt(bill = bill, tip = tip, total = total))
                 },
             )
         }
 
-        composable<Navigation.AddReceipt> { entry ->
-            val args = entry.toRoute<Navigation.AddReceipt>()
+        entry<Navigation.AddReceipt> { key ->
             AddReceiptScreen(
-                navController = navController,
-                receiptId = args.receiptId,
-                bill = args.bill,
-                tip = args.tip,
-                total = args.total
+                navigator = navigator,
+                receiptId = key.receiptId,
+                bill = key.bill,
+                tip = key.tip,
+                total = key.total
             )
         }
-        composable<Navigation.Receipts> { ReceiptsListScreen(navController) }
-        composable<Navigation.Settings> {
+
+        entry<Navigation.Receipts> {
+            ReceiptsListScreen(navigator = navigator)
+        }
+
+        entry<Navigation.Settings> {
             SettingsScreen(
-                onBack = { navController.popBackStack() },
+                onBack = { navigator.goBack() },
             )
         }
     }
+
+    NavDisplay(
+        entries = navigationState.toEntries(entryProvider),
+        onBack = { navigator.goBack() }
+    )
 }

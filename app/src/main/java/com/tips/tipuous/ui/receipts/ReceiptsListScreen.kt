@@ -40,9 +40,9 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.tips.tipuous.model.Receipt
 import com.tips.tipuous.navigation.Navigation
+import com.tips.tipuous.navigation.Navigator
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -52,7 +52,7 @@ import java.util.Locale
 @androidx.compose.material3.ExperimentalMaterial3Api
 @Composable
 fun ReceiptsListScreen(
-    navController: NavController,
+    navigator: Navigator,
     viewModel: ReceiptsListViewModel = viewModel(),
 ) {
     val receipts by viewModel.receipts.collectAsStateWithLifecycle()
@@ -87,7 +87,7 @@ fun ReceiptsListScreen(
             TopAppBar(
                 title = { Text("Receipts") },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
+                    IconButton(onClick = { navigator.goBack() }) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
@@ -111,7 +111,7 @@ fun ReceiptsListScreen(
                                 .fillMaxWidth()
                                 .padding(bottom = 12.dp)
                                 .combinedClickable(
-                                    onClick = { navController.navigate(Navigation.AddReceipt(r.id)) },
+                                    onClick = { navigator.navigate(Navigation.AddReceipt(r.id)) },
                                     onLongClick = {
                                         receiptToDelete = r
                                         showDeleteDialog = true
