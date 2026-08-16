@@ -18,8 +18,8 @@ android {
         applicationId = "com.tips.tipuous"
         minSdk = 27
         targetSdk = targetVersion
-        versionCode = 32
-        versionName = "2026.08.14"
+        versionCode = 33
+        versionName = "2026.08.16"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
