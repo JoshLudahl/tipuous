@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.AlertDialog
@@ -47,6 +48,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import androidx.compose.ui.platform.LocalLocale
 
 @OptIn(ExperimentalFoundationApi::class)
 @androidx.compose.material3.ExperimentalMaterial3Api
@@ -88,7 +90,7 @@ fun ReceiptsListScreen(
                 title = { Text("Receipts") },
                 navigationIcon = {
                     IconButton(onClick = { navigator.goBack() }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
             )
@@ -146,9 +148,9 @@ fun ReceiptsListScreen(
                                 modifier = Modifier.weight(1f),
                                 verticalArrangement = Arrangement.spacedBy(2.dp),
                             ) {
-                                val fmt = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+                                val fmt = SimpleDateFormat("MMM dd, yyyy", LocalLocale.current.platformLocale)
                                 Text(r.locationName ?: "Receipt", style = MaterialTheme.typography.titleMedium)
-                                Text("Date: ${fmt.format(Date(r.dateEpochMillis))}", style = MaterialTheme.typography.bodySmall)
+                                Text("${fmt.format(Date(r.dateEpochMillis))}", style = MaterialTheme.typography.bodySmall)
                             }
                             // Right column: bill, tip, total
                             Column(verticalArrangement = Arrangement.spacedBy(2.dp), horizontalAlignment = Alignment.End) {

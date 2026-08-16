@@ -9,10 +9,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.rounded.CameraEnhance
@@ -132,8 +135,10 @@ fun AddReceiptScreen(
     ) { padding ->
         Column(
             Modifier
+                .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp),
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
@@ -180,17 +185,6 @@ fun AddReceiptScreen(
                 }
             }
 
-            if (state.previewBitmap != null) {
-                Image(
-                    bitmap = state.previewBitmap!!.asImageBitmap(),
-                    contentDescription = null,
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .height(200.dp),
-                )
-            }
-
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
@@ -200,6 +194,7 @@ fun AddReceiptScreen(
                     OutlinedTextField(
                         value = state.bill,
                         onValueChange = viewModel::onBillChange,
+                        shape = RoundedCornerShape(30.dp),
                         label = { Text("Bill Total") },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
@@ -208,6 +203,7 @@ fun AddReceiptScreen(
                     OutlinedTextField(
                         value = state.tip,
                         onValueChange = viewModel::onTipChange,
+                        shape = RoundedCornerShape(30.dp),
                         label = { Text("Tip Amount") },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
@@ -216,6 +212,7 @@ fun AddReceiptScreen(
                     OutlinedTextField(
                         value = state.total,
                         onValueChange = viewModel::onTotalChange,
+                        shape = RoundedCornerShape(30.dp),
                         label = { Text("Grand Total") },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
@@ -224,6 +221,7 @@ fun AddReceiptScreen(
                     OutlinedTextField(
                         value = state.location,
                         onValueChange = viewModel::onLocationChange,
+                        shape = RoundedCornerShape(30.dp),
                         label = { Text("Location (optional)") },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
@@ -277,6 +275,17 @@ fun AddReceiptScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
             ) {
                 Text("Save Receipt")
+            }
+
+            if (state.previewBitmap != null) {
+                Image(
+                    bitmap = state.previewBitmap!!.asImageBitmap(),
+                    contentDescription = null,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(400.dp),
+                )
             }
         }
     }
