@@ -68,6 +68,19 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
 
     fun onLocationChange(input: String) = _state.update { it.copy(location = input) }
 
+    fun prefillData(bill: String?, tip: String?, total: String?) {
+        _state.update {
+            val filteredBill = bill?.filter { ch -> ch.isDigit() || ch == '.' } ?: it.bill
+            val filteredTip = tip?.filter { ch -> ch.isDigit() || ch == '.' } ?: it.tip
+            val filteredTotal = total?.filter { ch -> ch.isDigit() || ch == '.' } ?: it.total
+            it.copy(
+                bill = filteredBill,
+                tip = filteredTip,
+                total = filteredTotal
+            ).recomputeValidity()
+        }
+    }
+
     fun setShowDatePicker(show: Boolean) = _state.update { it.copy(showDatePicker = show) }
 
     fun setDate(millis: Long?) = _state.update { it.copy(dateMillis = millis) }

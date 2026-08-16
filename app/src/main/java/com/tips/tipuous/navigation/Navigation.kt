@@ -19,7 +19,12 @@ sealed interface Navigation {
     object Main : Navigation
 
     @Serializable
-    data class AddReceipt(val receiptId: String? = null) : Navigation
+    data class AddReceipt(
+        val receiptId: String? = null,
+        val bill: String? = null,
+        val tip: String? = null,
+        val total: String? = null
+    ) : Navigation
 
     @Serializable
     object Receipts : Navigation
@@ -39,12 +44,21 @@ fun AppNavigation() {
                 onAddReceipt = { navController.navigate(Navigation.AddReceipt()) },
                 onViewReceipts = { navController.navigate(Navigation.Receipts) },
                 onNavigateToSettings = { navController.navigate(Navigation.Settings) },
+                onSaveBill = { bill, tip, total ->
+                    navController.navigate(Navigation.AddReceipt(bill = bill, tip = tip, total = total))
+                },
             )
         }
 
         composable<Navigation.AddReceipt> { entry ->
             val args = entry.toRoute<Navigation.AddReceipt>()
-            AddReceiptScreen(navController, receiptId = args.receiptId)
+            AddReceiptScreen(
+                navController = navController,
+                receiptId = args.receiptId,
+                bill = args.bill,
+                tip = args.tip,
+                total = args.total
+            )
         }
         composable<Navigation.Receipts> { ReceiptsListScreen(navController) }
         composable<Navigation.Settings> {

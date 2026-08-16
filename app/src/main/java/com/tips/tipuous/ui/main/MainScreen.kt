@@ -22,6 +22,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.List
 import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Settings
@@ -70,6 +71,7 @@ fun MainScreen(
     onAddReceipt: () -> Unit,
     onViewReceipts: () -> Unit,
     onNavigateToSettings: () -> Unit,
+    onSaveBill: (String, String, String) -> Unit,
 ) {
     // Observe StateFlows from ViewModel
     val billAmount by mainViewModel.bill.collectAsStateWithLifecycle()
@@ -389,6 +391,33 @@ fun MainScreen(
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = {
+                            onSaveBill(
+                                billAmount.toString(),
+                                tipAmountFormatted,
+                                totalAmountFormatted
+                            )
+                        },
+                        enabled = isShareEnabled,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.tertiary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary,
+                            ),
+                    ) {
+                        Icon(
+                            Icons.Filled.Save,
+                            contentDescription = "Save to Receipts",
+                            modifier = Modifier.size(ButtonDefaults.IconSize),
+                        )
+                        Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                        Text("Save to Receipts")
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
                     Button(
                         onClick = {
                             val shareMessage = mainViewModel.formatBillWithTipForSharing()

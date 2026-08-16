@@ -49,17 +49,30 @@ import androidx.navigation.NavController
 
 @androidx.compose.material3.ExperimentalMaterial3Api
 @Composable
-fun AddReceiptScreen(navController: NavController, receiptId: String? = null) {
+fun AddReceiptScreen(
+    navController: NavController,
+    receiptId: String? = null,
+    bill: String? = null,
+    tip: String? = null,
+    total: String? = null,
+) {
     val context = LocalContext.current
     val viewModel: AddReceiptViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
     val state by viewModel.state.collectAsState()
 
-        // Load existing receipt if editing
-        androidx.compose.runtime.LaunchedEffect(receiptId) {
-            if (receiptId != null) {
-                viewModel.loadForEdit(receiptId)
-            }
+    // Load existing receipt if editing
+    androidx.compose.runtime.LaunchedEffect(receiptId) {
+        if (receiptId != null) {
+            viewModel.loadForEdit(receiptId)
         }
+    }
+
+    // Prefill data if provided
+    androidx.compose.runtime.LaunchedEffect(bill, tip, total) {
+        if (receiptId == null && (bill != null || tip != null || total != null)) {
+            viewModel.prefillData(bill, tip, total)
+        }
+    }
 
     val takePictureLauncher =
         rememberLauncherForActivityResult(
