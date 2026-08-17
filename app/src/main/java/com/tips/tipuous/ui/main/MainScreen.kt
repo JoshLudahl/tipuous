@@ -1,6 +1,7 @@
 package com.tips.tipuous.ui.main
 
 import android.content.Intent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,8 +12,10 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -100,15 +103,9 @@ fun MainScreen(
         },
         bottomBar = {
             BottomAppBar(
-                modifier = Modifier.height(56.dp),
+                modifier = Modifier.height(56.dp).systemBarsPadding(),
                 containerColor = MaterialTheme.colorScheme.surface,
-                windowInsets =
-                    WindowInsets(
-                        left = 8.dp,
-                        top = 0.dp,
-                        right = 0.dp,
-                        bottom = 16.dp,
-                    ),
+
             ) {
                 IconButton(onClick = onViewReceipts) {
                     Icon(
@@ -201,17 +198,14 @@ fun MainScreen(
                                         labelColor = if (selectedTipPercentEnum == percentEnum && selectedTipPercentEnum != Percent.CUSTOM) MaterialTheme.colorScheme.onTertiary else MaterialTheme.colorScheme.onSurface,
                                         containerColor =
                                             if (selectedTipPercentEnum == percentEnum && selectedTipPercentEnum != Percent.CUSTOM) {
-                                                MaterialTheme.colorScheme.tertiary
+                                                MaterialTheme.colorScheme.tertiaryContainer
                                             } else {
-                                                MaterialTheme.colorScheme.surface.copy(
+                                                MaterialTheme.colorScheme.tertiaryContainer.copy(
                                                     alpha = 0.24f,
                                                 )
                                             },
                                     ),
-                                border =
-                                    AssistChipDefaults.assistChipBorder(
-                                        enabled = false,
-                                    ),
+                                border = BorderStroke(0.dp, Color.Transparent),
                             )
                         }
 
@@ -223,18 +217,15 @@ fun MainScreen(
                                     labelColor = if (selectedTipPercentEnum == Percent.CUSTOM) MaterialTheme.colorScheme.onTertiary else MaterialTheme.colorScheme.onSurface,
                                     containerColor =
                                         if (selectedTipPercentEnum == Percent.CUSTOM) {
-                                            MaterialTheme.colorScheme.tertiary
+                                            MaterialTheme.colorScheme.tertiaryContainer
                                         } else {
-                                            MaterialTheme.colorScheme.surface.copy(
+                                            MaterialTheme.colorScheme.tertiaryContainer.copy(
                                                 alpha = 0.24f,
                                             )
                                         },
                                 ),
-                            border =
-                                AssistChipDefaults.assistChipBorder(
-                                    enabled = false,
-                                ),
-                        )
+                            border = BorderStroke(0.dp, Color.Transparent),
+                            )
                     }
 
                     if (selectedTipPercentEnum == Percent.CUSTOM) {
