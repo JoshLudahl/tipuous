@@ -47,10 +47,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Group
+import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.rounded.Group
+import androidx.compose.material.icons.rounded.Groups
+import androidx.compose.material.icons.rounded.Percent
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSliderState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -84,6 +93,32 @@ fun MainScreen(
     val selectedTipPercentEnum by mainViewModel.tipPercentEnum.collectAsStateWithLifecycle()
     val customTipPercentState by mainViewModel.customTipPercent.collectAsStateWithLifecycle()
     val splitCountState by mainViewModel.splitCount.collectAsStateWithLifecycle()
+
+    val customTipSliderState = rememberSliderState(
+        value = customTipPercentState.toFloat(),
+        valueRange = 1f..50f,
+    )
+    LaunchedEffect(customTipSliderState.value) {
+        mainViewModel.updateCustomTipValue(customTipSliderState.value.toInt())
+    }
+    LaunchedEffect(customTipPercentState) {
+        if (customTipSliderState.value != customTipPercentState.toFloat()) {
+            customTipSliderState.value = customTipPercentState.toFloat()
+        }
+    }
+
+    val splitSliderState = rememberSliderState(
+        value = splitCountState.toFloat(),
+        valueRange = 1f..25f,
+    )
+    LaunchedEffect(splitSliderState.value) {
+        mainViewModel.updateSplitCount(splitSliderState.value.roundToInt())
+    }
+    LaunchedEffect(splitCountState) {
+        if (splitSliderState.value != splitCountState.toFloat()) {
+            splitSliderState.value = splitCountState.toFloat()
+        }
+    }
 
     val tipAmountFormatted by mainViewModel.tipAmountFormatted.collectAsStateWithLifecycle()
     val totalAmountFormatted by mainViewModel.totalAmountFormatted.collectAsStateWithLifecycle()
@@ -224,24 +259,55 @@ fun MainScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 Slider(
-                                    value = customTipPercentState.toFloat(),
-                                    onValueChange = { newValue ->
-                                        mainViewModel.updateCustomTipValue(newValue.toInt())
-                                    },
-                                    colors =
-                                    SliderDefaults.colors(
+                                    state = customTipSliderState,
+                                    modifier = Modifier.weight(1f),
+                                    colors = SliderDefaults.colors(
                                         thumbColor = MaterialTheme.colorScheme.tertiary,
                                         activeTrackColor = MaterialTheme.colorScheme.tertiary,
-                                        inactiveTrackColor =
-                                        MaterialTheme.colorScheme.tertiary.copy(
-                                            alpha = 0.24f,
-                                        ),
-                                        inactiveTickColor = Color.Transparent,
-                                        activeTickColor = MaterialTheme.colorScheme.surfaceBright,
+                                        inactiveTrackColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.24f),
                                     ),
-                                    // onValueChangeFinished removed as ViewModel recalculates automatically
-                                    valueRange = 1f..50f,
-                                    modifier = Modifier.weight(1f),
+                                    track = { sliderState ->
+                                        Box(
+                                            modifier = Modifier.height(32.dp),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            SliderDefaults.Track(
+                                                colors = SliderDefaults.colors(
+                                                    activeTrackColor = MaterialTheme.colorScheme.tertiary,
+                                                    inactiveTrackColor = MaterialTheme.colorScheme.tertiary.copy(
+                                                        alpha = 0.24f
+                                                    ),
+                                                ),
+                                                sliderState = sliderState,
+                                                modifier = Modifier.height(32.dp),
+                                                thumbTrackGapSize = 0.dp,
+                                                trackInsideCornerSize = 0.dp,
+                                                drawStopIndicator = null
+                                            )
+                                            Box(
+                                                modifier = Modifier.fillMaxSize().padding(horizontal = 10.dp),
+                                                contentAlignment = Alignment.CenterStart
+                                            ) {
+                                                Icon(
+                                                    imageVector = Icons.Rounded.Percent,
+                                                    contentDescription = null,
+                                                    modifier = Modifier.size(20.dp),
+                                                    tint = Color.White
+                                                )
+                                            }
+                                            Box(
+                                                modifier = Modifier.fillMaxSize().padding(horizontal = 10.dp),
+                                                contentAlignment = Alignment.CenterEnd
+                                            ) {
+                                                Icon(
+                                                    imageVector = Icons.Rounded.Add,
+                                                    contentDescription = null,
+                                                    modifier = Modifier.size(20.dp),
+                                                    tint = MaterialTheme.colorScheme.tertiary
+                                                )
+                                            }
+                                        }
+                                    }
                                 )
                                 Spacer(modifier = Modifier.width(16.dp))
                                 Box(
@@ -287,21 +353,55 @@ fun MainScreen(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Slider(
-                                value = splitCountState.toFloat(),
-                                onValueChange = { newValue ->
-                                    mainViewModel.updateSplitCount(newValue.roundToInt())
-                                },
-                                // onValueChangeFinished removed
-                                colors =
-                                SliderDefaults.colors(
+                                state = splitSliderState,
+                                modifier = Modifier.weight(1f),
+                                colors = SliderDefaults.colors(
                                     thumbColor = MaterialTheme.colorScheme.tertiary,
                                     activeTrackColor = MaterialTheme.colorScheme.tertiary,
                                     inactiveTrackColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.24f),
-                                    inactiveTickColor = Color.Transparent,
-                                    activeTickColor = MaterialTheme.colorScheme.surfaceBright,
                                 ),
-                                valueRange = 1f..75f, // Keep range, ViewModel ensures count >= 1
-                                modifier = Modifier.weight(1f),
+                                track = { sliderState ->
+                                    Box(
+                                        modifier = Modifier.height(32.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        SliderDefaults.Track(
+                                            colors = SliderDefaults.colors(
+                                                activeTrackColor = MaterialTheme.colorScheme.tertiary,
+                                                inactiveTrackColor = MaterialTheme.colorScheme.tertiary.copy(
+                                                    alpha = 0.24f
+                                                ),
+                                            ),
+                                            sliderState = sliderState,
+                                            modifier = Modifier.height(32.dp),
+                                            thumbTrackGapSize = 0.dp,
+                                            trackInsideCornerSize = 0.dp,
+                                            drawStopIndicator = null
+                                        )
+                                        Box(
+                                            modifier = Modifier.fillMaxSize().padding(horizontal = 10.dp),
+                                            contentAlignment = Alignment.CenterStart
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Group,
+                                                contentDescription = null,
+                                                modifier = Modifier.size(20.dp),
+                                                tint = Color.White
+                                            )
+                                        }
+                                        Box(
+                                            modifier = Modifier.fillMaxSize().padding(horizontal = 10.dp),
+                                            contentAlignment = Alignment.CenterEnd
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Groups,
+                                                contentDescription = null,
+                                                modifier = Modifier.size(20.dp),
+                                                tint = MaterialTheme.colorScheme.tertiary
+                                            )
+                                        }
+                                    }
+                                }
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                             Box(
