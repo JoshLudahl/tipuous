@@ -23,6 +23,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -123,6 +124,11 @@ fun SettingsContent(
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(30.dp),
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                )
         ) {
             Column(
                 modifier = Modifier.padding(16.dp),
@@ -149,6 +155,12 @@ fun SettingsContent(
                                 colorOptions.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
                                 else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
                             },
+                            colors = ToggleButtonDefaults.toggleButtonColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                checkedContentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                            )
                         ) {
                             if (isSelected) {
                                 Icon(
@@ -169,6 +181,11 @@ fun SettingsContent(
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(30.dp),
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                )
         ) {
             Column(
                 modifier = Modifier.padding(16.dp),
@@ -195,7 +212,13 @@ fun SettingsContent(
                                 themeOptions.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
                                 else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
                             },
-                            contentPadding = PaddingValues(0.dp)
+                            contentPadding = PaddingValues(0.dp),
+                            colors = ToggleButtonDefaults.toggleButtonColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                checkedContentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                            )
                         ) {
                             if (isSelected) {
                                 Icon(
@@ -215,6 +238,11 @@ fun SettingsContent(
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(30.dp),
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                )
         ) {
             Column(
                 modifier = Modifier.padding(16.dp),
