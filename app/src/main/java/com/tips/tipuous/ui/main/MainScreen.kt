@@ -30,6 +30,7 @@ import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Percent
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Button
@@ -71,6 +72,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -89,6 +91,7 @@ fun MainScreen(
     onAddReceipt: () -> Unit,
     onViewReceipts: () -> Unit,
     onNavigateToSettings: () -> Unit,
+    onNavigateToGuide: () -> Unit,
     onSaveBill: (String, String, String, String) -> Unit,
 ) {
     // Observe StateFlows from ViewModel
@@ -162,40 +165,109 @@ fun MainScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-
-                SectionTitle("Bill Amount")
-                OutlinedTextField(
-                    value = billText,
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(30.dp),
-                    onValueChange = { newText ->
-                        if (newText.isEmpty() || newText.matches(Regex("""^\d*\.?\d*$"""))) {
-                            billText = newText
-                            mainViewModel.setBill(newText.toDoubleOrNull() ?: 0.0)
-                        }
-                    },
-                    label = { Text("Enter Bill Amount") },
-                    leadingIcon = {
-                        Icon(
-                            Icons.Filled.AttachMoney,
-                            contentDescription = "Bill Amount",
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
                     colors =
-                    OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = MaterialTheme.colorScheme.tertiary,
-                    ),
-                )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                        CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
+                        ),
                 ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        SectionTitle("Tax Amount (Optional)")
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Text(
+                            text = "Bill Amount",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Left,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+
+                        OutlinedTextField(
+                            value = billText,
+                            shape = RoundedCornerShape(30.dp),
+                            onValueChange = { newText ->
+                                if (newText.isEmpty() || newText.matches(Regex("""^\d*\.?\d*$"""))) {
+                                    billText = newText
+                                    mainViewModel.setBill(newText.toDoubleOrNull() ?: 0.0)
+                                }
+                            },
+                            label = { Text("Enter Bill Amount") },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Filled.AttachMoney,
+                                    contentDescription = "Bill Amount",
+                                )
+                            },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth(),
+                            colors =
+                                OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = MaterialTheme.colorScheme.tertiary,
+                                ),
+                        )
+                    }
+                }
+
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(30.dp),
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
+                        ),
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Tax Amount (Optional)",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Text("Pre-tax", style = MaterialTheme.typography.labelSmall)
+                                Switch(
+                                    modifier = Modifier.scale(0.8f), // Scaled down to fit better in the header
+                                    checked = calculateTipOnPreTax,
+                                    onCheckedChange = { mainViewModel.setCalculateTipOnPreTax(it) },
+                                    colors = SwitchDefaults.colors(
+                                        checkedThumbColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                                        checkedTrackColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                    ),
+                                    thumbContent =
+                                        if (calculateTipOnPreTax) {
+                                            {
+                                                Icon(
+                                                    imageVector = Icons.Filled.Check,
+                                                    contentDescription = null,
+                                                    modifier = Modifier.size(SwitchDefaults.IconSize),
+                                                    tint = MaterialTheme.colorScheme.tertiaryContainer,
+                                                )
+                                            }
+                                        } else {
+                                            null
+                                        },
+                                )
+                            }
+                        }
+
                         OutlinedTextField(
                             value = taxText,
                             shape = RoundedCornerShape(30.dp),
@@ -216,44 +288,12 @@ fun MainScreen(
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth(),
                             colors =
-                            OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = MaterialTheme.colorScheme.tertiary,
-                            ),
-                        )
-                    }
-                    
-                    Column(
-                        modifier = Modifier.padding(top = 8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Text("Pre-tax", style = MaterialTheme.typography.labelSmall)
-                        Switch(
-                            modifier = Modifier.scale(1.25f),
-                            checked = calculateTipOnPreTax,
-                            onCheckedChange = { mainViewModel.setCalculateTipOnPreTax(it) },
-                            colors = SwitchDefaults.colors(
-                                checkedThumbColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                                checkedTrackColor = MaterialTheme.colorScheme.tertiaryContainer,
-                            ),
-                            thumbContent =
-                                if (calculateTipOnPreTax) {
-                                    {
-                                        Icon(
-                                            imageVector = Icons.Filled.Check,
-                                            contentDescription = null,
-                                            modifier = Modifier.size(SwitchDefaults.IconSize),
-                                            tint = MaterialTheme.colorScheme.tertiaryContainer,
-                                        )
-                                    }
-                                } else {
-                                    null
-                                },
+                                OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = MaterialTheme.colorScheme.tertiary,
+                                ),
                         )
                     }
                 }
-
-                SectionTitle("Tip Percentage")
 
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -265,10 +305,17 @@ fun MainScreen(
                     ),
                 ) {
                     Column(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(16.dp).fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
+                        Text(
+                            text = "Tip Percentage",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Left,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(ToggleButtonDefaults.IconSpacing),
@@ -401,8 +448,6 @@ fun MainScreen(
                     }
                 }
 
-                SectionTitle("Split Bill")
-
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(30.dp),
@@ -417,6 +462,13 @@ fun MainScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
+                        Text(
+                            text = "Split Bill",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Left,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
                         Row(
                             modifier =
                             Modifier
@@ -494,8 +546,6 @@ fun MainScreen(
                     }
                 }
 
-                SectionTitle("Totals")
-
                 Card(
                     modifier = Modifier.fillMaxWidth().padding(bottom = 200.dp),
                     shape = RoundedCornerShape(30.dp),
@@ -510,6 +560,14 @@ fun MainScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
+
+                        Text(
+                            text = "Totals",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Left,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
 
                         Text(
@@ -653,6 +711,12 @@ fun MainScreen(
                     }
                 },
                 trailingContent = {
+                    IconButton(onClick = onNavigateToGuide) {
+                        Icon(
+                            imageVector = Icons.Rounded.Info,
+                            contentDescription = "Tipping Guide",
+                        )
+                    }
                     IconButton(onClick = onNavigateToSettings) {
                         Icon(
                             imageVector = Icons.Rounded.Settings,

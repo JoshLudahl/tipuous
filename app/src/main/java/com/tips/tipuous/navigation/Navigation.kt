@@ -32,6 +32,9 @@ sealed interface Navigation : NavKey {
 
     @Serializable
     object Settings : Navigation
+
+    @Serializable
+    object TippingGuide : Navigation
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,7 +42,7 @@ sealed interface Navigation : NavKey {
 fun AppNavigation() {
     val navigationState = rememberNavigationState(
         startRoute = Navigation.Main,
-        topLevelRoutes = setOf(Navigation.Main, Navigation.Receipts, Navigation.Settings)
+        topLevelRoutes = setOf(Navigation.Main, Navigation.Receipts, Navigation.Settings, Navigation.TippingGuide)
     )
     val navigator = remember { Navigator(navigationState) }
 
@@ -50,6 +53,7 @@ fun AppNavigation() {
                 onAddReceipt = { navigator.navigate(Navigation.AddReceipt()) },
                 onViewReceipts = { navigator.navigate(Navigation.Receipts) },
                 onNavigateToSettings = { navigator.navigate(Navigation.Settings) },
+                onNavigateToGuide = { navigator.navigate(Navigation.TippingGuide) },
                 onSaveBill = { bill, tax, tip, total ->
                     navigator.navigate(Navigation.AddReceipt(bill = bill, tax = tax, tip = tip, total = total))
                 },
@@ -75,6 +79,10 @@ fun AppNavigation() {
             SettingsScreen(
                 onBack = { navigator.goBack() },
             )
+        }
+
+        entry<Navigation.TippingGuide> {
+            com.tips.tipuous.ui.guide.TippingGuideScreen(navigator = navigator)
         }
     }
 
