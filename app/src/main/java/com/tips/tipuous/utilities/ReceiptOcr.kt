@@ -15,6 +15,7 @@ import java.util.Locale
 object ReceiptOcr {
     data class Parsed(
         val billTotal: Double?,
+        val taxAmount: Double?,
         val tipAmount: Double?,
         val grandTotal: Double?,
         val dateEpochMillis: Long?,
@@ -38,6 +39,10 @@ object ReceiptOcr {
 
         val tip =
             Regex("tip\\s*[:=]?\\s*\\$?([0-9]+(?:\\.[0-9]{1,2})?)").find(fullText)
+                ?.groupValues?.getOrNull(1)?.toDoubleOrNull()
+
+        val tax =
+            Regex("tax\\s*[:=]?\\s*\\$?([0-9]+(?:\\.[0-9]{1,2})?)").find(fullText)
                 ?.groupValues?.getOrNull(1)?.toDoubleOrNull()
 
         val grandCandidates =
@@ -96,6 +101,7 @@ object ReceiptOcr {
 
         return Parsed(
             billTotal = bill,
+            taxAmount = tax,
             tipAmount = tip,
             grandTotal = grand,
             dateEpochMillis = dateMillis,

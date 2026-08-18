@@ -73,8 +73,9 @@ fun ReceiptsListScreenPreview() {
             locationName = "Cassin's Coffee",
             dateEpochMillis = System.currentTimeMillis(),
             billTotal = 15.50,
+            taxAmount = 1.24,
             tipAmount = 3.10,
-            grandTotal = 18.60,
+            grandTotal = 19.84,
             imagePath = null
         ),
         Receipt(
@@ -82,8 +83,9 @@ fun ReceiptsListScreenPreview() {
             locationName = "Blue Jay Bistro",
             dateEpochMillis = System.currentTimeMillis() - 86400000,
             billTotal = 42.00,
+            taxAmount = 3.36,
             tipAmount = 8.40,
-            grandTotal = 50.40,
+            grandTotal = 53.76,
             imagePath = null
         )
     )
@@ -382,7 +384,7 @@ fun ReceiptsListContent(
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Text(
-                                    text = "Bill: $${"%.2f".format(r.billTotal)} • Tip: $${"%.2f".format(r.tipAmount)}",
+                                    text = "Bill: $${"%.2f".format(r.billTotal)} • Tax: $${"%.2f".format(r.taxAmount)} • Tip: $${"%.2f".format(r.tipAmount)}",
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                                 )

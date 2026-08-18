@@ -61,6 +61,11 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel(
         else Conversion.formatNumberToIncludeTrailingZero(result.tipAmount)
     }.stateIn(viewModelScope, SharingStarted.Lazily, "0.00")
 
+    val taxAmountFormatted: StateFlow<String> = calculationResult.map { result ->
+        if (result == null || result.taxAmount == 0.0) "0.00"
+        else Conversion.formatNumberToIncludeTrailingZero(result.taxAmount)
+    }.stateIn(viewModelScope, SharingStarted.Lazily, "0.00")
+
     val amountPerPersonFormatted: StateFlow<String> = calculationResult.map { result ->
         if (result == null || result.billAmount == 0.0 || result.splitCount <= 1) "0.00"
         else Conversion.formatNumberToIncludeTrailingZero(result.amountPerPerson)

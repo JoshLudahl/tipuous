@@ -22,6 +22,7 @@ sealed interface Navigation : NavKey {
     data class AddReceipt(
         val receiptId: String? = null,
         val bill: String? = null,
+        val tax: String? = null,
         val tip: String? = null,
         val total: String? = null
     ) : Navigation
@@ -49,8 +50,8 @@ fun AppNavigation() {
                 onAddReceipt = { navigator.navigate(Navigation.AddReceipt()) },
                 onViewReceipts = { navigator.navigate(Navigation.Receipts) },
                 onNavigateToSettings = { navigator.navigate(Navigation.Settings) },
-                onSaveBill = { bill, tip, total ->
-                    navigator.navigate(Navigation.AddReceipt(bill = bill, tip = tip, total = total))
+                onSaveBill = { bill, tax, tip, total ->
+                    navigator.navigate(Navigation.AddReceipt(bill = bill, tax = tax, tip = tip, total = total))
                 },
             )
         }
@@ -60,6 +61,7 @@ fun AppNavigation() {
                 navigator = navigator,
                 receiptId = key.receiptId,
                 bill = key.bill,
+                tax = key.tax,
                 tip = key.tip,
                 total = key.total
             )

@@ -89,11 +89,12 @@ fun MainScreen(
     onAddReceipt: () -> Unit,
     onViewReceipts: () -> Unit,
     onNavigateToSettings: () -> Unit,
-    onSaveBill: (String, String, String) -> Unit,
+    onSaveBill: (String, String, String, String) -> Unit,
 ) {
     // Observe StateFlows from ViewModel
     val billAmount by mainViewModel.bill.collectAsStateWithLifecycle()
     val taxAmount by mainViewModel.taxAmount.collectAsStateWithLifecycle()
+    val taxAmountFormatted by mainViewModel.taxAmountFormatted.collectAsStateWithLifecycle()
     val calculateTipOnPreTax by mainViewModel.calculateTipOnPreTax.collectAsStateWithLifecycle()
     val roundingMode by mainViewModel.roundingMode.collectAsStateWithLifecycle()
     
@@ -581,6 +582,7 @@ fun MainScreen(
                             onClick = {
                                 onSaveBill(
                                     billAmount.toString(),
+                                    taxAmountFormatted,
                                     tipAmountFormatted,
                                     totalAmountFormatted
                                 )

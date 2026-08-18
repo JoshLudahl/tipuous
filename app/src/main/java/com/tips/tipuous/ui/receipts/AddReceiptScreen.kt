@@ -59,6 +59,7 @@ fun AddReceiptScreen(
     navigator: Navigator,
     receiptId: String? = null,
     bill: String? = null,
+    tax: String? = null,
     tip: String? = null,
     total: String? = null,
 ) {
@@ -82,9 +83,9 @@ fun AddReceiptScreen(
     }
 
     // Prefill data if provided
-    androidx.compose.runtime.LaunchedEffect(bill, tip, total) {
-        if (receiptId == null && (bill != null || tip != null || total != null)) {
-            viewModel.prefillData(bill, tip, total)
+    androidx.compose.runtime.LaunchedEffect(bill, tax, tip, total) {
+        if (receiptId == null && (bill != null || tax != null || tip != null || total != null)) {
+            viewModel.prefillData(bill, tax, tip, total)
         }
     }
 
@@ -207,6 +208,16 @@ fun AddReceiptScreen(
                         onValueChange = viewModel::onBillChange,
                         shape = RoundedCornerShape(30.dp),
                         label = { Text("Bill Total") },
+                        keyboardOptions = numericKeyboardOptions,
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = textFieldColors,
+                    )
+                    OutlinedTextField(
+                        value = state.tax,
+                        onValueChange = viewModel::onTaxChange,
+                        shape = RoundedCornerShape(30.dp),
+                        label = { Text("Tax Amount") },
                         keyboardOptions = numericKeyboardOptions,
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),

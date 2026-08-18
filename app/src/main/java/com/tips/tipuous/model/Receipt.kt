@@ -10,6 +10,7 @@ data class Receipt(
     val id: String = UUID.randomUUID().toString(),
     val dateEpochMillis: Long,
     val billTotal: Double,
+    val taxAmount: Double = 0.0,
     val tipAmount: Double,
     val grandTotal: Double,
     val locationName: String?,

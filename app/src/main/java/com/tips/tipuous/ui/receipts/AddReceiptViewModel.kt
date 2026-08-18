@@ -34,6 +34,7 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
 
     data class UiState(
         val bill: String = "",
+        val tax: String = "",
         val tip: String = "",
         val total: String = "",
         val dateMillis: Long? = System.currentTimeMillis(),
@@ -55,6 +56,12 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
             it.copy(bill = filtered).recomputeValidity()
         }
 
+    fun onTaxChange(input: String) =
+        _state.update {
+            val filtered = input.filter { ch -> ch.isDigit() || ch == '.' }
+            it.copy(tax = filtered).recomputeValidity()
+        }
+
     fun onTipChange(input: String) =
         _state.update {
             val filtered = input.filter { ch -> ch.isDigit() || ch == '.' }
@@ -69,13 +76,15 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
 
     fun onLocationChange(input: String) = _state.update { it.copy(location = input) }
 
-    fun prefillData(bill: String?, tip: String?, total: String?) {
+    fun prefillData(bill: String?, tax: String?, tip: String?, total: String?) {
         _state.update {
             val filteredBill = bill?.filter { ch -> ch.isDigit() || ch == '.' } ?: it.bill
+            val filteredTax = tax?.filter { ch -> ch.isDigit() || ch == '.' } ?: it.tax
             val filteredTip = tip?.filter { ch -> ch.isDigit() || ch == '.' } ?: it.tip
             val filteredTotal = total?.filter { ch -> ch.isDigit() || ch == '.' } ?: it.total
             it.copy(
                 bill = filteredBill,
+                tax = filteredTax,
                 tip = filteredTip,
                 total = filteredTotal
             ).recomputeValidity()
@@ -103,6 +112,7 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
                 _state.update {
                     it.copy(
                         bill = rec.billTotal.toString(),
+                        tax = rec.taxAmount.toString(),
                         tip = rec.tipAmount.toString(),
                         total = rec.grandTotal.toString(),
                         dateMillis = rec.dateEpochMillis,
@@ -135,6 +145,7 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
             _state.update { current ->
                 current.copy(
                     bill = parsed.billTotal?.toString() ?: current.bill,
+                    tax = parsed.taxAmount?.toString() ?: current.tax,
                     tip = parsed.tipAmount?.toString() ?: current.tip,
                     total = parsed.grandTotal?.toString() ?: current.total,
                     location = parsed.location ?: current.location,
@@ -150,6 +161,7 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
         if (!snapshot.isFormValid) return
 
         val billD = snapshot.bill.toDoubleOrNull() ?: 0.0
+        val taxD = snapshot.tax.toDoubleOrNull() ?: 0.0
         val tipD = snapshot.tip.toDoubleOrNull() ?: 0.0
         val totalD = snapshot.total.toDoubleOrNull() ?: 0.0
         val millis = snapshot.dateMillis ?: System.currentTimeMillis()
@@ -161,6 +173,7 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
                     id = editingId ?: java.util.UUID.randomUUID().toString(),
                     dateEpochMillis = millis,
                     billTotal = billD,
+                    taxAmount = taxD,
                     tipAmount = tipD,
                     grandTotal = totalD,
                     locationName = snapshot.location.ifBlank { null },
