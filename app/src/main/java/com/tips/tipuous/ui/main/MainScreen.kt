@@ -1,11 +1,11 @@
 package com.tips.tipuous.ui.main
 
 import android.content.Intent
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,6 +22,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.List
+import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Group
@@ -31,9 +32,8 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Percent
 import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material3.AssistChip
-import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -56,6 +56,8 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.material3.rememberSliderState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -268,52 +270,51 @@ fun MainScreen(
                     ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            horizontalArrangement = Arrangement.spacedBy(ToggleButtonDefaults.IconSpacing),
                         ) {
-                            val tipOptions =
-                                listOf(
-                                    "15%" to Percent.FIFTEEN,
-                                    "18%" to Percent.EIGHTEEN,
-                                    "20%" to Percent.TWENTY,
-                                )
-
-                            tipOptions.forEach { (label, percentEnum) ->
-                                AssistChip(
-                                    onClick = { mainViewModel.updateTipPercentage(percentEnum) },
-                                    label = { Text(label) },
-                                    colors =
-                                    AssistChipDefaults.assistChipColors(
-                                        labelColor = if (selectedTipPercentEnum == percentEnum && selectedTipPercentEnum != Percent.CUSTOM) MaterialTheme.colorScheme.onTertiary else MaterialTheme.colorScheme.onSurface,
-                                        containerColor =
-                                        if (selectedTipPercentEnum == percentEnum && selectedTipPercentEnum != Percent.CUSTOM) {
-                                            MaterialTheme.colorScheme.tertiaryContainer
-                                        } else {
-                                            MaterialTheme.colorScheme.tertiaryContainer.copy(
-                                                alpha = 0.24f,
-                                            )
-                                        },
-                                    ),
-                                    border = BorderStroke(0.dp, Color.Transparent),
-                                )
-                            }
-
-                            AssistChip(
-                                onClick = { mainViewModel.handleCustomPercentageClick() },
-                                label = { Text("Other") },
-                                colors =
-                                AssistChipDefaults.assistChipColors(
-                                    labelColor = if (selectedTipPercentEnum == Percent.CUSTOM) MaterialTheme.colorScheme.onTertiary else MaterialTheme.colorScheme.onSurface,
-                                    containerColor =
-                                    if (selectedTipPercentEnum == Percent.CUSTOM) {
-                                        MaterialTheme.colorScheme.tertiaryContainer
-                                    } else {
-                                        MaterialTheme.colorScheme.tertiaryContainer.copy(
-                                            alpha = 0.24f,
-                                        )
-                                    },
-                                ),
-                                border = BorderStroke(0.dp, Color.Transparent),
+                            val tipOptions = listOf(
+                                "15%" to Percent.FIFTEEN,
+                                "18%" to Percent.EIGHTEEN,
+                                "20%" to Percent.TWENTY,
+                                "Other" to Percent.CUSTOM
                             )
+
+                            tipOptions.forEachIndexed { index, (label, percentEnum) ->
+                                val isSelected = selectedTipPercentEnum == percentEnum
+                                ToggleButton(
+                                    checked = isSelected,
+                                    onCheckedChange = {
+                                        if (percentEnum == Percent.CUSTOM) {
+                                            mainViewModel.handleCustomPercentageClick()
+                                        } else {
+                                            mainViewModel.updateTipPercentage(percentEnum)
+                                        }
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                    shapes = when (index) {
+                                        0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                                        tipOptions.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                                        else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                                    },
+                                    contentPadding = PaddingValues(0.dp),
+                                    colors = ToggleButtonDefaults.toggleButtonColors(
+                                        containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+                                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                        checkedContentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                                    )
+                                ) {
+                                    if (isSelected) {
+                                        Icon(
+                                            imageVector = Icons.Rounded.Done,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(ToggleButtonDefaults.IconSize)
+                                        )
+                                        Spacer(modifier = Modifier.size(ToggleButtonDefaults.IconSpacing))
+                                    }
+                                    Text(label, maxLines = 1)
+                                }
+                            }
                         }
 
                         if (selectedTipPercentEnum == Percent.CUSTOM) {
@@ -524,26 +525,42 @@ fun MainScreen(
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+                            horizontalArrangement = Arrangement.spacedBy(ToggleButtonDefaults.IconSpacing),
                         ) {
-                            AssistChip(
-                                onClick = { mainViewModel.setRoundingMode(RoundingMode.UP) },
-                                label = { Text("Round Up") },
-                                colors = AssistChipDefaults.assistChipColors(
-                                    containerColor = if (roundingMode == RoundingMode.UP) MaterialTheme.colorScheme.tertiaryContainer else Color.Transparent,
-                                    labelColor = if (roundingMode == RoundingMode.UP) MaterialTheme.colorScheme.onTertiaryContainer else MaterialTheme.colorScheme.onSurface
-                                )
+                            val roundingOptions = listOf(
+                                "Round Up" to RoundingMode.UP,
+                                "Round Down" to RoundingMode.DOWN
                             )
-                            Spacer(Modifier.width(8.dp))
-                            AssistChip(
-                                onClick = { mainViewModel.setRoundingMode(RoundingMode.DOWN) },
-                                label = { Text("Round Down") },
-                                colors = AssistChipDefaults.assistChipColors(
-                                    containerColor = if (roundingMode == RoundingMode.DOWN) MaterialTheme.colorScheme.tertiaryContainer else Color.Transparent,
-                                    labelColor = if (roundingMode == RoundingMode.DOWN) MaterialTheme.colorScheme.onTertiaryContainer else MaterialTheme.colorScheme.onSurface
-                                )
-                            )
+                            roundingOptions.forEachIndexed { index, (label, mode) ->
+                                val isSelected = roundingMode == mode
+                                ToggleButton(
+                                    checked = isSelected,
+                                    onCheckedChange = { mainViewModel.setRoundingMode(mode) },
+                                    modifier = Modifier.weight(1f),
+                                    shapes = when (index) {
+                                        0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                                        roundingOptions.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                                        else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                                    },
+                                    contentPadding = PaddingValues(0.dp),
+                                    colors = ToggleButtonDefaults.toggleButtonColors(
+                                        containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+                                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                        checkedContentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                                    )
+                                ) {
+                                    if (isSelected) {
+                                        Icon(
+                                            imageVector = Icons.Rounded.Done,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(ToggleButtonDefaults.IconSize)
+                                        )
+                                        Spacer(modifier = Modifier.size(ToggleButtonDefaults.IconSpacing))
+                                    }
+                                    Text(label, maxLines = 1)
+                                }
+                            }
                         }
 
                         if (splitCountState > 1) {
