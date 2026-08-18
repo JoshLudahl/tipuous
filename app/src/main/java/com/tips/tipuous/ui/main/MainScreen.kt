@@ -671,6 +671,10 @@ fun MainScreen(
                     .offset(y = -FloatingToolbarDefaults.ScreenOffset)
                     .zIndex(1f),
                 expanded = true,
+                colors = FloatingToolbarDefaults.standardFloatingToolbarColors (
+                   toolbarContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    toolbarContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                ),
                 leadingContent = {
                     IconButton(onClick = onViewReceipts) {
                         Icon(
