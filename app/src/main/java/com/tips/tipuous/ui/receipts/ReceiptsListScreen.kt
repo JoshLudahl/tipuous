@@ -1,6 +1,8 @@
 package com.tips.tipuous.ui.receipts
 
 import android.graphics.BitmapFactory
+import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
@@ -9,16 +11,22 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.Payments
+import androidx.compose.material.icons.filled.Savings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -30,6 +38,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.VerticalDivider
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +49,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.text.font.FontWeight
@@ -46,9 +57,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.room.util.TableInfo
 import com.tips.tipuous.model.Receipt
 import com.tips.tipuous.navigation.Navigation
 import com.tips.tipuous.navigation.Navigator
+import com.tips.tipuous.ui.main.SectionTitle
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -162,7 +175,134 @@ fun ReceiptsListContent(
                 Text("Add a receipt from the main screen to see it here.", style = MaterialTheme.typography.bodyMedium)
             }
         } else {
+            val totalSpent = receipts.sumOf { it.grandTotal }
+            val totalTipped = receipts.sumOf { it.tipAmount }
+            val totalBill = receipts.sumOf { it.billTotal }
+            val count = receipts.size
+
             LazyColumn(Modifier.padding(padding).padding(16.dp)) {
+                item {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 16.dp),
+                        shape = RoundedCornerShape(32.dp),
+                        color = MaterialTheme.colorScheme.surfaceContainerLow,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .padding(vertical = 20.dp, horizontal = 8.dp)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            SummaryItem(
+                                label = "Items",
+                                value = count.toString(),
+                                icon = Icons.AutoMirrored.Filled.ReceiptLong,
+                                modifier = Modifier.weight(1f)
+                            )
+                            VerticalDivider(
+                                modifier = Modifier.height(40.dp),
+                                color = MaterialTheme.colorScheme.outlineVariant
+                            )
+                            SummaryItem(
+                                label = "Spent",
+                                value = "$${"%.2f".format(totalSpent)}",
+                                icon = Icons.Default.Payments,
+                                modifier = Modifier.weight(1f)
+                            )
+                            VerticalDivider(
+                                modifier = Modifier.height(40.dp),
+                                color = MaterialTheme.colorScheme.outlineVariant
+                            )
+                            SummaryItem(
+                                label = "Tipped",
+                                value = "$${"%.2f".format(totalTipped)}",
+                                icon = Icons.Default.Savings,
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
+                }
+
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 32.dp, start = 8.dp, end = 8.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Allocation",
+                                style = MaterialTheme.typography.labelLarge,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Text(
+                                text = "Total: $${"%.2f".format(totalSpent)}",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+
+                        val billColor = MaterialTheme.colorScheme.outline
+                        val tipColor = MaterialTheme.colorScheme.tertiary
+
+                        // Segmented Bar
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(24.dp)
+                                .clip(RoundedCornerShape(30.dp))
+                                .background(billColor)
+                        ) {
+                            if (totalSpent > 0) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .weight(totalBill.toFloat())
+                                        .clip(RoundedCornerShape(30.dp))
+                                        .background(tipColor)
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .weight(totalTipped.toFloat())
+                                        .background(billColor)
+                                )
+                            }
+                        }
+
+                        // Legend
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            LegendItem(
+                                label = "Bill",
+                                amount = totalBill,
+                                color = tipColor
+                            )
+
+                            LegendItem(
+                                label = "Tips",
+                                amount = totalTipped,
+                                color = billColor
+                            )
+                        }
+                    }
+                }
+
+                item {
+                    SectionHeading("Receipts")
+                }
+
                 items(receipts, key = { it.id }) { r ->
                     Card(
                         modifier =
@@ -260,5 +400,69 @@ fun ReceiptsListContent(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun LegendItem(label: String, amount: Double, color: androidx.compose.ui.graphics.Color) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Box(
+            modifier = Modifier
+                .size(8.dp)
+                .clip(CircleShape)
+                .background(color)
+        )
+        Spacer(Modifier.width(6.dp))
+        Text(
+            text = "$label: $${"%.2f".format(amount)}",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Composable
+fun SummaryItem(
+    label: String,
+    value: String,
+    icon: ImageVector,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.size(24.dp),
+            tint = MaterialTheme.colorScheme.primary
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.ExtraBold,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontWeight = FontWeight.Medium
+        )
+    }
+}
+
+@Composable
+fun SectionHeading(text: String) {
+    Column(
+        modifier = Modifier.padding(bottom = 12.dp).fillMaxWidth()
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
