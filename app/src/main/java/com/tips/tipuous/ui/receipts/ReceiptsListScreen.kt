@@ -1,10 +1,10 @@
 package com.tips.tipuous.ui.receipts
 
 import android.graphics.BitmapFactory
-import androidx.compose.foundation.background
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -39,7 +39,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.VerticalDivider
-import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,11 +56,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.room.util.TableInfo
 import com.tips.tipuous.model.Receipt
 import com.tips.tipuous.navigation.Navigation
 import com.tips.tipuous.navigation.Navigator
-import com.tips.tipuous.ui.main.SectionTitle
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -168,7 +165,9 @@ fun ReceiptsListContent(
     ) { padding ->
         if (receipts.isEmpty()) {
             Column(
-                modifier = Modifier.padding(padding).padding(24.dp),
+                modifier = Modifier
+                    .padding(padding)
+                    .padding(24.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Text("No receipts yet.", style = MaterialTheme.typography.titleMedium)
@@ -180,7 +179,9 @@ fun ReceiptsListContent(
             val totalBill = receipts.sumOf { it.billTotal }
             val count = receipts.size
 
-            LazyColumn(Modifier.padding(padding).padding(16.dp)) {
+            LazyColumn(Modifier
+                .padding(padding)
+                .padding(16.dp)) {
                 item {
                     Surface(
                         modifier = Modifier
@@ -457,7 +458,9 @@ fun SummaryItem(
 @Composable
 fun SectionHeading(text: String) {
     Column(
-        modifier = Modifier.padding(bottom = 12.dp).fillMaxWidth()
+        modifier = Modifier
+            .padding(bottom = 12.dp)
+            .fillMaxWidth()
     ) {
         Text(
             text = text,
