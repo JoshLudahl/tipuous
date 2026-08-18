@@ -5,6 +5,8 @@ import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,15 +21,15 @@ import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -46,12 +48,19 @@ import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.net.toUri
 import com.tips.tipuous.BuildConfig
 import com.tips.tipuous.ui.composeables.ReusableTopAppBar
 import com.tips.tipuous.ui.composeables.TopAppBarIcon
 import com.tips.tipuous.ui.theme.ThemeManager
 import com.tips.tipuous.ui.theme.ThemeMode
+
+@Preview(showBackground = true)
+@Composable
+fun SettingsScreenPreview() {
+    SettingsScreen(onBack = {})
+}
 
 @Composable
 fun SettingsScreen(onBack: () -> Unit) {
@@ -86,7 +95,12 @@ fun SettingsContent(
     modifier: Modifier = Modifier,
     context: Context,
 ) {
-    val themeManager = ThemeManager.getInstance()
+    val themeManager =
+        try {
+            ThemeManager.getInstance()
+        } catch (e: IllegalStateException) {
+            ThemeManager.getInstance(LocalContext.current)
+        }
     val currentThemeMode by themeManager.themeMode.collectAsState()
     val currentDynamicColor by themeManager.dynamicColor.collectAsState()
 
@@ -120,25 +134,31 @@ fun SettingsContent(
                 )
                 Spacer(modifier = Modifier.height(12.dp))
 
-                SingleChoiceSegmentedButtonRow(
-                    modifier = Modifier.fillMaxWidth()
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(ToggleButtonDefaults.IconSpacing),
                 ) {
                     colorOptions.forEachIndexed { index, label ->
-                        SegmentedButton(
-                            shape = SegmentedButtonDefaults.itemShape(index = index, count = colorOptions.size),
-                            onClick = { themeManager.setDynamicColor(index == 1) },
-                            selected = index == selectedColorOption,
-                            icon = {
-                                if (selectedColorOption == index) {
-                                    Icon(
-                                        imageVector = Icons.Rounded.Done,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(SegmentedButtonDefaults.IconSize)
-                                    )
-                                }
-                            }
+                        val isSelected = index == selectedColorOption
+                        ToggleButton(
+                            checked = isSelected,
+                            onCheckedChange = { themeManager.setDynamicColor(index == 1) },
+                            modifier = Modifier.weight(1f),
+                            shapes = when (index) {
+                                0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                                colorOptions.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                                else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                            },
                         ) {
-                            Text(label)
+                            if (isSelected) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Done,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(ToggleButtonDefaults.IconSize)
+                                )
+                                Spacer(modifier = Modifier.size(ToggleButtonDefaults.IconSpacing))
+                            }
+                            Text(label, maxLines = 1)
                         }
                     }
                 }
@@ -160,25 +180,32 @@ fun SettingsContent(
                 )
                 Spacer(modifier = Modifier.height(12.dp))
 
-                SingleChoiceSegmentedButtonRow(
+                Row(
                     modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(ToggleButtonDefaults.IconSpacing),
                 ) {
                     themeOptions.forEachIndexed { index, label ->
-                        SegmentedButton(
-                            shape = SegmentedButtonDefaults.itemShape(index = index, count = themeOptions.size),
-                            onClick = { themeManager.setThemeMode(ThemeMode.entries[index]) },
-                            selected = index == selectedThemeOption,
-                            icon = {
-                                if (selectedThemeOption == index) {
-                                    Icon(
-                                        imageVector = Icons.Rounded.Done,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(SegmentedButtonDefaults.IconSize)
-                                    )
-                                }
-                            }
+                        val isSelected = index == selectedThemeOption
+                        ToggleButton(
+                            checked = isSelected,
+                            onCheckedChange = { themeManager.setThemeMode(ThemeMode.entries[index]) },
+                            modifier = Modifier.weight(1f),
+                            shapes = when (index) {
+                                0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                                themeOptions.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                                else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                            },
+                            contentPadding = PaddingValues(0.dp)
                         ) {
-                            Text(label)
+                            if (isSelected) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Done,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(ToggleButtonDefaults.IconSize)
+                                )
+                                Spacer(modifier = Modifier.size(ToggleButtonDefaults.IconSpacing))
+                            }
+                            Text(label, maxLines = 1)
                         }
                     }
                 }
