@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -46,6 +47,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.tips.tipuous.navigation.Navigator
@@ -62,6 +65,14 @@ fun AddReceiptScreen(
     val context = LocalContext.current
     val viewModel: AddReceiptViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
     val state by viewModel.state.collectAsState()
+
+    val numericKeyboardOptions = remember {
+        KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
+    }
+    val locationKeyboardOptions = remember {
+        KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done)
+    }
+    val textFieldColors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.tertiary)
 
     // Load existing receipt if editing
     androidx.compose.runtime.LaunchedEffect(receiptId) {
@@ -196,36 +207,40 @@ fun AddReceiptScreen(
                         onValueChange = viewModel::onBillChange,
                         shape = RoundedCornerShape(30.dp),
                         label = { Text("Bill Total") },
+                        keyboardOptions = numericKeyboardOptions,
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.tertiary),
+                        colors = textFieldColors,
                     )
                     OutlinedTextField(
                         value = state.tip,
                         onValueChange = viewModel::onTipChange,
                         shape = RoundedCornerShape(30.dp),
                         label = { Text("Tip Amount") },
+                        keyboardOptions = numericKeyboardOptions,
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.tertiary),
+                        colors = textFieldColors,
                     )
                     OutlinedTextField(
                         value = state.total,
                         onValueChange = viewModel::onTotalChange,
                         shape = RoundedCornerShape(30.dp),
                         label = { Text("Grand Total") },
+                        keyboardOptions = numericKeyboardOptions,
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.tertiary),
+                        colors = textFieldColors,
                     )
                     OutlinedTextField(
                         value = state.location,
                         onValueChange = viewModel::onLocationChange,
                         shape = RoundedCornerShape(30.dp),
                         label = { Text("Location (optional)") },
+                        keyboardOptions = locationKeyboardOptions,
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.tertiary),
+                        colors = textFieldColors,
                     )
 
                     val dateText =
