@@ -325,7 +325,7 @@ fun MainScreen(
                 SectionTitle("Totals")
 
                 Card(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 200.dp),
                     shape = RoundedCornerShape(30.dp),
                     colors =
                     CardDefaults.cardColors(
