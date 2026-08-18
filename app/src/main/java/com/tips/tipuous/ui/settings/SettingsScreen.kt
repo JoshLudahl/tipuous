@@ -64,7 +64,10 @@ fun SettingsScreenPreview() {
 }
 
 @Composable
-fun SettingsScreen(onBack: () -> Unit) {
+fun SettingsScreen(
+    viewModel: SettingsViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    onBack: () -> Unit
+) {
     val context = LocalContext.current
 
     Scaffold(
@@ -86,6 +89,7 @@ fun SettingsScreen(onBack: () -> Unit) {
         SettingsContent(
             modifier = Modifier.padding(innerPadding),
             context = context,
+            viewModel = viewModel
         )
     }
 }
@@ -95,6 +99,7 @@ fun SettingsScreen(onBack: () -> Unit) {
 fun SettingsContent(
     modifier: Modifier = Modifier,
     context: Context,
+    viewModel: SettingsViewModel
 ) {
     val themeManager =
         try {
@@ -104,6 +109,8 @@ fun SettingsContent(
         }
     val currentThemeMode by themeManager.themeMode.collectAsState()
     val currentDynamicColor by themeManager.dynamicColor.collectAsState()
+    
+    val defaultTipPercent by viewModel.defaultTipPercent.collectAsState()
 
     val selectedColorOption = if (currentDynamicColor) 1 else 0
     val selectedThemeOption = currentThemeMode.ordinal
@@ -210,6 +217,70 @@ fun SettingsContent(
                             shapes = when (index) {
                                 0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
                                 themeOptions.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                                else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                            },
+                            contentPadding = PaddingValues(0.dp),
+                            colors = ToggleButtonDefaults.toggleButtonColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                checkedContentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                            )
+                        ) {
+                            if (isSelected) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Done,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(ToggleButtonDefaults.IconSize)
+                                )
+                                Spacer(modifier = Modifier.size(ToggleButtonDefaults.IconSpacing))
+                            }
+                            Text(label, maxLines = 1)
+                        }
+                    }
+                }
+            }
+        }
+
+        // Default Tip Selection
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(30.dp),
+            colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+            )
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+            ) {
+                Text(
+                    text = "Default Tip Percentage",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+
+                val tipOptions = listOf(
+                    "15%" to com.tips.tipuous.model.Percent.FIFTEEN,
+                    "18%" to com.tips.tipuous.model.Percent.EIGHTEEN,
+                    "20%" to com.tips.tipuous.model.Percent.TWENTY
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(ToggleButtonDefaults.IconSpacing),
+                ) {
+                    tipOptions.forEachIndexed { index, (label, percent) ->
+                        val isSelected = defaultTipPercent == percent
+                        ToggleButton(
+                            checked = isSelected,
+                            onCheckedChange = { viewModel.setDefaultTipPercent(percent) },
+                            modifier = Modifier.weight(1f),
+                            shapes = when (index) {
+                                0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                                tipOptions.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
                                 else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
                             },
                             contentPadding = PaddingValues(0.dp),

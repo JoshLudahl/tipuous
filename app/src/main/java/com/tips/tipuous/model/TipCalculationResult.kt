@@ -7,5 +7,11 @@ data class TipCalculationResult(
     val totalAmount: Double,
     val splitCount: Int,
     val amountPerPerson: Double,
-    val isShareable: Boolean
+    val isShareable: Boolean,
+    val taxAmount: Double = 0.0,
+    val isTipCalculatedOnPreTax: Boolean = false
 )
+
+enum class RoundingMode {
+    NONE, UP, DOWN
+}

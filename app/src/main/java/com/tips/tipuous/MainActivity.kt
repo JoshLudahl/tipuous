@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var aut: Task<AppUpdateInfo>
     private val updateType = AppUpdateType.FLEXIBLE
     private lateinit var themeManager: ThemeManager
+    private lateinit var settingsManager: com.tips.tipuous.data.AppSettingsManager
 
     private val listener =
         InstallStateUpdatedListener { state ->
@@ -58,6 +59,7 @@ class MainActivity : AppCompatActivity() {
         checkIsUpdateAvailable()
 
         themeManager = ThemeManager.getInstance(this)
+        settingsManager = com.tips.tipuous.data.AppSettingsManager.getInstance(this)
         enableEdgeToEdge()
         setContent {
 

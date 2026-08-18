@@ -23,9 +23,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.List
 import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Group
+import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Percent
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
@@ -47,15 +51,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Group
-import androidx.compose.material.icons.filled.Groups
-import androidx.compose.material.icons.rounded.Group
-import androidx.compose.material.icons.rounded.Groups
-import androidx.compose.material.icons.rounded.Percent
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSliderState
 import androidx.compose.runtime.Composable
@@ -66,6 +65,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -77,6 +77,7 @@ import androidx.compose.ui.zIndex
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tips.tipuous.model.Percent
+import com.tips.tipuous.model.RoundingMode
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -90,6 +91,10 @@ fun MainScreen(
 ) {
     // Observe StateFlows from ViewModel
     val billAmount by mainViewModel.bill.collectAsStateWithLifecycle()
+    val taxAmount by mainViewModel.taxAmount.collectAsStateWithLifecycle()
+    val calculateTipOnPreTax by mainViewModel.calculateTipOnPreTax.collectAsStateWithLifecycle()
+    val roundingMode by mainViewModel.roundingMode.collectAsStateWithLifecycle()
+    
     val selectedTipPercentEnum by mainViewModel.tipPercentEnum.collectAsStateWithLifecycle()
     val customTipPercentState by mainViewModel.customTipPercent.collectAsStateWithLifecycle()
     val splitCountState by mainViewModel.splitCount.collectAsStateWithLifecycle()
@@ -126,9 +131,12 @@ fun MainScreen(
     val isShareEnabled by mainViewModel.isShareable.collectAsStateWithLifecycle()
 
 
-    // Local state for the TextField to manage text input directly
+    // Local state for TextFields to manage text input directly
     var billText by remember(billAmount) {
-        mutableStateOf(if ((billAmount == 0.0) || (billAmount.toString() == "0.0")) "" else billAmount.toString())
+        mutableStateOf(if ((billAmount == 0.0)) "" else billAmount.toString())
+    }
+    var taxText by remember(taxAmount) {
+        mutableStateOf(if ((taxAmount == 0.0)) "" else taxAmount.toString())
     }
 
     val context = LocalContext.current
@@ -159,9 +167,7 @@ fun MainScreen(
                     onValueChange = { newText ->
                         if (newText.isEmpty() || newText.matches(Regex("""^\d*\.?\d*$"""))) {
                             billText = newText
-                            val newBill = newText.toDoubleOrNull() ?: 0.0
-                            // ViewModel now handles recalculation internally via combine flow
-                            mainViewModel.setBill(newBill)
+                            mainViewModel.setBill(newText.toDoubleOrNull() ?: 0.0)
                         }
                     },
                     label = { Text("Enter Bill Amount") },
@@ -179,6 +185,70 @@ fun MainScreen(
                         focusedBorderColor = MaterialTheme.colorScheme.tertiary,
                     ),
                 )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        SectionTitle("Tax Amount (Optional)")
+                        OutlinedTextField(
+                            value = taxText,
+                            shape = RoundedCornerShape(30.dp),
+                            onValueChange = { newText ->
+                                if (newText.isEmpty() || newText.matches(Regex("""^\d*\.?\d*$"""))) {
+                                    taxText = newText
+                                    mainViewModel.setTaxAmount(newText.toDoubleOrNull() ?: 0.0)
+                                }
+                            },
+                            label = { Text("Tax") },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Filled.AttachMoney,
+                                    contentDescription = "Tax Amount",
+                                )
+                            },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth(),
+                            colors =
+                            OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = MaterialTheme.colorScheme.tertiary,
+                            ),
+                        )
+                    }
+                    
+                    Column(
+                        modifier = Modifier.padding(top = 8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text("Pre-tax", style = MaterialTheme.typography.labelSmall)
+                        Switch(
+                            modifier = Modifier.scale(1.25f),
+                            checked = calculateTipOnPreTax,
+                            onCheckedChange = { mainViewModel.setCalculateTipOnPreTax(it) },
+                            colors = SwitchDefaults.colors(
+                                checkedThumbColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                                checkedTrackColor = MaterialTheme.colorScheme.tertiaryContainer,
+                            ),
+                            thumbContent =
+                                if (calculateTipOnPreTax) {
+                                    {
+                                        Icon(
+                                            imageVector = Icons.Filled.Check,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(SwitchDefaults.IconSize),
+                                            tint = MaterialTheme.colorScheme.tertiaryContainer,
+                                        )
+                                    }
+                                } else {
+                                    null
+                                },
+                        )
+                    }
+                }
 
                 SectionTitle("Tip Percentage")
 
@@ -202,9 +272,9 @@ fun MainScreen(
                         ) {
                             val tipOptions =
                                 listOf(
-                                    "5%" to Percent.FIVE,
-                                    "10%" to Percent.TEN,
                                     "15%" to Percent.FIFTEEN,
+                                    "18%" to Percent.EIGHTEEN,
+                                    "20%" to Percent.TWENTY,
                                 )
 
                             tipOptions.forEach { (label, percentEnum) ->
@@ -229,7 +299,7 @@ fun MainScreen(
 
                             AssistChip(
                                 onClick = { mainViewModel.handleCustomPercentageClick() },
-                                label = { Text("Other") }, // Or use mainViewModel.customTipLabel.collectAsStateWithLifecycle() if it provides more dynamic text
+                                label = { Text("Other") },
                                 colors =
                                 AssistChipDefaults.assistChipColors(
                                     labelColor = if (selectedTipPercentEnum == Percent.CUSTOM) MaterialTheme.colorScheme.onTertiary else MaterialTheme.colorScheme.onSurface,
@@ -451,9 +521,34 @@ fun MainScreen(
                             style = MaterialTheme.typography.titleLarge,
                             color = MaterialTheme.colorScheme.tertiary,
                         )
-                        if (splitCountState > 1) { // Use Int state for logic
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            AssistChip(
+                                onClick = { mainViewModel.setRoundingMode(RoundingMode.UP) },
+                                label = { Text("Round Up") },
+                                colors = AssistChipDefaults.assistChipColors(
+                                    containerColor = if (roundingMode == RoundingMode.UP) MaterialTheme.colorScheme.tertiaryContainer else Color.Transparent,
+                                    labelColor = if (roundingMode == RoundingMode.UP) MaterialTheme.colorScheme.onTertiaryContainer else MaterialTheme.colorScheme.onSurface
+                                )
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            AssistChip(
+                                onClick = { mainViewModel.setRoundingMode(RoundingMode.DOWN) },
+                                label = { Text("Round Down") },
+                                colors = AssistChipDefaults.assistChipColors(
+                                    containerColor = if (roundingMode == RoundingMode.DOWN) MaterialTheme.colorScheme.tertiaryContainer else Color.Transparent,
+                                    labelColor = if (roundingMode == RoundingMode.DOWN) MaterialTheme.colorScheme.onTertiaryContainer else MaterialTheme.colorScheme.onSurface
+                                )
+                            )
+                        }
+
+                        if (splitCountState > 1) {
                             HorizontalDivider(
-                                Modifier.padding(vertical = 8.dp), // Added padding for visual separation
+                                Modifier.padding(vertical = 8.dp),
                                 thickness = DividerDefaults.Thickness,
                                 color = DividerDefaults.color,
                             )
@@ -504,7 +599,7 @@ fun MainScreen(
                                 val shareIntent = Intent.createChooser(sendIntent, null)
                                 context.startActivity(shareIntent)
                             },
-                            enabled = isShareEnabled, // Use new StateFlow
+                            enabled = isShareEnabled,
                             modifier = Modifier.fillMaxWidth(),
                             colors =
                             ButtonDefaults.buttonColors(
