@@ -54,6 +54,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.SliderDefaults.Track
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -96,6 +97,7 @@ fun MainScreen(
 ) {
     // Observe StateFlows from ViewModel
     val billAmount by mainViewModel.bill.collectAsStateWithLifecycle()
+    val billAmountFormatted by mainViewModel.billAmountFormatted.collectAsStateWithLifecycle()
     val taxAmount by mainViewModel.taxAmount.collectAsStateWithLifecycle()
     val taxAmountFormatted by mainViewModel.taxAmountFormatted.collectAsStateWithLifecycle()
     val calculateTipOnPreTax by mainViewModel.calculateTipOnPreTax.collectAsStateWithLifecycle()
@@ -168,23 +170,19 @@ fun MainScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(30.dp),
-                    colors =
-                        CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                            contentColor = MaterialTheme.colorScheme.onSurface,
-                        ),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
+                    ),
                 ) {
                     Column(
-                        modifier = Modifier.padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.padding(24.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         Text(
-                            text = "Bill Amount",
+                            text = "Bill Details",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Left,
-                            modifier = Modifier.fillMaxWidth(),
                         )
 
                         OutlinedTextField(
@@ -196,74 +194,39 @@ fun MainScreen(
                                     mainViewModel.setBill(newText.toDoubleOrNull() ?: 0.0)
                                 }
                             },
-                            label = { Text("Enter Bill Amount") },
-                            leadingIcon = {
-                                Icon(
-                                    Icons.Filled.AttachMoney,
-                                    contentDescription = "Bill Amount",
-                                )
-                            },
+                            label = { Text("Subtotal") },
+                            leadingIcon = { Icon(Icons.Filled.AttachMoney, null) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth(),
-                            colors =
-                                OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = MaterialTheme.colorScheme.tertiary,
-                                ),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = MaterialTheme.colorScheme.tertiary,
+                            ),
                         )
-                    }
-                }
 
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(30.dp),
-                    colors =
-                        CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                            contentColor = MaterialTheme.colorScheme.onSurface,
-                        ),
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "Tax Amount (Optional)",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
+                                text = "Tax (Optional)",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.SemiBold,
                             )
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                Text("Pre-tax", style = MaterialTheme.typography.labelSmall)
+                                Text("Tip on pre-tax", style = MaterialTheme.typography.labelSmall)
                                 Switch(
-                                    modifier = Modifier.scale(0.8f), // Scaled down to fit better in the header
+                                    modifier = Modifier.scale(0.8f),
                                     checked = calculateTipOnPreTax,
                                     onCheckedChange = { mainViewModel.setCalculateTipOnPreTax(it) },
                                     colors = SwitchDefaults.colors(
                                         checkedThumbColor = MaterialTheme.colorScheme.onTertiaryContainer,
                                         checkedTrackColor = MaterialTheme.colorScheme.tertiaryContainer,
-                                    ),
-                                    thumbContent =
-                                        if (calculateTipOnPreTax) {
-                                            {
-                                                Icon(
-                                                    imageVector = Icons.Filled.Check,
-                                                    contentDescription = null,
-                                                    modifier = Modifier.size(SwitchDefaults.IconSize),
-                                                    tint = MaterialTheme.colorScheme.tertiaryContainer,
-                                                )
-                                            }
-                                        } else {
-                                            null
-                                        },
+                                    )
                                 )
                             }
                         }
@@ -277,20 +240,14 @@ fun MainScreen(
                                     mainViewModel.setTaxAmount(newText.toDoubleOrNull() ?: 0.0)
                                 }
                             },
-                            label = { Text("Tax") },
-                            leadingIcon = {
-                                Icon(
-                                    Icons.Filled.AttachMoney,
-                                    contentDescription = "Tax Amount",
-                                )
-                            },
+                            label = { Text("Tax Amount") },
+                            leadingIcon = { Icon(Icons.Filled.AttachMoney, null) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth(),
-                            colors =
-                                OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = MaterialTheme.colorScheme.tertiary,
-                                ),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = MaterialTheme.colorScheme.tertiary,
+                            ),
                         )
                     }
                 }
@@ -385,6 +342,7 @@ fun MainScreen(
                                         activeTrackColor = MaterialTheme.colorScheme.tertiary,
                                         inactiveTrackColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.24f),
                                     ),
+
                                     track = { sliderState ->
                                         Box(
                                             modifier = Modifier.height(32.dp),
@@ -549,148 +507,159 @@ fun MainScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth().padding(bottom = 200.dp),
                     shape = RoundedCornerShape(30.dp),
-                    colors =
-                    CardDefaults.cardColors(
+                    colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainer,
                         contentColor = MaterialTheme.colorScheme.onSurface,
                     ),
                 ) {
                     Column(
-                        modifier = Modifier.padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.padding(24.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
-
                         Text(
-                            text = "Totals",
+                            text = "Bill Summary",
                             style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Left,
-                            modifier = Modifier.fillMaxWidth(),
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Text(
-                            text = "Tip Amount $$tipAmountFormatted",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.tertiary,
+                            fontWeight = FontWeight.ExtraBold,
                         )
 
-                        Text(
-                            text = "Total Amount $$totalAmountFormatted",
-                            style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.tertiary,
-                        )
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(ToggleButtonDefaults.IconSpacing),
-                        ) {
-                            val roundingOptions = listOf(
-                                "Round Up" to RoundingMode.UP,
-                                "Round Down" to RoundingMode.DOWN
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            SummaryRow(label = "Subtotal", value = "$$billAmountFormatted")
+                            if (taxAmount > 0.0) {
+                                SummaryRow(label = "Tax", value = "$$taxAmountFormatted")
+                            }
+                            SummaryRow(label = "Tip", value = "$$tipAmountFormatted")
+                            
+                            HorizontalDivider(
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                thickness = DividerDefaults.Thickness,
+                                color = DividerDefaults.color,
                             )
-                            roundingOptions.forEachIndexed { index, (label, mode) ->
-                                val isSelected = roundingMode == mode
-                                ToggleButton(
-                                    checked = isSelected,
-                                    onCheckedChange = { mainViewModel.setRoundingMode(mode) },
-                                    modifier = Modifier.weight(1f),
-                                    shapes = when (index) {
-                                        0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
-                                        roundingOptions.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
-                                        else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
-                                    },
-                                    contentPadding = PaddingValues(0.dp),
-                                    colors = ToggleButtonDefaults.toggleButtonColors(
-                                        containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
-                                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                                        checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                                        checkedContentColor = MaterialTheme.colorScheme.onTertiaryContainer
-                                    )
+                            
+                            SummaryRow(label = "Total", value = "$$totalAmountFormatted", isTotal = true)
+                        }
+
+                        if (splitCountState > 1) {
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.3f)
+                                ),
+                                shape = RoundedCornerShape(16.dp)
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    if (isSelected) {
-                                        Icon(
-                                            imageVector = Icons.Rounded.Done,
-                                            contentDescription = null,
-                                            modifier = Modifier.size(ToggleButtonDefaults.IconSize)
-                                        )
-                                        Spacer(modifier = Modifier.size(ToggleButtonDefaults.IconSpacing))
+                                    Column {
+                                        Text("Per Person", style = MaterialTheme.typography.labelMedium)
+                                        Text("Split $splitCountState ways", style = MaterialTheme.typography.bodySmall)
                                     }
-                                    Text(label, maxLines = 1)
+                                    Text(
+                                        text = "$$amountPerPersonFormatted",
+                                        style = MaterialTheme.typography.titleLarge,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.tertiary
+                                    )
                                 }
                             }
                         }
 
-                        if (splitCountState > 1) {
-                            HorizontalDivider(
-                                Modifier.padding(vertical = 8.dp),
-                                thickness = DividerDefaults.Thickness,
-                                color = DividerDefaults.color,
-                            )
-                            Text(
-                                text = "Amount Per Person: $$amountPerPersonFormatted",
-                                style = MaterialTheme.typography.bodyLarge,
-                                modifier = Modifier.padding(top = 8.dp),
-                                color = MaterialTheme.colorScheme.tertiary,
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Button(
-                            onClick = {
-                                onSaveBill(
-                                    billAmount.toString(),
-                                    taxAmountFormatted,
-                                    tipAmountFormatted,
-                                    totalAmountFormatted
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text(text = "Rounding", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(ToggleButtonDefaults.IconSpacing),
+                            ) {
+                                val roundingOptions = listOf(
+                                    "Round Up" to RoundingMode.UP,
+                                    "Round Down" to RoundingMode.DOWN
                                 )
-                            },
-                            enabled = isShareEnabled,
-                            modifier = Modifier.fillMaxWidth(),
-                            colors =
-                            ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.tertiary,
-                                contentColor = MaterialTheme.colorScheme.onPrimary,
-                            ),
-                        ) {
-                            Icon(
-                                Icons.Filled.Save,
-                                contentDescription = "Save to Receipts",
-                                modifier = Modifier.size(ButtonDefaults.IconSize),
-                            )
-                            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                            Text("Save to Receipts")
+                                roundingOptions.forEachIndexed { index, (label, mode) ->
+                                    val isSelected = roundingMode == mode
+                                    ToggleButton(
+                                        checked = isSelected,
+                                        onCheckedChange = { mainViewModel.setRoundingMode(mode) },
+                                        modifier = Modifier.weight(1f),
+                                        shapes = when (index) {
+                                            0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                                            roundingOptions.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                                            else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                                        },
+                                        contentPadding = PaddingValues(0.dp),
+                                        colors = ToggleButtonDefaults.toggleButtonColors(
+                                            containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+                                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                            checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                            checkedContentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                                        )
+                                    ) {
+                                        if (isSelected) {
+                                            Icon(
+                                                imageVector = Icons.Rounded.Done,
+                                                contentDescription = null,
+                                                modifier = Modifier.size(ToggleButtonDefaults.IconSize)
+                                            )
+                                            Spacer(modifier = Modifier.size(ToggleButtonDefaults.IconSpacing))
+                                        }
+                                        Text(label, maxLines = 1)
+                                    }
+                                }
+                            }
                         }
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Button(
+                                onClick = {
+                                    onSaveBill(
+                                        billAmount.toString(),
+                                        taxAmountFormatted,
+                                        tipAmountFormatted,
+                                        totalAmountFormatted
+                                    )
+                                },
+                                enabled = isShareEnabled,
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.tertiary,
+                                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                                ),
+                            ) {
+                                Icon(
+                                    Icons.Filled.Save,
+                                    contentDescription = "Save to Receipts",
+                                    modifier = Modifier.size(ButtonDefaults.IconSize),
+                                )
+                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("Save to Receipts")
+                            }
 
-                        Button(
-                            onClick = {
-                                val shareMessage = mainViewModel.formatBillWithTipForSharing()
-                                val sendIntent: Intent =
-                                    Intent().apply {
+                            Button(
+                                onClick = {
+                                    val shareMessage = mainViewModel.formatBillWithTipForSharing()
+                                    val sendIntent: Intent = Intent().apply {
                                         action = Intent.ACTION_SEND
                                         putExtra(Intent.EXTRA_TEXT, shareMessage)
                                         type = "text/plain"
                                     }
-                                val shareIntent = Intent.createChooser(sendIntent, null)
-                                context.startActivity(shareIntent)
-                            },
-                            enabled = isShareEnabled,
-                            modifier = Modifier.fillMaxWidth(),
-                            colors =
-                            ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.tertiary,
-                                contentColor = MaterialTheme.colorScheme.onPrimary,
-                            ),
-                        ) {
-                            Icon(
-                                Icons.Filled.Share,
-                                contentDescription = "Share Bill",
-                                modifier = Modifier.size(ButtonDefaults.IconSize),
-                            )
-                            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                            Text("Share Bill")
+                                    val shareIntent = Intent.createChooser(sendIntent, null)
+                                    context.startActivity(shareIntent)
+                                },
+                                enabled = isShareEnabled,
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.tertiary,
+                                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                                ),
+                            ) {
+                                Icon(
+                                    Icons.Filled.Share,
+                                    contentDescription = "Share Bill",
+                                    modifier = Modifier.size(ButtonDefaults.IconSize),
+                                )
+                                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                Text("Share Bill")
+                            }
                         }
                     }
                 }
@@ -735,6 +704,27 @@ fun MainScreen(
                 scrollBehavior = floatingToolbarScrollBehavior,
             )
         }
+    }
+}
+
+@Composable
+fun SummaryRow(label: String, value: String, isTotal: Boolean = false) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = if (isTotal) MaterialTheme.typography.titleMedium else MaterialTheme.typography.bodyLarge,
+            fontWeight = if (isTotal) FontWeight.Bold else FontWeight.Normal
+        )
+        Text(
+            text = value,
+            style = if (isTotal) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.titleSmall,
+            fontWeight = if (isTotal) FontWeight.Black else FontWeight.Bold,
+            color = if (isTotal) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurface
+        )
     }
 }
 

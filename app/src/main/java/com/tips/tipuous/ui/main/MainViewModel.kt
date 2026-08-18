@@ -51,6 +51,11 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel(
     )
 
     // Derived UI states
+    val billAmountFormatted: StateFlow<String> = calculationResult.map { result ->
+        if (result == null || result.billAmount == 0.0) "0.00"
+        else Conversion.formatNumberToIncludeTrailingZero(result.billAmount)
+    }.stateIn(viewModelScope, SharingStarted.Lazily, "0.00")
+
     val totalAmountFormatted: StateFlow<String> = calculationResult.map { result ->
         if (result == null || result.billAmount == 0.0) "-"
         else Conversion.formatNumberToIncludeTrailingZero(result.totalAmount)

@@ -26,13 +26,13 @@ class TipCalculator {
         }
 
         val baseAmountForTip = if (calculateTipOnPreTax) {
-            (billAmount - taxAmount).coerceAtLeast(0.0)
-        } else {
             billAmount
+        } else {
+            billAmount + taxAmount
         }
 
         val tipAmount = Conversion.roundDoubleToTwoDecimalPlaces(baseAmountForTip * tipPercentageValue)
-        var totalAmount = Conversion.roundDoubleToTwoDecimalPlaces(billAmount + tipAmount)
+        var totalAmount = Conversion.roundDoubleToTwoDecimalPlaces(billAmount + taxAmount + tipAmount)
 
         totalAmount = when (roundingMode) {
             RoundingMode.UP -> ceil(totalAmount)
