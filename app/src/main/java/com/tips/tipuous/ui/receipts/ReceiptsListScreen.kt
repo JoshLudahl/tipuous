@@ -4,8 +4,11 @@ import android.graphics.BitmapFactory
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,20 +36,28 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TooltipAnchorPosition
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.VerticalDivider
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -59,6 +70,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tips.tipuous.model.Receipt
 import com.tips.tipuous.navigation.Navigation
 import com.tips.tipuous.navigation.Navigator
+import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -107,6 +119,7 @@ fun ReceiptsListScreen(
     viewModel: ReceiptsListViewModel = viewModel(),
 ) {
     val receipts by viewModel.receipts.collectAsStateWithLifecycle()
+    val trends by viewModel.monthTrend.collectAsStateWithLifecycle()
 
     var showDeleteDialog by remember { mutableStateOf(false) }
     var receiptToDelete by remember { mutableStateOf<Receipt?>(null) }
@@ -135,6 +148,7 @@ fun ReceiptsListScreen(
 
     ReceiptsListContent(
         receipts = receipts,
+        trends = trends,
         onBack = { navigator.goBack() },
         onReceiptClick = { id -> navigator.navigate(Navigation.AddReceipt(receiptId = id)) },
         onDeleteReceipt = { r ->
@@ -149,6 +163,7 @@ fun ReceiptsListScreen(
 @Composable
 fun ReceiptsListContent(
     receipts: List<Receipt>,
+    trends: List<MonthTrend> = emptyList(),
     onBack: () -> Unit,
     onReceiptClick: (String) -> Unit,
     onDeleteReceipt: (Receipt) -> Unit,
@@ -300,6 +315,10 @@ fun ReceiptsListContent(
                             )
                         }
                     }
+                }
+
+                item {
+                    TrendChart(trends)
                 }
 
                 item {
@@ -469,5 +488,109 @@ fun SectionHeading(text: String) {
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
+    }
+}
+
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@Composable
+fun TrendChart(trends: List<MonthTrend>) {
+    val maxTotal = trends.maxOfOrNull { it.total }?.coerceAtLeast(1.0) ?: 1.0
+    val scope = rememberCoroutineScope()
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 32.dp, start = 8.dp, end = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text(
+            text = "13-Month Trend",
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(130.dp) // Increased height to accommodate shadow
+                .padding(top = 8.dp), // Padding for shadow
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.Bottom
+        ) {
+            trends.forEach { trend ->
+                val barHeight = (trend.total / maxTotal).toFloat()
+                val tooltipState = rememberTooltipState()
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .alpha(if (trend.total == 0.0) 0.4f else 1f),
+                    verticalArrangement = Arrangement.Bottom
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        TooltipBox(
+                            positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
+                                positioning = TooltipAnchorPosition.Above
+                            ),
+                            tooltip = {
+                                PlainTooltip {
+                                    Text("$${"%.2f".format(trend.total)}")
+                                }
+                            },
+                            state = tooltipState
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.8f)
+                                    .fillMaxHeight(barHeight.coerceAtLeast(0.05f))
+                                    .clickable(
+                                        enabled = trend.total > 0,
+                                        interactionSource = remember { MutableInteractionSource() },
+                                        indication = null,
+                                        onClick = {
+                                            scope.launch { tooltipState.show(
+                                                mutatePriority = MutatePriority.UserInput
+                                            ) }
+                                        }
+                                    )
+                                    .then(
+                                        if (trend.isCurrentMonth) {
+                                            Modifier.shadow(
+                                                elevation = 8.dp,
+                                                shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
+                                                spotColor = MaterialTheme.colorScheme.tertiary,
+                                                ambientColor = MaterialTheme.colorScheme.tertiary
+                                            )
+                                        } else Modifier
+                                    )
+                                    .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
+                                    .background(
+                                        if (trend.isCurrentMonth) MaterialTheme.colorScheme.tertiary
+                                        else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
+                                    )
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = trend.label,
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = if (trend.isCurrentMonth) FontWeight.Bold else FontWeight.Normal,
+                        color = if (trend.isCurrentMonth) MaterialTheme.colorScheme.tertiary
+                        else MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+        }
     }
 }
