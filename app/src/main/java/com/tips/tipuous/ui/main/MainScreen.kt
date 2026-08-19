@@ -721,7 +721,7 @@ fun MainScreen(
                                 Modifier
                                     .align(Alignment.Start),
                         ) {
-                            Text(if (isAdvancedMode) "Simple Splitting" else "Advanced Splitting")
+                            Text(if (isAdvancedMode) "Simple Splitting" else "Advanced Splitting", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
                         }
 
                         if (isAdvancedMode) {
