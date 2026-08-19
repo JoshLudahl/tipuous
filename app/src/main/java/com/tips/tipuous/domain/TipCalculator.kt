@@ -3,6 +3,7 @@ package com.tips.tipuous.domain
 import com.tips.tipuous.model.Percent
 import com.tips.tipuous.model.RoundingMode
 import com.tips.tipuous.model.TipCalculationResult
+import com.tips.tipuous.model.TipMode
 import com.tips.tipuous.utilities.Conversion
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -16,23 +17,41 @@ class TipCalculator {
         splitCount: Int,
         taxAmount: Double = 0.0,
         calculateTipOnPreTax: Boolean = false,
-        roundingMode: RoundingMode = RoundingMode.NONE
+        roundingMode: RoundingMode = RoundingMode.NONE,
+        tipMode: TipMode = TipMode.PERCENT,
+        fixedTipAmount: Double = 0.0,
     ): TipCalculationResult {
-        val tipPercentageValue = when (tipPercentEnum) {
-            Percent.FIFTEEN -> 0.15
-            Percent.EIGHTEEN -> 0.18
-            Percent.TWENTY -> 0.20
-            Percent.CUSTOM -> customTipPercent / 100.0
-            Percent.NONE -> 0.0
-        }
+        val (tipAmount, tipPercentageValue) = if (tipMode == TipMode.PERCENT) {
+            val percentageValue = when (tipPercentEnum) {
+                Percent.FIFTEEN -> 0.15
+                Percent.EIGHTEEN -> 0.18
+                Percent.TWENTY -> 0.20
+                Percent.CUSTOM -> customTipPercent / 100.0
+                Percent.NONE -> 0.0
+            }
 
-        val baseAmountForTip = if (calculateTipOnPreTax) {
-            billAmount
+            val baseAmountForTip = if (calculateTipOnPreTax) {
+                billAmount
+            } else {
+                billAmount + taxAmount
+            }
+
+            Conversion.roundDoubleToTwoDecimalPlaces(baseAmountForTip * percentageValue) to percentageValue
         } else {
-            billAmount + taxAmount
+            val baseAmountForTip = if (calculateTipOnPreTax) {
+                billAmount
+            } else {
+                billAmount + taxAmount
+            }
+
+            val effectivePercentage = if (baseAmountForTip > 0.0) {
+                fixedTipAmount / baseAmountForTip
+            } else {
+                0.0
+            }
+            Conversion.roundDoubleToTwoDecimalPlaces(fixedTipAmount) to effectivePercentage
         }
 
-        val tipAmount = Conversion.roundDoubleToTwoDecimalPlaces(baseAmountForTip * tipPercentageValue)
         var totalAmount = Conversion.roundDoubleToTwoDecimalPlaces(billAmount + taxAmount + tipAmount)
 
         totalAmount = when (roundingMode) {
@@ -47,7 +66,7 @@ class TipCalculator {
             totalAmount
         }
 
-        val isShareable = billAmount > 0.0 && totalAmount > 0.0
+        val isShareable = (billAmount > 0.0) && (totalAmount > 0.0)
 
         return TipCalculationResult(
             billAmount = billAmount,
@@ -58,7 +77,7 @@ class TipCalculator {
             amountPerPerson = amountPerPerson,
             isShareable = isShareable,
             taxAmount = taxAmount,
-            isTipCalculatedOnPreTax = calculateTipOnPreTax
+            isTipCalculatedOnPreTax = calculateTipOnPreTax,
         )
     }
 }

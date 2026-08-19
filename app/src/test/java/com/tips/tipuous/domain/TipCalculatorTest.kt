@@ -1,6 +1,7 @@
 package com.tips.tipuous.domain
 
 import com.tips.tipuous.model.Percent
+import com.tips.tipuous.model.TipMode
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -14,10 +15,25 @@ class TipCalculatorTest {
             billAmount = 100.0,
             tipPercentEnum = Percent.TWENTY,
             customTipPercent = 20,
-            splitCount = 1
+            splitCount = 1,
         )
         assertEquals(20.0, result.tipAmount, 0.01)
         assertEquals(120.0, result.totalAmount, 0.01)
+    }
+
+    @Test
+    fun `calculate tip with fixed amount results in correct total`() {
+        val result = calculator.calculate(
+            billAmount = 100.0,
+            tipPercentEnum = Percent.NONE,
+            customTipPercent = 0,
+            splitCount = 1,
+            tipMode = TipMode.AMOUNT,
+            fixedTipAmount = 25.0,
+        )
+        assertEquals(25.0, result.tipAmount, 0.01)
+        assertEquals(125.0, result.totalAmount, 0.01)
+        assertEquals(0.25, result.tipPercentageValue, 0.01)
     }
 
     @Test
@@ -28,7 +44,7 @@ class TipCalculatorTest {
             tipPercentEnum = Percent.TWENTY,
             customTipPercent = 20,
             splitCount = 1,
-            taxAmount = 0.0
+            taxAmount = 0.0,
         )
         
         // Tax case: 100 bill, 20% tip, 10 tax, tip on pre-tax -> 130 total
@@ -38,7 +54,7 @@ class TipCalculatorTest {
             customTipPercent = 20,
             splitCount = 1,
             taxAmount = 10.0,
-            calculateTipOnPreTax = true
+            calculateTipOnPreTax = true,
         )
         
         assertEquals(20.0, taxResultPreTax.tipAmount, 0.01)
@@ -52,7 +68,7 @@ class TipCalculatorTest {
             customTipPercent = 20,
             splitCount = 1,
             taxAmount = 10.0,
-            calculateTipOnPreTax = false
+            calculateTipOnPreTax = false,
         )
         
         assertEquals(22.0, taxResultOnTotal.tipAmount, 0.01)
@@ -63,7 +79,6 @@ class TipCalculatorTest {
     fun `toggling pre-tax switch correctly changes tip amount`() {
         val bill = 100.0
         val tax = 10.0
-        val tipPercent = 0.20 // 20%
         
         // Pre-tax ON: tip = 100 * 0.2 = 20
         val preTaxOn = calculator.calculate(
@@ -72,7 +87,7 @@ class TipCalculatorTest {
             customTipPercent = 20,
             splitCount = 1,
             taxAmount = tax,
-            calculateTipOnPreTax = true
+            calculateTipOnPreTax = true,
         )
         assertEquals(20.0, preTaxOn.tipAmount, 0.01)
         
@@ -83,7 +98,7 @@ class TipCalculatorTest {
             customTipPercent = 20,
             splitCount = 1,
             taxAmount = tax,
-            calculateTipOnPreTax = false
+            calculateTipOnPreTax = false,
         )
         assertEquals(22.0, preTaxOff.tipAmount, 0.01)
     }
