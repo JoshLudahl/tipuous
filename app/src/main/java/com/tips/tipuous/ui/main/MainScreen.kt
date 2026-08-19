@@ -566,7 +566,6 @@ fun MainScreen(
                         }
 
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text(text = "Rounding", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(ToggleButtonDefaults.IconSpacing),
