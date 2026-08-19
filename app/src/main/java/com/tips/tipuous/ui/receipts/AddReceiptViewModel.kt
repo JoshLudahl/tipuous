@@ -29,7 +29,10 @@ import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
+
 
 /**
  * ViewModel for AddReceiptScreen. Holds form state, image preview, parsing, validation and saving.
@@ -275,52 +278,21 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
     ): Bitmap? {
         val context = getApplication<Application>()
         return try {
-            if (Build.VERSION.SDK_INT >= 28) {
-                val source = ImageDecoder.createSource(context.contentResolver, uri)
-                val original =
-                    ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
-                        decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
-                    }
-                val w = original.width
-                val h = original.height
-                val maxDim = maxOf(w, h)
-                if (maxDim > maxSize) {
-                    val ratio = maxDim.toFloat() / maxSize
-                    val newW = (w / ratio).toInt().coerceAtLeast(1)
-                    val newH = (h / ratio).toInt().coerceAtLeast(1)
-                    original.scale(newW, newH)
-                } else {
-                    original
+            val source = ImageDecoder.createSource(context.contentResolver, uri)
+            val original =
+                ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
+                    decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
                 }
+            val w = original.width
+            val h = original.height
+            val maxDim = maxOf(w, h)
+            if (maxDim > maxSize) {
+                val ratio = maxDim.toFloat() / maxSize
+                val newW = (w / ratio).toInt().coerceAtLeast(1)
+                val newH = (h / ratio).toInt().coerceAtLeast(1)
+                original.scale(newW, newH)
             } else {
-                // Two-pass decode with inSampleSize
-                context.contentResolver.openInputStream(uri)?.use { stream1 ->
-                    val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-                    BitmapFactory.decodeStream(stream1, null, bounds)
-                }
-                val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-                context.contentResolver.openInputStream(uri)?.use { stream2 ->
-                    BitmapFactory.decodeStream(stream2, null, bounds)
-                }
-                val outW = bounds.outWidth
-                val outH = bounds.outHeight
-                val maxDim = maxOf(outW, outH).coerceAtLeast(1)
-                val sample =
-                    if (maxDim > maxSize) {
-                        var s = 1
-                        while (maxDim / s > maxSize) s *= 2
-                        s
-                    } else {
-                        1
-                    }
-                val opts =
-                    BitmapFactory.Options().apply {
-                        inSampleSize = sample
-                        inPreferredConfig = Bitmap.Config.ARGB_8888
-                    }
-                context.contentResolver.openInputStream(uri)?.use { stream3 ->
-                    BitmapFactory.decodeStream(stream3, null, opts)
-                }
+                original
             }
         } catch (_: SecurityException) {
             null
