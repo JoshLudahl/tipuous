@@ -1,11 +1,13 @@
 import com.android.build.api.dsl.ApplicationExtension
+import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
-    id("com.google.gms.google-services")
-    id("com.google.firebase.crashlytics")
-    id("com.google.firebase.firebase-perf")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.firebase.perf)
+    alias(libs.plugins.ktlint)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serializable)
@@ -78,6 +80,26 @@ configure<ApplicationExtension> {
 
 kotlin {
     jvmToolchain(21)
+}
+
+ktlint {
+    android = true
+    ignoreFailures = false
+    reporters {
+        reporter(ReporterType.CHECKSTYLE)
+        reporter(ReporterType.JSON)
+        reporter(ReporterType.HTML)
+    }
+    additionalEditorconfig.set(
+        mapOf(
+            "max_line_length" to "off",
+            "ktlint_function_naming_ignore_when_annotated_with" to "Composable",
+        ),
+    )
+}
+
+tasks.named("preBuild") {
+    dependsOn("ktlintFormat")
 }
 
 dependencies {
