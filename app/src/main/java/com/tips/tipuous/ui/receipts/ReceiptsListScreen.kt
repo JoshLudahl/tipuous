@@ -122,7 +122,7 @@ fun ReceiptsListScreen(
                     showDeleteDialog = false
                     receiptToDelete = null
                 }) {
-                    Text("Continue")
+                    Text("Confirm")
                 }
             },
             dismissButton = {
