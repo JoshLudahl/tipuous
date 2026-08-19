@@ -24,7 +24,9 @@ sealed interface Navigation : NavKey {
         val bill: String? = null,
         val tax: String? = null,
         val tip: String? = null,
-        val total: String? = null
+        val total: String? = null,
+        val advancedSplitJson: String? = null,
+        val splitCount: Int = 1,
     ) : Navigation
 
     @Serializable
@@ -54,8 +56,17 @@ fun AppNavigation() {
                 onViewReceipts = { navigator.navigate(Navigation.Receipts) },
                 onNavigateToSettings = { navigator.navigate(Navigation.Settings) },
                 onNavigateToGuide = { navigator.navigate(Navigation.TippingGuide) },
-                onSaveBill = { bill, tax, tip, total ->
-                    navigator.navigate(Navigation.AddReceipt(bill = bill, tax = tax, tip = tip, total = total))
+                onSaveBill = { bill, tax, tip, total, splitCount, advancedJson ->
+                    navigator.navigate(
+                        Navigation.AddReceipt(
+                            bill = bill,
+                            tax = tax,
+                            tip = tip,
+                            total = total,
+                            splitCount = splitCount,
+                            advancedSplitJson = advancedJson
+                        )
+                    )
                 },
             )
         }
@@ -67,7 +78,9 @@ fun AppNavigation() {
                 bill = key.bill,
                 tax = key.tax,
                 tip = key.tip,
-                total = key.total
+                total = key.total,
+                splitCount = key.splitCount,
+                advancedSplitJson = key.advancedSplitJson
             )
         }
 

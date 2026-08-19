@@ -4,7 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tips.tipuous.domain.TipCalculator
+import com.tips.tipuous.model.AdvancedSplit
+import com.tips.tipuous.model.Item
 import com.tips.tipuous.model.Percent
+import com.tips.tipuous.model.Person
 import com.tips.tipuous.model.RoundingMode
 import com.tips.tipuous.model.TipCalculationResult
 import com.tips.tipuous.model.TipMode
@@ -40,6 +43,12 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel(
     val tipMode: StateFlow<TipMode> = savedStateHandle.getStateFlow("tipMode", TipMode.PERCENT)
     val fixedTipAmount: StateFlow<Double> = savedStateHandle.getStateFlow("fixedTipAmount", 0.0)
 
+    val isAdvancedMode: StateFlow<Boolean> = savedStateHandle.getStateFlow("isAdvancedMode", false)
+    val advancedSplit: StateFlow<AdvancedSplit> = savedStateHandle.getStateFlow(
+        "advancedSplit",
+        AdvancedSplit(),
+    )
+
     private data class CoreInputs(
         val bill: Double,
         val tipPercent: Percent,
@@ -47,11 +56,14 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel(
         val split: Int,
         val tipMode: TipMode,
     )
+
     private data class ExtraInputs(
         val tax: Double,
         val preTax: Boolean,
         val rounding: RoundingMode,
         val fixedTip: Double,
+        val isAdvanced: Boolean,
+        val advancedSplit: AdvancedSplit,
     )
 
     // Core calculation result state - using nested combine to avoid vararg type inference issues
@@ -59,8 +71,22 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel(
         combine(bill, tipPercentEnum, customTipPercent, splitCount, tipMode) { b, t, c, s, m ->
             CoreInputs(b, t, c, s, m)
         },
-        combine(taxAmount, calculateTipOnPreTax, roundingMode, fixedTipAmount) { tax, pre, round, fixed ->
-            ExtraInputs(tax, pre, round, fixed)
+        combine(
+            combine(taxAmount, calculateTipOnPreTax, roundingMode) { tax, pre, round ->
+                Triple(tax, pre, round)
+            },
+            combine(fixedTipAmount, isAdvancedMode, advancedSplit) { fixed, advanced, data ->
+                Triple(fixed, advanced, data)
+            }
+        ) { group1, group2 ->
+            ExtraInputs(
+                tax = group1.first,
+                preTax = group1.second,
+                rounding = group1.third,
+                fixedTip = group2.first,
+                isAdvanced = group2.second,
+                advancedSplit = group2.third
+            )
         },
     ) { core, extra ->
         tipCalculator.calculate(
@@ -73,6 +99,7 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel(
             roundingMode = extra.rounding,
             tipMode = core.tipMode,
             fixedTipAmount = extra.fixedTip,
+            advancedSplit = if (extra.isAdvanced) extra.advancedSplit else null,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -177,6 +204,51 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel(
         savedStateHandle["roundingMode"] = if (current == mode) RoundingMode.NONE else mode
     }
 
+    fun setAdvancedMode(enabled: Boolean) {
+        savedStateHandle["isAdvancedMode"] = enabled
+    }
+
+    fun addPerson(name: String) {
+        val current = advancedSplit.value
+        val newPeople = current.people + Person(name = name)
+        savedStateHandle["advancedSplit"] = current.copy(people = newPeople)
+
+        // Ensure splitCount is at least the number of people
+        if (splitCount.value < newPeople.size) {
+            updateSplitCount(newPeople.size)
+        }
+    }
+
+    fun removePerson(personId: String) {
+        val current = advancedSplit.value
+        val newPeople = current.people.filter { it.id != personId }
+        savedStateHandle["advancedSplit"] = current.copy(people = newPeople)
+    }
+
+    fun addItemToPerson(personId: String, itemName: String, amount: Double) {
+        val current = advancedSplit.value
+        val newPeople = current.people.map { person ->
+            if (person.id == personId) {
+                person.copy(items = person.items + Item(name = itemName, amount = amount))
+            } else {
+                person
+            }
+        }
+        savedStateHandle["advancedSplit"] = current.copy(people = newPeople)
+    }
+
+    fun removeItemFromPerson(personId: String, itemId: String) {
+        val current = advancedSplit.value
+        val newPeople = current.people.map { person ->
+            if (person.id == personId) {
+                person.copy(items = person.items.filter { it.id != itemId })
+            } else {
+                person
+            }
+        }
+        savedStateHandle["advancedSplit"] = current.copy(people = newPeople)
+    }
+
     fun formatBillWithTipForSharing(): String {
         val result = calculationResult.value ?: return "No calculation performed yet."
         if (!result.isShareable) return "Enter a bill amount to share."
@@ -184,6 +256,14 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel(
         var splitDetails = ""
         if (result.splitCount > 1) {
             splitDetails = "Split (${result.splitCount} ways): \$${Conversion.formatNumberToIncludeTrailingZero(result.amountPerPerson)}/each"
+
+            if (isAdvancedMode.value && result.personResults.isNotEmpty()) {
+                val advancedDetails = advancedSplit.value.people.joinToString("\n") { person ->
+                    val total = result.personResults[person.id] ?: 0.0
+                    "${person.name}: \$${Conversion.formatNumberToIncludeTrailingZero(total)}"
+                }
+                splitDetails += "\nAdvanced Split:\n$advancedDetails"
+            }
         }
 
         val taxInfo = if (result.taxAmount > 0.0) {

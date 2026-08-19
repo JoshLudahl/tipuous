@@ -34,8 +34,8 @@ import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Percent
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DividerDefaults
@@ -58,6 +58,7 @@ import androidx.compose.material3.SliderState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.material3.rememberSliderState
@@ -84,6 +85,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tips.tipuous.model.Percent
 import com.tips.tipuous.model.RoundingMode
 import com.tips.tipuous.model.TipMode
+import com.tips.tipuous.ui.composeables.AdvancedSplitSection
+import kotlinx.serialization.json.Json
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -94,7 +97,7 @@ fun MainScreen(
     onViewReceipts: () -> Unit,
     onNavigateToSettings: () -> Unit,
     onNavigateToGuide: () -> Unit,
-    onSaveBill: (String, String, String, String) -> Unit,
+    onSaveBill: (String, String, String, String, Int, String?) -> Unit,
 ) {
     // Observe StateFlows from ViewModel
     val billAmount by mainViewModel.bill.collectAsStateWithLifecycle()
@@ -110,6 +113,10 @@ fun MainScreen(
     val selectedTipPercentEnum by mainViewModel.tipPercentEnum.collectAsStateWithLifecycle()
     val customTipPercentState by mainViewModel.customTipPercent.collectAsStateWithLifecycle()
     val splitCountState by mainViewModel.splitCount.collectAsStateWithLifecycle()
+
+    val isAdvancedMode by mainViewModel.isAdvancedMode.collectAsStateWithLifecycle()
+    val advancedSplit by mainViewModel.advancedSplit.collectAsStateWithLifecycle()
+    val calculationResult by mainViewModel.calculationResult.collectAsStateWithLifecycle()
 
     val customTipSliderState = rememberSliderState(
         value = customTipPercentState.toFloat(),
@@ -161,24 +168,24 @@ fun MainScreen(
 
     Scaffold(
         modifier = Modifier
-                .nestedScroll(floatingToolbarScrollBehavior),
+            .nestedScroll(floatingToolbarScrollBehavior),
     ) { paddingValues: PaddingValues ->
         Box(
             modifier = Modifier
-                    .fillMaxSize(),
+                .fillMaxSize(),
         ) {
             Column(
                 modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                        .padding(16.dp)
-                        .verticalScroll(rememberScrollState()),
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 Card(
                     modifier = Modifier
-                            .fillMaxWidth(),
+                        .fillMaxWidth(),
                     shape = RoundedCornerShape(30.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -187,7 +194,7 @@ fun MainScreen(
                 ) {
                     Column(
                         modifier = Modifier
-                                .padding(24.dp),
+                            .padding(24.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         Text(
@@ -215,7 +222,7 @@ fun MainScreen(
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             singleLine = true,
                             modifier = Modifier
-                                    .fillMaxWidth(),
+                                .fillMaxWidth(),
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = MaterialTheme.colorScheme.tertiary,
                             ),
@@ -223,7 +230,7 @@ fun MainScreen(
 
                         Row(
                             modifier = Modifier
-                                    .fillMaxWidth(),
+                                .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
@@ -242,7 +249,7 @@ fun MainScreen(
                                 )
                                 Switch(
                                     modifier = Modifier
-                                            .scale(0.8f),
+                                        .scale(0.8f),
                                     checked = calculateTipOnPreTax,
                                     onCheckedChange = { mainViewModel.setCalculateTipOnPreTax(it) },
                                     colors = SwitchDefaults.colors(
@@ -272,7 +279,7 @@ fun MainScreen(
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             singleLine = true,
                             modifier = Modifier
-                                    .fillMaxWidth(),
+                                .fillMaxWidth(),
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = MaterialTheme.colorScheme.tertiary,
                             ),
@@ -282,7 +289,7 @@ fun MainScreen(
 
                 Card(
                     modifier = Modifier
-                            .fillMaxWidth(),
+                        .fillMaxWidth(),
                     shape = RoundedCornerShape(30.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -291,14 +298,14 @@ fun MainScreen(
                 ) {
                     Column(
                         modifier = Modifier
-                                .padding(16.dp)
-                                .fillMaxWidth(),
+                            .padding(16.dp)
+                            .fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         Row(
                             modifier = Modifier
-                                    .fillMaxWidth(),
+                                .fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
@@ -309,11 +316,11 @@ fun MainScreen(
                             )
                             Row(
                                 modifier = Modifier
-                                        .background(
-                                            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
-                                            shape = RoundedCornerShape(20.dp),
-                                        )
-                                        .padding(4.dp),
+                                    .background(
+                                        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+                                        shape = RoundedCornerShape(20.dp),
+                                    )
+                                    .padding(4.dp),
                                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                             ) {
                                 val tipModes = listOf(TipMode.PERCENT to "%", TipMode.AMOUNT to "$")
@@ -322,13 +329,13 @@ fun MainScreen(
                                     val isSelected = tipMode == mode
                                     Box(
                                         modifier = Modifier
-                                                .background(
-                                                    color = if (isSelected) MaterialTheme.colorScheme.tertiaryContainer
-                                                    else Color.Transparent,
-                                                    shape = RoundedCornerShape(16.dp),
-                                                )
-                                                .clickable { mainViewModel.setTipMode(mode) }
-                                                .padding(horizontal = 12.dp, vertical = 6.dp),
+                                            .background(
+                                                color = if (isSelected) MaterialTheme.colorScheme.tertiaryContainer
+                                                else Color.Transparent,
+                                                shape = RoundedCornerShape(16.dp),
+                                            )
+                                            .clickable { mainViewModel.setTipMode(mode) }
+                                            .padding(horizontal = 12.dp, vertical = 6.dp),
                                     ) {
                                         Text(
                                             text = label,
@@ -345,7 +352,7 @@ fun MainScreen(
                         if (tipMode == TipMode.PERCENT) {
                             Row(
                                 modifier = Modifier
-                                        .fillMaxWidth(),
+                                    .fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(ToggleButtonDefaults.IconSpacing),
                             ) {
                                 val tipOptions = listOf(
@@ -368,7 +375,7 @@ fun MainScreen(
                                             }
                                         },
                                         modifier = Modifier
-                                                .weight(1f),
+                                            .weight(1f),
                                         shapes = when (index) {
                                             0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
                                             tipOptions.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
@@ -389,11 +396,11 @@ fun MainScreen(
                                                 imageVector = Icons.Rounded.Done,
                                                 contentDescription = null,
                                                 modifier = Modifier
-                                                        .size(ToggleButtonDefaults.IconSize),
+                                                    .size(ToggleButtonDefaults.IconSize),
                                             )
                                             Spacer(
                                                 modifier = Modifier
-                                                        .size(ToggleButtonDefaults.IconSpacing),
+                                                    .size(ToggleButtonDefaults.IconSpacing),
                                             )
                                         }
                                         Text(
@@ -407,18 +414,18 @@ fun MainScreen(
                             if (selectedTipPercentEnum == Percent.CUSTOM) {
                                 Spacer(
                                     modifier = Modifier
-                                            .height(8.dp),
+                                        .height(8.dp),
                                 )
                                 Row(
                                     modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(vertical = 8.dp),
+                                        .fillMaxWidth()
+                                        .padding(vertical = 8.dp),
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
                                     Slider(
                                         state = customTipSliderState,
                                         modifier = Modifier
-                                                .weight(1f),
+                                            .weight(1f),
                                         colors = SliderDefaults.colors(
                                             thumbColor = MaterialTheme.colorScheme.tertiary,
                                             activeTrackColor = MaterialTheme.colorScheme.tertiary,
@@ -427,7 +434,7 @@ fun MainScreen(
                                         track = { sliderState: SliderState ->
                                             Box(
                                                 modifier = Modifier
-                                                        .height(32.dp),
+                                                    .height(32.dp),
                                                 contentAlignment = Alignment.Center,
                                             ) {
                                                 SliderDefaults.Track(
@@ -439,36 +446,36 @@ fun MainScreen(
                                                     ),
                                                     sliderState = sliderState,
                                                     modifier = Modifier
-                                                            .height(32.dp),
+                                                        .height(32.dp),
                                                     thumbTrackGapSize = 0.dp,
                                                     trackInsideCornerSize = 0.dp,
                                                     drawStopIndicator = null,
                                                 )
                                                 Box(
                                                     modifier = Modifier
-                                                            .fillMaxSize()
-                                                            .padding(horizontal = 10.dp),
+                                                        .fillMaxSize()
+                                                        .padding(horizontal = 10.dp),
                                                     contentAlignment = Alignment.CenterStart,
                                                 ) {
                                                     Icon(
                                                         imageVector = Icons.Rounded.Percent,
                                                         contentDescription = null,
                                                         modifier = Modifier
-                                                                .size(20.dp),
+                                                            .size(20.dp),
                                                         tint = Color.White,
                                                     )
                                                 }
                                                 Box(
                                                     modifier = Modifier
-                                                            .fillMaxSize()
-                                                            .padding(horizontal = 10.dp),
+                                                        .fillMaxSize()
+                                                        .padding(horizontal = 10.dp),
                                                     contentAlignment = Alignment.CenterEnd,
                                                 ) {
                                                     Icon(
                                                         imageVector = Icons.Rounded.Add,
                                                         contentDescription = null,
                                                         modifier = Modifier
-                                                                .size(20.dp),
+                                                            .size(20.dp),
                                                         tint = MaterialTheme.colorScheme.tertiary,
                                                     )
                                                 }
@@ -477,15 +484,15 @@ fun MainScreen(
                                     )
                                     Spacer(
                                         modifier = Modifier
-                                                .width(16.dp),
+                                            .width(16.dp),
                                     )
                                     Box(
                                         modifier = Modifier
-                                                .size(48.dp)
-                                                .background(
-                                                    color = MaterialTheme.colorScheme.tertiary,
-                                                    shape = CircleShape,
-                                                ),
+                                            .size(48.dp)
+                                            .background(
+                                                color = MaterialTheme.colorScheme.tertiary,
+                                                shape = CircleShape,
+                                            ),
                                         contentAlignment = Alignment.Center,
                                     ) {
                                         Text(
@@ -517,7 +524,7 @@ fun MainScreen(
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                 singleLine = true,
                                 modifier = Modifier
-                                        .fillMaxWidth(),
+                                    .fillMaxWidth(),
                                 colors = OutlinedTextFieldDefaults.colors(
                                     focusedBorderColor = MaterialTheme.colorScheme.tertiary,
                                 ),
@@ -528,7 +535,7 @@ fun MainScreen(
 
                 Card(
                     modifier = Modifier
-                            .fillMaxWidth(),
+                        .fillMaxWidth(),
                     shape = RoundedCornerShape(30.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -537,7 +544,7 @@ fun MainScreen(
                 ) {
                     Column(
                         modifier = Modifier
-                                .padding(16.dp),
+                            .padding(16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
@@ -547,18 +554,18 @@ fun MainScreen(
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Left,
                             modifier = Modifier
-                                    .fillMaxWidth(),
+                                .fillMaxWidth(),
                         )
                         Row(
                             modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 8.dp),
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Slider(
                                 state = splitSliderState,
                                 modifier = Modifier
-                                        .weight(1f),
+                                    .weight(1f),
                                 colors = SliderDefaults.colors(
                                     thumbColor = MaterialTheme.colorScheme.tertiary,
                                     activeTrackColor = MaterialTheme.colorScheme.tertiary,
@@ -567,7 +574,7 @@ fun MainScreen(
                                 track = { sliderState: SliderState ->
                                     Box(
                                         modifier = Modifier
-                                                .height(32.dp),
+                                            .height(32.dp),
                                         contentAlignment = Alignment.Center,
                                     ) {
                                         SliderDefaults.Track(
@@ -579,36 +586,36 @@ fun MainScreen(
                                             ),
                                             sliderState = sliderState,
                                             modifier = Modifier
-                                                    .height(32.dp),
+                                                .height(32.dp),
                                             thumbTrackGapSize = 0.dp,
                                             trackInsideCornerSize = 0.dp,
                                             drawStopIndicator = null,
                                         )
                                         Box(
                                             modifier = Modifier
-                                                    .fillMaxSize()
-                                                    .padding(horizontal = 10.dp),
+                                                .fillMaxSize()
+                                                .padding(horizontal = 10.dp),
                                             contentAlignment = Alignment.CenterStart,
                                         ) {
                                             Icon(
                                                 imageVector = Icons.Default.Group,
                                                 contentDescription = null,
                                                 modifier = Modifier
-                                                        .size(20.dp),
+                                                    .size(20.dp),
                                                 tint = Color.White,
                                             )
                                         }
                                         Box(
                                             modifier = Modifier
-                                                    .fillMaxSize()
-                                                    .padding(horizontal = 10.dp),
+                                                .fillMaxSize()
+                                                .padding(horizontal = 10.dp),
                                             contentAlignment = Alignment.CenterEnd,
                                         ) {
                                             Icon(
                                                 imageVector = Icons.Default.Groups,
                                                 contentDescription = null,
                                                 modifier = Modifier
-                                                        .size(20.dp),
+                                                    .size(20.dp),
                                                 tint = MaterialTheme.colorScheme.tertiary,
                                             )
                                         }
@@ -617,15 +624,15 @@ fun MainScreen(
                             )
                             Spacer(
                                 modifier = Modifier
-                                        .width(16.dp),
+                                    .width(16.dp),
                             )
                             Box(
                                 modifier = Modifier
-                                        .size(48.dp)
-                                        .background(
-                                            color = MaterialTheme.colorScheme.tertiary,
-                                            shape = CircleShape,
-                                        ),
+                                    .size(48.dp)
+                                    .background(
+                                        color = MaterialTheme.colorScheme.tertiary,
+                                        shape = CircleShape,
+                                    ),
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Text(
@@ -636,13 +643,32 @@ fun MainScreen(
                                 )
                             }
                         }
+
+                        TextButton(
+                            onClick = { mainViewModel.setAdvancedMode(!isAdvancedMode) },
+                            modifier = Modifier
+                                .align(Alignment.Start),
+                        ) {
+                            Text(if (isAdvancedMode) "Simple Splitting" else "Advanced Splitting")
+                        }
+
+                        if (isAdvancedMode) {
+                            AdvancedSplitSection(
+                                advancedSplit = advancedSplit,
+                                personResults = calculationResult?.personResults ?: emptyMap(),
+                                onAddPerson = { name: String -> mainViewModel.addPerson(name) },
+                                onRemovePerson = { id: String -> mainViewModel.removePerson(id) },
+                                onAddItem = { pid: String, name: String, amount: Double -> mainViewModel.addItemToPerson(pid, name, amount) },
+                                onRemoveItem = { pid: String, iid: String -> mainViewModel.removeItemFromPerson(pid, iid) },
+                            )
+                        }
                     }
                 }
 
                 Card(
                     modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 200.dp),
+                        .fillMaxWidth()
+                        .padding(bottom = 200.dp),
                     shape = RoundedCornerShape(30.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -651,7 +677,7 @@ fun MainScreen(
                 ) {
                     Column(
                         modifier = Modifier
-                                .padding(24.dp),
+                            .padding(24.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         Text(
@@ -680,7 +706,7 @@ fun MainScreen(
 
                             HorizontalDivider(
                                 modifier = Modifier
-                                        .padding(vertical = 8.dp),
+                                    .padding(vertical = 8.dp),
                                 thickness = DividerDefaults.Thickness,
                                 color = DividerDefaults.color,
                             )
@@ -695,7 +721,7 @@ fun MainScreen(
                         if (splitCountState > 1) {
                             Card(
                                 modifier = Modifier
-                                        .fillMaxWidth(),
+                                    .fillMaxWidth(),
                                 colors = CardDefaults.cardColors(
                                     containerColor = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.3f),
                                 ),
@@ -703,14 +729,14 @@ fun MainScreen(
                             ) {
                                 Row(
                                     modifier = Modifier
-                                            .padding(16.dp)
-                                            .fillMaxWidth(),
+                                        .padding(16.dp)
+                                        .fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
                                     Column {
                                         Text(
-                                            text = "Per Person",
+                                            text = if (isAdvancedMode) "Others (Per Person)" else "Per Person",
                                             style = MaterialTheme.typography.labelMedium,
                                         )
                                         Text(
@@ -733,7 +759,7 @@ fun MainScreen(
                         ) {
                             Row(
                                 modifier = Modifier
-                                        .fillMaxWidth(),
+                                    .fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(ToggleButtonDefaults.IconSpacing),
                             ) {
                                 val roundingOptions = listOf(
@@ -747,7 +773,7 @@ fun MainScreen(
                                         checked = isSelected,
                                         onCheckedChange = { mainViewModel.setRoundingMode(mode) },
                                         modifier = Modifier
-                                                .weight(1f),
+                                            .weight(1f),
                                         shapes = when (index) {
                                             0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
                                             roundingOptions.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
@@ -768,11 +794,11 @@ fun MainScreen(
                                                 imageVector = Icons.Rounded.Done,
                                                 contentDescription = null,
                                                 modifier = Modifier
-                                                        .size(ToggleButtonDefaults.IconSize),
+                                                    .size(ToggleButtonDefaults.IconSize),
                                             )
                                             Spacer(
                                                 modifier = Modifier
-                                                        .size(ToggleButtonDefaults.IconSpacing),
+                                                    .size(ToggleButtonDefaults.IconSpacing),
                                             )
                                         }
                                         Text(
@@ -789,16 +815,22 @@ fun MainScreen(
                         ) {
                             Button(
                                 onClick = {
+                                    val advancedJson = if (isAdvancedMode) {
+                                        Json.encodeToString(advancedSplit)
+                                    } else null
+
                                     onSaveBill(
                                         billAmount.toString(),
                                         taxAmountFormatted,
                                         tipAmountFormatted,
                                         totalAmountFormatted,
+                                        splitCountState,
+                                        advancedJson
                                     )
                                 },
                                 enabled = isShareEnabled,
                                 modifier = Modifier
-                                        .fillMaxWidth(),
+                                    .fillMaxWidth(),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = MaterialTheme.colorScheme.tertiary,
                                     contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -808,11 +840,11 @@ fun MainScreen(
                                     imageVector = Icons.Filled.Save,
                                     contentDescription = "Save to Receipts",
                                     modifier = Modifier
-                                            .size(ButtonDefaults.IconSize),
+                                        .size(ButtonDefaults.IconSize),
                                 )
                                 Spacer(
                                     modifier = Modifier
-                                            .size(ButtonDefaults.IconSpacing),
+                                        .size(ButtonDefaults.IconSpacing),
                                 )
                                 Text("Save to Receipts")
                             }
@@ -830,7 +862,7 @@ fun MainScreen(
                                 },
                                 enabled = isShareEnabled,
                                 modifier = Modifier
-                                        .fillMaxWidth(),
+                                    .fillMaxWidth(),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = MaterialTheme.colorScheme.tertiary,
                                     contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -840,11 +872,11 @@ fun MainScreen(
                                     imageVector = Icons.Filled.Share,
                                     contentDescription = "Share Bill",
                                     modifier = Modifier
-                                            .size(ButtonDefaults.IconSize),
+                                        .size(ButtonDefaults.IconSize),
                                 )
                                 Spacer(
                                     modifier = Modifier
-                                            .size(ButtonDefaults.IconSpacing),
+                                        .size(ButtonDefaults.IconSpacing),
                                 )
                                 Text("Share Bill")
                             }
@@ -852,12 +884,12 @@ fun MainScreen(
                     }
                 }
             }
-
+// ... leading to end of file ...
             HorizontalFloatingToolbar(
                 modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .offset(y = -FloatingToolbarDefaults.ScreenOffset)
-                        .zIndex(1f),
+                    .align(Alignment.BottomCenter)
+                    .offset(y = -FloatingToolbarDefaults.ScreenOffset)
+                    .zIndex(1f),
                 expanded = true,
                 colors = FloatingToolbarDefaults.standardFloatingToolbarColors(
                     toolbarContainerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -888,7 +920,7 @@ fun MainScreen(
                 content = {
                     FilledIconButton(
                         modifier = Modifier
-                                .width(64.dp),
+                            .width(64.dp),
                         onClick = onAddReceipt,
                     ) {
                         Icon(
@@ -911,7 +943,7 @@ fun SummaryRow(
 ) {
     Row(
         modifier = Modifier
-                .fillMaxWidth(),
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {

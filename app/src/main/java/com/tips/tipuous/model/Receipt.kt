@@ -1,6 +1,6 @@
 package com.tips.tipuous.model
 
-import java.util.UUID
+import java.util.*
 
 /**
  * Minimal persisted model for a scanned or manually entered receipt.
@@ -15,4 +15,6 @@ data class Receipt(
     val grandTotal: Double,
     val locationName: String?,
     val imagePath: String?, // absolute path to the saved image in app storage
+    val advancedSplit: AdvancedSplit? = null,
+    val splitCount: Int = 1,
 )

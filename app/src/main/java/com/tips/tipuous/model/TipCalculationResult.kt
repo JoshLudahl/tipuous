@@ -9,7 +9,8 @@ data class TipCalculationResult(
     val amountPerPerson: Double,
     val isShareable: Boolean,
     val taxAmount: Double = 0.0,
-    val isTipCalculatedOnPreTax: Boolean = false
+    val isTipCalculatedOnPreTax: Boolean = false,
+    val personResults: Map<String, Double> = emptyMap(),
 )
 
 enum class RoundingMode {

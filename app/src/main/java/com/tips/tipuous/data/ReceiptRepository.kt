@@ -40,6 +40,8 @@ private fun ReceiptEntity.toModel(): Receipt =
         grandTotal = grandTotal,
         locationName = locationName,
         imagePath = imagePath,
+        advancedSplit = advancedSplit,
+        splitCount = splitCount,
     )
 
 private fun Receipt.toEntity(): ReceiptEntity =
@@ -52,4 +54,6 @@ private fun Receipt.toEntity(): ReceiptEntity =
         grandTotal = grandTotal,
         locationName = locationName,
         imagePath = imagePath,
+        advancedSplit = advancedSplit,
+        splitCount = splitCount,
     )

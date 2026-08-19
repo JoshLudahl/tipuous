@@ -1,7 +1,6 @@
 package com.tips.tipuous.ui.receipts
 
 import android.graphics.BitmapFactory
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.MutatePriority
@@ -196,9 +195,11 @@ fun ReceiptsListContent(
             val totalBill = receipts.sumOf { it.billTotal }
             val count = receipts.size
 
-            LazyColumn(Modifier
-                .padding(padding)
-                .padding(16.dp)) {
+            LazyColumn(
+                Modifier
+                    .padding(padding)
+                    .padding(16.dp)
+            ) {
                 item {
                     Surface(
                         modifier = Modifier
@@ -406,6 +407,15 @@ fun ReceiptsListContent(
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                                 )
+                                if (r.advancedSplit != null && r.advancedSplit.people.isNotEmpty()) {
+                                    Text(
+                                        text = "Split with: ${r.advancedSplit.people.joinToString { it.name }}",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = MaterialTheme.colorScheme.tertiary,
+                                        maxLines = 1
+                                    )
+                                }
                             }
 
                             Spacer(Modifier.width(8.dp))
@@ -555,9 +565,11 @@ fun TrendChart(trends: List<MonthTrend>) {
                                         interactionSource = remember { MutableInteractionSource() },
                                         indication = null,
                                         onClick = {
-                                            scope.launch { tooltipState.show(
-                                                mutatePriority = MutatePriority.UserInput
-                                            ) }
+                                            scope.launch {
+                                                tooltipState.show(
+                                                    mutatePriority = MutatePriority.UserInput
+                                                )
+                                            }
                                         }
                                     )
                                     .then(

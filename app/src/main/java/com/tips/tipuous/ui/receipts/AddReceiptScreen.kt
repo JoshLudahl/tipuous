@@ -27,6 +27,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -47,11 +48,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.tips.tipuous.model.AdvancedSplit
 import com.tips.tipuous.navigation.Navigator
+import com.tips.tipuous.ui.composeables.AdvancedSplitSection
+import com.tips.tipuous.utilities.Conversion
 
 @androidx.compose.material3.ExperimentalMaterial3Api
 @Composable
@@ -62,6 +67,8 @@ fun AddReceiptScreen(
     tax: String? = null,
     tip: String? = null,
     total: String? = null,
+    splitCount: Int = 1,
+    advancedSplitJson: String? = null,
 ) {
     val context = LocalContext.current
     val viewModel: AddReceiptViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
@@ -83,9 +90,9 @@ fun AddReceiptScreen(
     }
 
     // Prefill data if provided
-    androidx.compose.runtime.LaunchedEffect(bill, tax, tip, total) {
+    androidx.compose.runtime.LaunchedEffect(bill, tax, tip, total, splitCount, advancedSplitJson) {
         if (receiptId == null && (bill != null || tax != null || tip != null || total != null)) {
-            viewModel.prefillData(bill, tax, tip, total)
+            viewModel.prefillData(bill, tax, tip, total, splitCount, advancedSplitJson)
         }
     }
 
@@ -287,6 +294,70 @@ fun AddReceiptScreen(
                             },
                         ) {
                             DatePicker(state = dpState)
+                        }
+                    }
+                }
+            }
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+                shape = RoundedCornerShape(30.dp),
+            ) {
+                Column(
+                    Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Advanced Split",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+
+                    val personTotalsList = viewModel.getPersonTotalsList()
+                    val personResultsMap = personTotalsList.filter { !it.isShared }.associate { it.personId to it.total }
+
+                    AdvancedSplitSection(
+                        advancedSplit = state.advancedSplit ?: AdvancedSplit(),
+                        personResults = personResultsMap,
+                        onAddPerson = { name -> viewModel.addPerson(name) },
+                        onRemovePerson = { id -> viewModel.removePerson(id) },
+                        onAddItem = { pid, name, amount -> viewModel.addItemToPerson(pid, name, amount) },
+                        onRemoveItem = { pid, iid -> viewModel.removeItemFromPerson(pid, iid) }
+                    )
+
+                    val sharedItems = personTotalsList.filter { it.isShared }
+                    if (sharedItems.isNotEmpty()) {
+                        HorizontalDivider(
+                            modifier = Modifier.padding(vertical = 4.dp),
+                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                        )
+                        sharedItems.forEach { shared ->
+                            val othersCount = state.splitCount - state.advancedSplit!!.people.size
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Others ($othersCount ${if (othersCount > 1) "people" else "person"})",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                                Text(
+                                    text = "$${Conversion.formatNumberToIncludeTrailingZero(shared.total)}/each",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
                         }
                     }
                 }

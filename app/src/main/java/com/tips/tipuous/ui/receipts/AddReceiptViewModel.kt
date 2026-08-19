@@ -6,10 +6,18 @@ import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
+import androidx.core.graphics.scale
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.tips.tipuous.data.ReceiptRepository
+import com.tips.tipuous.domain.TipCalculator
+import com.tips.tipuous.model.AdvancedSplit
+import com.tips.tipuous.model.Item
+import com.tips.tipuous.model.Percent
+import com.tips.tipuous.model.Person
 import com.tips.tipuous.model.Receipt
+import com.tips.tipuous.model.RoundingMode
+import com.tips.tipuous.model.TipMode
 import com.tips.tipuous.utilities.ReceiptOcr
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,19 +25,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.TimeZone
-import androidx.core.graphics.scale
+import java.util.*
 
 /**
  * ViewModel for AddReceiptScreen. Holds form state, image preview, parsing, validation and saving.
  */
 class AddReceiptViewModel(application: Application) : AndroidViewModel(application) {
     private val repo = ReceiptRepository(application)
+    private val tipCalculator = TipCalculator()
     private var editingId: String? = null
 
     data class UiState(
@@ -44,6 +51,8 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
         val isFormValid: Boolean = false,
         val saved: Boolean = false,
         val errorMessage: String? = null,
+        val advancedSplit: AdvancedSplit? = null,
+        val splitCount: Int = 1,
     )
 
     private val _state = MutableStateFlow(UiState())
@@ -76,17 +85,73 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
 
     fun onLocationChange(input: String) = _state.update { it.copy(location = input) }
 
-    fun prefillData(bill: String?, tax: String?, tip: String?, total: String?) {
+    fun addPerson(name: String) {
+        val current = _state.value.advancedSplit ?: AdvancedSplit()
+        val newPeople = current.people + Person(name = name)
+        _state.update {
+            val newSplitCount = if (it.splitCount < newPeople.size) newPeople.size else it.splitCount
+            it.copy(
+                advancedSplit = current.copy(people = newPeople),
+                splitCount = newSplitCount
+            ).recomputeValidity()
+        }
+    }
+
+    fun removePerson(personId: String) {
+        val current = _state.value.advancedSplit ?: return
+        val newPeople = current.people.filter { it.id != personId }
+        _state.update { it.copy(advancedSplit = current.copy(people = newPeople)).recomputeValidity() }
+    }
+
+    fun addItemToPerson(personId: String, itemName: String, amount: Double) {
+        val current = _state.value.advancedSplit ?: return
+        val newPeople = current.people.map { person ->
+            if (person.id == personId) {
+                person.copy(items = person.items + Item(name = itemName, amount = amount))
+            } else {
+                person
+            }
+        }
+        _state.update { it.copy(advancedSplit = current.copy(people = newPeople)).recomputeValidity() }
+    }
+
+    fun removeItemFromPerson(personId: String, itemId: String) {
+        val current = _state.value.advancedSplit ?: return
+        val newPeople = current.people.map { person ->
+            if (person.id == personId) {
+                person.copy(items = person.items.filter { it.id != itemId })
+            } else {
+                person
+            }
+        }
+        _state.update { it.copy(advancedSplit = current.copy(people = newPeople)).recomputeValidity() }
+    }
+
+    fun prefillData(
+        bill: String?,
+        tax: String?,
+        tip: String?,
+        total: String?,
+        splitCount: Int = 1,
+        advancedSplitJson: String? = null
+    ) {
         _state.update {
             val filteredBill = bill?.filter { ch -> ch.isDigit() || ch == '.' } ?: it.bill
             val filteredTax = tax?.filter { ch -> ch.isDigit() || ch == '.' } ?: it.tax
             val filteredTip = tip?.filter { ch -> ch.isDigit() || ch == '.' } ?: it.tip
             val filteredTotal = total?.filter { ch -> ch.isDigit() || ch == '.' } ?: it.total
+            val advanced = try {
+                advancedSplitJson?.let { json -> Json.decodeFromString<AdvancedSplit>(json) }
+            } catch (e: Exception) {
+                null
+            }
             it.copy(
                 bill = filteredBill,
                 tax = filteredTax,
                 tip = filteredTip,
-                total = filteredTotal
+                total = filteredTotal,
+                advancedSplit = advanced ?: it.advancedSplit,
+                splitCount = if (splitCount > 0) splitCount else it.splitCount
             ).recomputeValidity()
         }
     }
@@ -118,6 +183,8 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
                         dateMillis = rec.dateEpochMillis,
                         location = rec.locationName ?: "",
                         previewBitmap = bmp ?: it.previewBitmap,
+                        advancedSplit = rec.advancedSplit,
+                        splitCount = rec.splitCount
                     ).recomputeValidity()
                 }
             }
@@ -178,6 +245,8 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
                     grandTotal = totalD,
                     locationName = snapshot.location.ifBlank { null },
                     imagePath = imagePath,
+                    advancedSplit = snapshot.advancedSplit,
+                    splitCount = snapshot.splitCount,
                 )
             try {
                 repo.add(receipt)
@@ -271,6 +340,45 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
         val fmt = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
         fmt.timeZone = TimeZone.getTimeZone("UTC")
         return fmt.format(Date(millis))
+    }
+
+    data class PersonTotal(
+        val personId: String,
+        val total: Double,
+        val isShared: Boolean = false
+    )
+
+    fun getPersonTotalsList(): List<PersonTotal> {
+        val snapshot = _state.value
+        val billD = snapshot.bill.toDoubleOrNull() ?: 0.0
+        val taxD = snapshot.tax.toDoubleOrNull() ?: 0.0
+        val tipD = snapshot.tip.toDoubleOrNull() ?: 0.0
+        val advanced = snapshot.advancedSplit ?: return emptyList()
+
+        val result = tipCalculator.calculate(
+            billAmount = billD,
+            tipPercentEnum = Percent.NONE,
+            customTipPercent = 0,
+            splitCount = snapshot.splitCount,
+            taxAmount = taxD,
+            calculateTipOnPreTax = false,
+            roundingMode = RoundingMode.NONE,
+            tipMode = TipMode.AMOUNT,
+            fixedTipAmount = tipD,
+            advancedSplit = advanced
+        )
+
+        val list = mutableListOf<PersonTotal>()
+        advanced.people.forEach { person ->
+            list.add(PersonTotal(person.id, result.personResults[person.id] ?: 0.0))
+        }
+
+        val othersCount = snapshot.splitCount - advanced.people.size
+        if (othersCount > 0) {
+            list.add(PersonTotal("others", result.amountPerPerson, isShared = true))
+        }
+
+        return list
     }
 }
 
