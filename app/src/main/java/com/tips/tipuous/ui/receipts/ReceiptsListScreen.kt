@@ -206,7 +206,6 @@ fun ReceiptsListContent(
                             .padding(bottom = 16.dp),
                         shape = RoundedCornerShape(32.dp),
                         color = MaterialTheme.colorScheme.surfaceContainerLow,
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
                     ) {
                         Row(
                             modifier = Modifier
