@@ -56,9 +56,10 @@ fun AdvancedSplitSection(
     var isAddingPerson by remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         advancedSplit.people.forEach { person ->
@@ -73,8 +74,9 @@ fun AdvancedSplitSection(
 
         if (isAddingPerson) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
@@ -82,8 +84,9 @@ fun AdvancedSplitSection(
                     value = newPersonName,
                     onValueChange = { newPersonName = it },
                     label = { Text("Person Name") },
-                    modifier = Modifier
-                        .weight(1f),
+                    modifier =
+                        Modifier
+                            .weight(1f),
                     singleLine = true,
                     shape = RoundedCornerShape(20.dp),
                 )
@@ -102,12 +105,14 @@ fun AdvancedSplitSection(
         } else {
             Button(
                 onClick = { isAddingPerson = true },
-                modifier = Modifier
-                    .fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                ),
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    ),
                 shape = RoundedCornerShape(20.dp),
             ) {
                 Icon(Icons.Rounded.PersonAdd, contentDescription = null)
@@ -131,21 +136,25 @@ fun PersonCard(
     var isAddingItem by remember { mutableStateOf(false) }
 
     Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-        ),
+        modifier =
+            Modifier
+                .fillMaxWidth(),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+            ),
         shape = RoundedCornerShape(20.dp),
     ) {
         Column(
-            modifier = Modifier
-                .padding(12.dp),
+            modifier =
+                Modifier
+                    .padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -159,43 +168,46 @@ fun PersonCard(
                         Icons.Rounded.Delete,
                         contentDescription = "Remove person",
                         tint = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(20.dp),
                     )
                 }
             }
 
             person.items.forEach { item ->
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
                         text = item.name,
                         style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
                     )
                     Text(
                         text = "\$${Conversion.formatNumberToIncludeTrailingZero(item.amount)}",
                         style = MaterialTheme.typography.bodySmall,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                     Spacer(Modifier.width(8.dp))
                     Icon(
                         Icons.Rounded.Delete,
                         contentDescription = "Remove item",
-                        modifier = Modifier
-                            .size(16.dp)
-                            .clickable { onRemoveItem(item.id) },
-                        tint = MaterialTheme.colorScheme.outline
+                        modifier =
+                            Modifier
+                                .size(16.dp)
+                                .clickable { onRemoveItem(item.id) },
+                        tint = MaterialTheme.colorScheme.outline,
                     )
                 }
             }
 
             if (isAddingItem) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
@@ -203,8 +215,9 @@ fun PersonCard(
                         value = itemName,
                         onValueChange = { itemName = it },
                         label = { Text("Item", fontSize = 10.sp) },
-                        modifier = Modifier
-                            .weight(1.5f),
+                        modifier =
+                            Modifier
+                                .weight(1.5f),
                         singleLine = true,
                         shape = RoundedCornerShape(12.dp),
                     )
@@ -212,8 +225,9 @@ fun PersonCard(
                         value = itemAmount,
                         onValueChange = { if (it.isEmpty() || it.matches(Regex("""^\d*\.?\d*$"""))) itemAmount = it },
                         label = { Text("$", fontSize = 10.sp) },
-                        modifier = Modifier
-                            .weight(1f),
+                        modifier =
+                            Modifier
+                                .weight(1f),
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         shape = RoundedCornerShape(12.dp),
@@ -246,8 +260,9 @@ fun PersonCard(
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(

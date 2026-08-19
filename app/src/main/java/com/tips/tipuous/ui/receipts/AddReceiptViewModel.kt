@@ -92,7 +92,7 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
             val newSplitCount = if (it.splitCount < newPeople.size) newPeople.size else it.splitCount
             it.copy(
                 advancedSplit = current.copy(people = newPeople),
-                splitCount = newSplitCount
+                splitCount = newSplitCount,
             ).recomputeValidity()
         }
     }
@@ -103,27 +103,36 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
         _state.update { it.copy(advancedSplit = current.copy(people = newPeople)).recomputeValidity() }
     }
 
-    fun addItemToPerson(personId: String, itemName: String, amount: Double) {
+    fun addItemToPerson(
+        personId: String,
+        itemName: String,
+        amount: Double,
+    ) {
         val current = _state.value.advancedSplit ?: return
-        val newPeople = current.people.map { person ->
-            if (person.id == personId) {
-                person.copy(items = person.items + Item(name = itemName, amount = amount))
-            } else {
-                person
+        val newPeople =
+            current.people.map { person ->
+                if (person.id == personId) {
+                    person.copy(items = person.items + Item(name = itemName, amount = amount))
+                } else {
+                    person
+                }
             }
-        }
         _state.update { it.copy(advancedSplit = current.copy(people = newPeople)).recomputeValidity() }
     }
 
-    fun removeItemFromPerson(personId: String, itemId: String) {
+    fun removeItemFromPerson(
+        personId: String,
+        itemId: String,
+    ) {
         val current = _state.value.advancedSplit ?: return
-        val newPeople = current.people.map { person ->
-            if (person.id == personId) {
-                person.copy(items = person.items.filter { it.id != itemId })
-            } else {
-                person
+        val newPeople =
+            current.people.map { person ->
+                if (person.id == personId) {
+                    person.copy(items = person.items.filter { it.id != itemId })
+                } else {
+                    person
+                }
             }
-        }
         _state.update { it.copy(advancedSplit = current.copy(people = newPeople)).recomputeValidity() }
     }
 
@@ -133,25 +142,26 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
         tip: String?,
         total: String?,
         splitCount: Int = 1,
-        advancedSplitJson: String? = null
+        advancedSplitJson: String? = null,
     ) {
         _state.update {
             val filteredBill = bill?.filter { ch -> ch.isDigit() || ch == '.' } ?: it.bill
             val filteredTax = tax?.filter { ch -> ch.isDigit() || ch == '.' } ?: it.tax
             val filteredTip = tip?.filter { ch -> ch.isDigit() || ch == '.' } ?: it.tip
             val filteredTotal = total?.filter { ch -> ch.isDigit() || ch == '.' } ?: it.total
-            val advanced = try {
-                advancedSplitJson?.let { json -> Json.decodeFromString<AdvancedSplit>(json) }
-            } catch (e: Exception) {
-                null
-            }
+            val advanced =
+                try {
+                    advancedSplitJson?.let { json -> Json.decodeFromString<AdvancedSplit>(json) }
+                } catch (e: Exception) {
+                    null
+                }
             it.copy(
                 bill = filteredBill,
                 tax = filteredTax,
                 tip = filteredTip,
                 total = filteredTotal,
                 advancedSplit = advanced ?: it.advancedSplit,
-                splitCount = if (splitCount > 0) splitCount else it.splitCount
+                splitCount = if (splitCount > 0) splitCount else it.splitCount,
             ).recomputeValidity()
         }
     }
@@ -166,14 +176,15 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
             val rec = repo.getById(id)
             if (rec != null) {
                 editingId = rec.id
-                val bmp = try {
-                    rec.imagePath?.let { path ->
-                        val file = File(path)
-                        if (file.exists()) BitmapFactory.decodeFile(path) else null
+                val bmp =
+                    try {
+                        rec.imagePath?.let { path ->
+                            val file = File(path)
+                            if (file.exists()) BitmapFactory.decodeFile(path) else null
+                        }
+                    } catch (_: Exception) {
+                        null
                     }
-                } catch (_: Exception) {
-                    null
-                }
                 _state.update {
                     it.copy(
                         bill = rec.billTotal.toString(),
@@ -184,7 +195,7 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
                         location = rec.locationName ?: "",
                         previewBitmap = bmp ?: it.previewBitmap,
                         advancedSplit = rec.advancedSplit,
-                        splitCount = rec.splitCount
+                        splitCount = rec.splitCount,
                     ).recomputeValidity()
                 }
             }
@@ -345,7 +356,7 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
     data class PersonTotal(
         val personId: String,
         val total: Double,
-        val isShared: Boolean = false
+        val isShared: Boolean = false,
     )
 
     fun getPersonTotalsList(): List<PersonTotal> {
@@ -355,18 +366,19 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
         val tipD = snapshot.tip.toDoubleOrNull() ?: 0.0
         val advanced = snapshot.advancedSplit ?: return emptyList()
 
-        val result = tipCalculator.calculate(
-            billAmount = billD,
-            tipPercentEnum = Percent.NONE,
-            customTipPercent = 0,
-            splitCount = snapshot.splitCount,
-            taxAmount = taxD,
-            calculateTipOnPreTax = false,
-            roundingMode = RoundingMode.NONE,
-            tipMode = TipMode.AMOUNT,
-            fixedTipAmount = tipD,
-            advancedSplit = advanced
-        )
+        val result =
+            tipCalculator.calculate(
+                billAmount = billD,
+                tipPercentEnum = Percent.NONE,
+                customTipPercent = 0,
+                splitCount = snapshot.splitCount,
+                taxAmount = taxD,
+                calculateTipOnPreTax = false,
+                roundingMode = RoundingMode.NONE,
+                tipMode = TipMode.AMOUNT,
+                fixedTipAmount = tipD,
+                advancedSplit = advanced,
+            )
 
         val list = mutableListOf<PersonTotal>()
         advanced.people.forEach { person ->

@@ -7,10 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -62,13 +59,12 @@ class MainActivity : AppCompatActivity() {
         settingsManager = com.tips.tipuous.data.AppSettingsManager.getInstance(this)
         enableEdgeToEdge()
         setContent {
-
             TipuousTheme(
                 darkTheme = themeManager.isDarkTheme(),
                 dynamicColor = themeManager.dynamicColor.collectAsState().value,
             ) {
                 Surface(
-                    modifier = Modifier.systemBarsPadding()
+                    modifier = Modifier.systemBarsPadding(),
                 ) {
                     AppNavigation() // Changed to use AppNavigation
                 }

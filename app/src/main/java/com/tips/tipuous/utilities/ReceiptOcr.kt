@@ -67,8 +67,8 @@ object ReceiptOcr {
         // Extract a date (very simple heuristics)
         val dateRegexes =
             listOf(
-                Regex("(\\d{1,2})[/-](\\d{1,2})[/-](\\d{2,4})"), // 08/15/2025 or 8-5-25
-                Regex("(\\d{4})[/-](\\d{1,2})[/-](\\d{1,2})"), // 2025-08-15
+                Regex("(\\d{1,2})[/-](\\d{1,2})[/-](\\d{2,4})"),
+                Regex("(\\d{4})[/-](\\d{1,2})[/-](\\d{1,2})"),
             )
         val dateMillis =
             dateRegexes.firstNotNullOfOrNull { rx ->

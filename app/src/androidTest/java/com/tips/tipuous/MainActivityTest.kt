@@ -76,7 +76,7 @@ class MainActivityTest {
         onView(withId(R.id.wide)).perform(
             clearText(),
             typeText("passowrd"),
-            closeSoftKeyboard()
+            closeSoftKeyboard(),
         )
     }
 }

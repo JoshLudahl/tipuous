@@ -9,8 +9,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
-import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,15 +26,16 @@ import com.tips.tipuous.navigation.Navigator
 @Composable
 fun TippingGuideScreen(navigator: Navigator) {
     var searchQuery by remember { mutableStateOf("") }
-    val filteredCountries = remember(searchQuery) {
-        if (searchQuery.isBlank()) {
-            TippingGuideDataSource.countries
-        } else {
-            TippingGuideDataSource.countries.filter {
-                it.countryName.contains(searchQuery, ignoreCase = true)
+    val filteredCountries =
+        remember(searchQuery) {
+            if (searchQuery.isBlank()) {
+                TippingGuideDataSource.countries
+            } else {
+                TippingGuideDataSource.countries.filter {
+                    it.countryName.contains(searchQuery, ignoreCase = true)
+                }
             }
         }
-    }
 
     Scaffold(
         topBar = {
@@ -44,15 +45,16 @@ fun TippingGuideScreen(navigator: Navigator) {
                     IconButton(onClick = { navigator.goBack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
-                }
+                },
             )
-        }
+        },
     ) { paddingValues ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(horizontal = 16.dp),
         ) {
             OutlinedTextField(
                 value = searchQuery,
@@ -61,12 +63,12 @@ fun TippingGuideScreen(navigator: Navigator) {
                 placeholder = { Text("Search country...") },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                 shape = RoundedCornerShape(30.dp),
-                singleLine = true
+                singleLine = true,
             )
 
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(bottom = 16.dp)
+                contentPadding = PaddingValues(bottom = 16.dp),
             ) {
                 items(filteredCountries) { country ->
                     CountryGuideCard(country)
@@ -81,19 +83,21 @@ fun CountryGuideCard(country: CountryTippingInfo) {
     var expanded by remember { mutableStateOf(false) }
 
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { expanded = !expanded },
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable { expanded = !expanded },
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-        )
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            ),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
                     Text(country.flagEmoji, fontSize = 24.sp)
@@ -101,20 +105,20 @@ fun CountryGuideCard(country: CountryTippingInfo) {
                     Text(
                         text = country.countryName,
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = country.suggestedTipRange,
                         style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.primary,
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Icon(
                         imageVector = if (expanded) Icons.Rounded.KeyboardArrowDown else Icons.AutoMirrored.Rounded.KeyboardArrowRight,
                         contentDescription = if (expanded) "Collapse" else "Expand",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                     )
                 }
             }
@@ -124,13 +128,13 @@ fun CountryGuideCard(country: CountryTippingInfo) {
                     EtiquetteSection(title = "Restaurants", content = country.restaurantEtiquette)
                     EtiquetteSection(title = "Taxis", content = country.taxiEtiquette)
                     EtiquetteSection(title = "Hotels", content = country.hotelEtiquette)
-                    
+
                     if (country.generalNotes.isNotBlank()) {
                         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                         Text(
                             text = country.generalNotes,
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 }
@@ -140,17 +144,20 @@ fun CountryGuideCard(country: CountryTippingInfo) {
 }
 
 @Composable
-fun EtiquetteSection(title: String, content: String) {
+fun EtiquetteSection(
+    title: String,
+    content: String,
+) {
     Column(modifier = Modifier.padding(bottom = 8.dp)) {
         Text(
             text = title,
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.secondary
+            color = MaterialTheme.colorScheme.secondary,
         )
         Text(
             text = content,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
         )
     }
 }

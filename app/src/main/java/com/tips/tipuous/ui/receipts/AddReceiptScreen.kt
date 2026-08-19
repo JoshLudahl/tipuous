@@ -74,12 +74,14 @@ fun AddReceiptScreen(
     val viewModel: AddReceiptViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
     val state by viewModel.state.collectAsState()
 
-    val numericKeyboardOptions = remember {
-        KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
-    }
-    val locationKeyboardOptions = remember {
-        KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done)
-    }
+    val numericKeyboardOptions =
+        remember {
+            KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next)
+        }
+    val locationKeyboardOptions =
+        remember {
+            KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done)
+        }
     val textFieldColors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.tertiary)
 
     // Load existing receipt if editing
@@ -306,17 +308,17 @@ fun AddReceiptScreen(
             ) {
                 Column(
                     Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
                             text = "Advanced Split",
                             style = MaterialTheme.typography.titleSmall,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
                         )
                     }
 
@@ -331,31 +333,31 @@ fun AddReceiptScreen(
                         onAddPerson = { name -> viewModel.addPerson(name) },
                         onRemovePerson = { id -> viewModel.removePerson(id) },
                         onAddItem = { pid, name, amount -> viewModel.addItemToPerson(pid, name, amount) },
-                        onRemoveItem = { pid, iid -> viewModel.removeItemFromPerson(pid, iid) }
+                        onRemoveItem = { pid, iid -> viewModel.removeItemFromPerson(pid, iid) },
                     )
 
                     val sharedItems = personTotalsList.filter { it.isShared }
                     if (sharedItems.isNotEmpty()) {
                         HorizontalDivider(
                             modifier = Modifier.padding(vertical = 4.dp),
-                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
                         )
                         sharedItems.forEach { shared ->
                             val othersCount = state.splitCount - state.advancedSplit!!.people.size
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                horizontalArrangement = Arrangement.SpaceBetween,
                             ) {
                                 Text(
                                     text = "Others ($othersCount ${if (othersCount > 1) "people" else "person"})",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
                                 Text(
                                     text = "$${Conversion.formatNumberToIncludeTrailingZero(shared.total)}/each",
                                     style = MaterialTheme.typography.bodyMedium,
                                     fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
                             }
                         }

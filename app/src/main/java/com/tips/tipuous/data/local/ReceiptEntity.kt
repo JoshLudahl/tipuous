@@ -3,7 +3,6 @@ package com.tips.tipuous.data.local
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-
 import com.tips.tipuous.model.AdvancedSplit
 
 @Entity(tableName = "receipts")

@@ -42,65 +42,67 @@ sealed interface Navigation : NavKey {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavigation() {
-    val navigationState = rememberNavigationState(
-        startRoute = Navigation.Main,
-        topLevelRoutes = setOf(Navigation.Main, Navigation.Receipts, Navigation.Settings, Navigation.TippingGuide)
-    )
+    val navigationState =
+        rememberNavigationState(
+            startRoute = Navigation.Main,
+            topLevelRoutes = setOf(Navigation.Main, Navigation.Receipts, Navigation.Settings, Navigation.TippingGuide),
+        )
     val navigator = remember { Navigator(navigationState) }
 
-    val entryProvider = entryProvider<NavKey> {
-        entry<Navigation.Main> {
-            MainScreen(
-                mainViewModel = viewModel(),
-                onAddReceipt = { navigator.navigate(Navigation.AddReceipt()) },
-                onViewReceipts = { navigator.navigate(Navigation.Receipts) },
-                onNavigateToSettings = { navigator.navigate(Navigation.Settings) },
-                onNavigateToGuide = { navigator.navigate(Navigation.TippingGuide) },
-                onSaveBill = { bill, tax, tip, total, splitCount, advancedJson ->
-                    navigator.navigate(
-                        Navigation.AddReceipt(
-                            bill = bill,
-                            tax = tax,
-                            tip = tip,
-                            total = total,
-                            splitCount = splitCount,
-                            advancedSplitJson = advancedJson
+    val entryProvider =
+        entryProvider<NavKey> {
+            entry<Navigation.Main> {
+                MainScreen(
+                    mainViewModel = viewModel(),
+                    onAddReceipt = { navigator.navigate(Navigation.AddReceipt()) },
+                    onViewReceipts = { navigator.navigate(Navigation.Receipts) },
+                    onNavigateToSettings = { navigator.navigate(Navigation.Settings) },
+                    onNavigateToGuide = { navigator.navigate(Navigation.TippingGuide) },
+                    onSaveBill = { bill, tax, tip, total, splitCount, advancedJson ->
+                        navigator.navigate(
+                            Navigation.AddReceipt(
+                                bill = bill,
+                                tax = tax,
+                                tip = tip,
+                                total = total,
+                                splitCount = splitCount,
+                                advancedSplitJson = advancedJson,
+                            ),
                         )
-                    )
-                },
-            )
-        }
+                    },
+                )
+            }
 
-        entry<Navigation.AddReceipt> { key ->
-            AddReceiptScreen(
-                navigator = navigator,
-                receiptId = key.receiptId,
-                bill = key.bill,
-                tax = key.tax,
-                tip = key.tip,
-                total = key.total,
-                splitCount = key.splitCount,
-                advancedSplitJson = key.advancedSplitJson
-            )
-        }
+            entry<Navigation.AddReceipt> { key ->
+                AddReceiptScreen(
+                    navigator = navigator,
+                    receiptId = key.receiptId,
+                    bill = key.bill,
+                    tax = key.tax,
+                    tip = key.tip,
+                    total = key.total,
+                    splitCount = key.splitCount,
+                    advancedSplitJson = key.advancedSplitJson,
+                )
+            }
 
-        entry<Navigation.Receipts> {
-            ReceiptsListScreen(navigator = navigator)
-        }
+            entry<Navigation.Receipts> {
+                ReceiptsListScreen(navigator = navigator)
+            }
 
-        entry<Navigation.Settings> {
-            SettingsScreen(
-                onBack = { navigator.goBack() },
-            )
-        }
+            entry<Navigation.Settings> {
+                SettingsScreen(
+                    onBack = { navigator.goBack() },
+                )
+            }
 
-        entry<Navigation.TippingGuide> {
-            com.tips.tipuous.ui.guide.TippingGuideScreen(navigator = navigator)
+            entry<Navigation.TippingGuide> {
+                com.tips.tipuous.ui.guide.TippingGuideScreen(navigator = navigator)
+            }
         }
-    }
 
     NavDisplay(
         entries = navigationState.toEntries(entryProvider),
-        onBack = { navigator.goBack() }
+        onBack = { navigator.goBack() },
     )
 }

@@ -10,5 +10,5 @@ data class CountryTippingInfo(
     val restaurantEtiquette: String,
     val taxiEtiquette: String,
     val hotelEtiquette: String,
-    val generalNotes: String
+    val generalNotes: String,
 )

@@ -11,9 +11,10 @@ import kotlinx.coroutines.flow.asStateFlow
 class AppSettingsManager private constructor(context: Context) {
     private val prefs: SharedPreferences = context.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
 
-    private val _defaultTipPercent = MutableStateFlow(
-        Percent.entries.getOrElse(prefs.getInt("default_tip_percent", Percent.EIGHTEEN.ordinal)) { Percent.EIGHTEEN }
-    )
+    private val _defaultTipPercent =
+        MutableStateFlow(
+            Percent.entries.getOrElse(prefs.getInt("default_tip_percent", Percent.EIGHTEEN.ordinal)) { Percent.EIGHTEEN },
+        )
     val defaultTipPercent: StateFlow<Percent> = _defaultTipPercent.asStateFlow()
 
     companion object {

@@ -14,7 +14,7 @@ data class Receipt(
     val tipAmount: Double,
     val grandTotal: Double,
     val locationName: String?,
-    val imagePath: String?, // absolute path to the saved image in app storage
+    val imagePath: String?,
     val advancedSplit: AdvancedSplit? = null,
     val splitCount: Int = 1,
 )

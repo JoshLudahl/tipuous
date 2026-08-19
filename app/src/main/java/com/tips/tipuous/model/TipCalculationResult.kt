@@ -2,7 +2,7 @@ package com.tips.tipuous.model
 
 data class TipCalculationResult(
     val billAmount: Double,
-    val tipPercentageValue: Double, // e.g., 0.10 for 10%, 0.25 for 25%
+    val tipPercentageValue: Double,
     val tipAmount: Double,
     val totalAmount: Double,
     val splitCount: Int,
@@ -14,5 +14,7 @@ data class TipCalculationResult(
 )
 
 enum class RoundingMode {
-    NONE, UP, DOWN
+    NONE,
+    UP,
+    DOWN,
 }
