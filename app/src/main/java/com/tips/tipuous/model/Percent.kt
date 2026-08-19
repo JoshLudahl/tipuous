@@ -5,4 +5,5 @@ enum class Percent {
     EIGHTEEN,
     TWENTY,
     CUSTOM,
+    NONE,
 }

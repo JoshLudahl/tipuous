@@ -23,6 +23,7 @@ class TipCalculator {
             Percent.EIGHTEEN -> 0.18
             Percent.TWENTY -> 0.20
             Percent.CUSTOM -> customTipPercent / 100.0
+            Percent.NONE -> 0.0
         }
 
         val baseAmountForTip = if (calculateTipOnPreTax) {

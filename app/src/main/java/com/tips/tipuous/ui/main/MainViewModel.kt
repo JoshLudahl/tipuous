@@ -85,11 +85,13 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel(
     }
 
     fun updateTipPercentage(percent: Percent) {
-        savedStateHandle["tipPercentEnum"] = percent
+        val current = tipPercentEnum.value
+        savedStateHandle["tipPercentEnum"] = if (current == percent) Percent.NONE else percent
     }
 
     fun handleCustomPercentageClick() {
-        savedStateHandle["tipPercentEnum"] = Percent.CUSTOM
+        val current = tipPercentEnum.value
+        savedStateHandle["tipPercentEnum"] = if (current == Percent.CUSTOM) Percent.NONE else Percent.CUSTOM
     }
 
     fun updateCustomTipValue(value: Int) {
