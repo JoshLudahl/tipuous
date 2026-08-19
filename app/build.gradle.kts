@@ -20,7 +20,7 @@ configure<ApplicationExtension> {
 
     defaultConfig {
         applicationId = "com.tips.tipuous"
-        minSdk = 27
+        minSdk = 29
         targetSdk = targetVersion
         versionCode = 34
         versionName = "2026.08.18"
