@@ -1,7 +1,7 @@
 package com.tips.tipuous.model
 
 import kotlinx.serialization.Serializable
-import java.util.*
+import java.util.UUID
 
 @Serializable
 data class AdvancedSplit(
