@@ -1,6 +1,7 @@
 package com.tips.tipuous.model
 
-import java.util.*
+import java.util.UUID
+
 
 /**
  * Minimal persisted model for a scanned or manually entered receipt.
