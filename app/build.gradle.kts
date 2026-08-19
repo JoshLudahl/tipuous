@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.ApplicationExtension
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -9,8 +11,10 @@ plugins {
     alias(libs.plugins.kotlin.serializable)
 }
 
-android {
+configure<ApplicationExtension> {
     val targetVersion = 37
+
+    namespace = "com.tips.tipuous"
 
     compileSdk = targetVersion
 
@@ -61,8 +65,6 @@ android {
             it.useJUnitPlatform()
         }
     }
-
-    namespace = "com.tips.tipuous"
 
     packaging {
         jniLibs {
