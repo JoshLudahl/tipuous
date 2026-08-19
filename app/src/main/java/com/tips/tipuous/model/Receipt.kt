@@ -2,7 +2,6 @@ package com.tips.tipuous.model
 
 import java.util.UUID
 
-
 /**
  * Minimal persisted model for a scanned or manually entered receipt.
  * Image is stored as a file on internal storage; we persist its absolute path as a String.
