@@ -33,17 +33,24 @@ object ReceiptOcr {
 
         // Extract amounts
         val amounts =
-            Regex("\\$?\\s*([0-9]+(?:\\.[0-9]{1,2})?)").findAll(fullText)
+            Regex("\\$?\\s*([0-9]+(?:\\.[0-9]{1,2})?)")
+                .findAll(fullText)
                 .mapNotNull { it.groupValues.getOrNull(1)?.toDoubleOrNull() }
                 .toList()
 
         val tip =
-            Regex("tip\\s*[:=]?\\s*\\$?([0-9]+(?:\\.[0-9]{1,2})?)").find(fullText)
-                ?.groupValues?.getOrNull(1)?.toDoubleOrNull()
+            Regex("tip\\s*[:=]?\\s*\\$?([0-9]+(?:\\.[0-9]{1,2})?)")
+                .find(fullText)
+                ?.groupValues
+                ?.getOrNull(1)
+                ?.toDoubleOrNull()
 
         val tax =
-            Regex("tax\\s*[:=]?\\s*\\$?([0-9]+(?:\\.[0-9]{1,2})?)").find(fullText)
-                ?.groupValues?.getOrNull(1)?.toDoubleOrNull()
+            Regex("tax\\s*[:=]?\\s*\\$?([0-9]+(?:\\.[0-9]{1,2})?)")
+                .find(fullText)
+                ?.groupValues
+                ?.getOrNull(1)
+                ?.toDoubleOrNull()
 
         val grandCandidates =
             listOf(
@@ -51,17 +58,26 @@ object ReceiptOcr {
                 Regex("total\\s*[:=]?\\s*\\$?([0-9]+(?:\\.[0-9]{1,2})?)"),
             )
         val grand =
-            grandCandidates.asSequence()
-                .mapNotNull { it.find(fullText)?.groupValues?.getOrNull(1)?.toDoubleOrNull() }
-                .firstOrNull() ?: amounts.maxOrNull()
+            grandCandidates
+                .asSequence()
+                .mapNotNull {
+                    it
+                        .find(fullText)
+                        ?.groupValues
+                        ?.getOrNull(1)
+                        ?.toDoubleOrNull()
+                }.firstOrNull() ?: amounts.maxOrNull()
 
         val bill =
             if (grand != null && tip != null) {
                 (grand - tip).let { kotlin.math.abs(it) }
             } else {
                 // Try find subtotal
-                Regex("sub\\s*total\\s*[:=]?\\s*\\$?([0-9]+(?:\\.[0-9]{1,2})?)").find(fullText)
-                    ?.groupValues?.getOrNull(1)?.toDoubleOrNull()
+                Regex("sub\\s*total\\s*[:=]?\\s*\\$?([0-9]+(?:\\.[0-9]{1,2})?)")
+                    .find(fullText)
+                    ?.groupValues
+                    ?.getOrNull(1)
+                    ?.toDoubleOrNull()
             }
 
         // Extract a date (very simple heuristics)
@@ -96,7 +112,9 @@ object ReceiptOcr {
                 line.length in 3..40 &&
                     !line.contains(
                         "total",
-                    ) && !line.contains("tip") && !Regex("[0-9]+\\.[0-9]{1,2}").containsMatchIn(line)
+                    ) &&
+                    !line.contains("tip") &&
+                    !Regex("[0-9]+\\.[0-9]{1,2}").containsMatchIn(line)
             }
 
         return Parsed(

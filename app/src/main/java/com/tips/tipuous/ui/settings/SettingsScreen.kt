@@ -65,7 +65,9 @@ fun SettingsScreenPreview() {
 
 @Composable
 fun SettingsScreen(
-    viewModel: SettingsViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    viewModel: SettingsViewModel =
+        androidx.lifecycle.viewmodel.compose
+            .viewModel(),
     onBack: () -> Unit,
 ) {
     val context = LocalContext.current

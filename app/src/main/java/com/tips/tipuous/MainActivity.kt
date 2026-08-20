@@ -37,11 +37,12 @@ class MainActivity : AppCompatActivity() {
         InstallStateUpdatedListener { state ->
             if (state.installStatus() == InstallStatus.DOWNLOADED) {
                 Log.i("MainActivity", "Update has been downloaded.")
-                Toast.makeText(
-                    this,
-                    "Update Completed. Restarting application.",
-                    Toast.LENGTH_SHORT,
-                ).show()
+                Toast
+                    .makeText(
+                        this,
+                        "Update Completed. Restarting application.",
+                        Toast.LENGTH_SHORT,
+                    ).show()
                 lifecycleScope.launch {
                     appUpdateManager.completeUpdate()
                 }
@@ -56,7 +57,9 @@ class MainActivity : AppCompatActivity() {
         checkIsUpdateAvailable()
 
         themeManager = ThemeManager.getInstance(this)
-        settingsManager = com.tips.tipuous.data.AppSettingsManager.getInstance(this)
+        settingsManager =
+            com.tips.tipuous.data.AppSettingsManager
+                .getInstance(this)
         enableEdgeToEdge()
         setContent {
             TipuousTheme(

@@ -98,6 +98,5 @@ fun NavigationState.toEntries(
             // Read the stack to ensure this function recomposes when it changes
             stack.forEach { _ -> }
             decoratedEntries[key] ?: emptyList()
-        }
-        .toMutableStateList()
+        }.toMutableStateList()
 }

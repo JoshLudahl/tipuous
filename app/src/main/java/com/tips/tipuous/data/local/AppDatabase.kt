@@ -9,19 +9,14 @@ import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.tips.tipuous.model.AdvancedSplit
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class AdvancedSplitConverter {
     @TypeConverter
-    fun fromAdvancedSplit(value: AdvancedSplit?): String? {
-        return value?.let { Json.encodeToString(it) }
-    }
+    fun fromAdvancedSplit(value: AdvancedSplit?): String? = value?.let { Json.encodeToString(it) }
 
     @TypeConverter
-    fun toAdvancedSplit(value: String?): AdvancedSplit? {
-        return value?.let { Json.decodeFromString<AdvancedSplit>(it) }
-    }
+    fun toAdvancedSplit(value: String?): AdvancedSplit? = value?.let { Json.decodeFromString<AdvancedSplit>(it) }
 }
 
 @Database(
@@ -34,7 +29,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun receiptDao(): ReceiptDao
 
     companion object {
-        @Volatile private var INSTANCE: AppDatabase? = null
+        @Volatile
+        private var INSTANCE: AppDatabase? = null
 
         private val MIGRATION_2_3 =
             object : Migration(2, 3) {
@@ -50,17 +46,18 @@ abstract class AppDatabase : RoomDatabase() {
                 }
             }
 
-        fun getInstance(context: Context): AppDatabase {
-            return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java,
-                    "tipuous.db",
-                ).addMigrations(MIGRATION_2_3, MIGRATION_3_4)
+        fun getInstance(context: Context): AppDatabase =
+            INSTANCE ?: synchronized(this) {
+                INSTANCE ?: Room
+                    .databaseBuilder(
+                        context.applicationContext,
+                        AppDatabase::class.java,
+                        "tipuous.db",
+                    ).addMigrations(MIGRATION_2_3, MIGRATION_3_4)
                     .fallbackToDestructiveMigration()
                     .allowMainThreadQueries() // keep API non-suspend for minimal changes
-                    .build().also { INSTANCE = it }
+                    .build()
+                    .also { INSTANCE = it }
             }
-        }
     }
 }

@@ -10,12 +10,12 @@ import kotlinx.coroutines.flow.map
 /**
  * Persistence using Room database. Kept synchronous via allowMainThreadQueries for minimal changes.
  */
-class ReceiptRepository(context: Context) {
+class ReceiptRepository(
+    context: Context,
+) {
     private val dao = AppDatabase.getInstance(context).receiptDao()
 
-    fun getAll(): List<Receipt> {
-        return dao.getAll().map { it.toModel() }
-    }
+    fun getAll(): List<Receipt> = dao.getAll().map { it.toModel() }
 
     fun getAllFlow(): Flow<List<Receipt>> = dao.getAllFlow().map { list -> list.map { it.toModel() } }
 

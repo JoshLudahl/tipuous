@@ -340,8 +340,7 @@ fun MainScreen(
                                         .background(
                                             color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
                                             shape = RoundedCornerShape(20.dp),
-                                        )
-                                        .padding(4.dp),
+                                        ).padding(4.dp),
                                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                             ) {
                                 val tipModes = listOf(TipMode.PERCENT to "%", TipMode.AMOUNT to "$")
@@ -359,8 +358,7 @@ fun MainScreen(
                                                             Color.Transparent
                                                         },
                                                     shape = RoundedCornerShape(16.dp),
-                                                )
-                                                .clickable { mainViewModel.setTipMode(mode) }
+                                                ).clickable { mainViewModel.setTipMode(mode) }
                                                 .padding(horizontal = 12.dp, vertical = 6.dp),
                                     ) {
                                         Text(

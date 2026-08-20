@@ -18,9 +18,13 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-class MainViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
+class MainViewModel(
+    private val savedStateHandle: SavedStateHandle,
+) : ViewModel() {
     private val tipCalculator = TipCalculator()
-    private val settingsManager = com.tips.tipuous.data.AppSettingsManager.getInstance()
+    private val settingsManager =
+        com.tips.tipuous.data.AppSettingsManager
+            .getInstance()
 
     val bill: StateFlow<Double> = savedStateHandle.getStateFlow("bill", 0.0)
     val tipPercentEnum: StateFlow<Percent> =
@@ -114,78 +118,84 @@ class MainViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel(
 
     // Derived UI states
     val billAmountFormatted: StateFlow<String> =
-        calculationResult.map { result ->
-            if (result == null || result.billAmount == 0.0) {
-                "0.00"
-            } else {
-                Conversion.formatNumberToIncludeTrailingZero(result.billAmount)
-            }
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = "0.00",
-        )
+        calculationResult
+            .map { result ->
+                if (result == null || result.billAmount == 0.0) {
+                    "0.00"
+                } else {
+                    Conversion.formatNumberToIncludeTrailingZero(result.billAmount)
+                }
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Lazily,
+                initialValue = "0.00",
+            )
 
     val totalAmountFormatted: StateFlow<String> =
-        calculationResult.map { result ->
-            if (result == null || result.billAmount == 0.0) {
-                "-"
-            } else {
-                Conversion.formatNumberToIncludeTrailingZero(result.totalAmount)
-            }
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = "-",
-        )
+        calculationResult
+            .map { result ->
+                if (result == null || result.billAmount == 0.0) {
+                    "-"
+                } else {
+                    Conversion.formatNumberToIncludeTrailingZero(result.totalAmount)
+                }
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Lazily,
+                initialValue = "-",
+            )
 
     val tipAmountFormatted: StateFlow<String> =
-        calculationResult.map { result ->
-            if (result == null || result.billAmount == 0.0) {
-                "0.00"
-            } else {
-                Conversion.formatNumberToIncludeTrailingZero(result.tipAmount)
-            }
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = "0.00",
-        )
+        calculationResult
+            .map { result ->
+                if (result == null || result.billAmount == 0.0) {
+                    "0.00"
+                } else {
+                    Conversion.formatNumberToIncludeTrailingZero(result.tipAmount)
+                }
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Lazily,
+                initialValue = "0.00",
+            )
 
     val taxAmountFormatted: StateFlow<String> =
-        calculationResult.map { result ->
-            if (result == null || result.taxAmount == 0.0) {
-                "0.00"
-            } else {
-                Conversion.formatNumberToIncludeTrailingZero(result.taxAmount)
-            }
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = "0.00",
-        )
+        calculationResult
+            .map { result ->
+                if (result == null || result.taxAmount == 0.0) {
+                    "0.00"
+                } else {
+                    Conversion.formatNumberToIncludeTrailingZero(result.taxAmount)
+                }
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Lazily,
+                initialValue = "0.00",
+            )
 
     val amountPerPersonFormatted: StateFlow<String> =
-        calculationResult.map { result ->
-            if (result == null || result.billAmount == 0.0 || result.splitCount <= 1) {
-                "0.00"
-            } else {
-                Conversion.formatNumberToIncludeTrailingZero(result.amountPerPerson)
-            }
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = "0.00",
-        )
+        calculationResult
+            .map { result ->
+                if (result == null || result.billAmount == 0.0 || result.splitCount <= 1) {
+                    "0.00"
+                } else {
+                    Conversion.formatNumberToIncludeTrailingZero(result.amountPerPerson)
+                }
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Lazily,
+                initialValue = "0.00",
+            )
 
     val isShareable: StateFlow<Boolean> =
-        calculationResult.map { result ->
-            result?.isShareable ?: false
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = false,
-        )
+        calculationResult
+            .map { result ->
+                result?.isShareable ?: false
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Lazily,
+                initialValue = false,
+            )
 
     fun setBill(amount: Double) {
         savedStateHandle["bill"] = amount

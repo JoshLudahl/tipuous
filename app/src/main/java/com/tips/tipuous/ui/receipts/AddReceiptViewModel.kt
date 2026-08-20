@@ -35,7 +35,9 @@ import java.util.TimeZone
 /**
  * ViewModel for AddReceiptScreen. Holds form state, image preview, parsing, validation and saving.
  */
-class AddReceiptViewModel(application: Application) : AndroidViewModel(application) {
+class AddReceiptViewModel(
+    application: Application,
+) : AndroidViewModel(application) {
     private val repo = ReceiptRepository(application)
     private val tipCalculator = TipCalculator()
     private var editingId: String? = null
@@ -91,10 +93,11 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
         val newPeople = current.people + Person(name = name)
         _state.update {
             val newSplitCount = if (it.splitCount < newPeople.size) newPeople.size else it.splitCount
-            it.copy(
-                advancedSplit = current.copy(people = newPeople),
-                splitCount = newSplitCount,
-            ).recomputeValidity()
+            it
+                .copy(
+                    advancedSplit = current.copy(people = newPeople),
+                    splitCount = newSplitCount,
+                ).recomputeValidity()
         }
     }
 
@@ -156,14 +159,15 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
                 } catch (e: Exception) {
                     null
                 }
-            it.copy(
-                bill = filteredBill,
-                tax = filteredTax,
-                tip = filteredTip,
-                total = filteredTotal,
-                advancedSplit = advanced ?: it.advancedSplit,
-                splitCount = if (splitCount > 0) splitCount else it.splitCount,
-            ).recomputeValidity()
+            it
+                .copy(
+                    bill = filteredBill,
+                    tax = filteredTax,
+                    tip = filteredTip,
+                    total = filteredTotal,
+                    advancedSplit = advanced ?: it.advancedSplit,
+                    splitCount = if (splitCount > 0) splitCount else it.splitCount,
+                ).recomputeValidity()
         }
     }
 
@@ -187,17 +191,18 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
                         null
                     }
                 _state.update {
-                    it.copy(
-                        bill = rec.billTotal.toString(),
-                        tax = rec.taxAmount.toString(),
-                        tip = rec.tipAmount.toString(),
-                        total = rec.grandTotal.toString(),
-                        dateMillis = rec.dateEpochMillis,
-                        location = rec.locationName ?: "",
-                        previewBitmap = bmp ?: it.previewBitmap,
-                        advancedSplit = rec.advancedSplit,
-                        splitCount = rec.splitCount,
-                    ).recomputeValidity()
+                    it
+                        .copy(
+                            bill = rec.billTotal.toString(),
+                            tax = rec.taxAmount.toString(),
+                            tip = rec.tipAmount.toString(),
+                            total = rec.grandTotal.toString(),
+                            dateMillis = rec.dateEpochMillis,
+                            location = rec.locationName ?: "",
+                            previewBitmap = bmp ?: it.previewBitmap,
+                            advancedSplit = rec.advancedSplit,
+                            splitCount = rec.splitCount,
+                        ).recomputeValidity()
                 }
             }
         }
@@ -222,14 +227,15 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
         viewModelScope.launch(Dispatchers.IO) {
             val parsed = ReceiptOcr.parseFromBitmap(context, bmp)
             _state.update { current ->
-                current.copy(
-                    bill = parsed.billTotal?.toString() ?: current.bill,
-                    tax = parsed.taxAmount?.toString() ?: current.tax,
-                    tip = parsed.tipAmount?.toString() ?: current.tip,
-                    total = parsed.grandTotal?.toString() ?: current.total,
-                    location = parsed.location ?: current.location,
-                    dateMillis = parsed.dateEpochMillis ?: current.dateMillis,
-                ).recomputeValidity()
+                current
+                    .copy(
+                        bill = parsed.billTotal?.toString() ?: current.bill,
+                        tax = parsed.taxAmount?.toString() ?: current.tax,
+                        tip = parsed.tipAmount?.toString() ?: current.tip,
+                        total = parsed.grandTotal?.toString() ?: current.total,
+                        location = parsed.location ?: current.location,
+                        dateMillis = parsed.dateEpochMillis ?: current.dateMillis,
+                    ).recomputeValidity()
             }
         }
     }
@@ -249,7 +255,10 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
             val imagePath = snapshot.previewBitmap?.let { saveBitmapToInternal(it) }
             val receipt =
                 Receipt(
-                    id = editingId ?: java.util.UUID.randomUUID().toString(),
+                    id =
+                        editingId ?: java.util.UUID
+                            .randomUUID()
+                            .toString(),
                     dateEpochMillis = millis,
                     billTotal = billD,
                     taxAmount = taxD,
@@ -299,8 +308,8 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    private fun saveBitmapToInternal(bitmap: Bitmap): String? {
-        return try {
+    private fun saveBitmapToInternal(bitmap: Bitmap): String? =
+        try {
             val context = getApplication<Application>()
             val dir = File(context.filesDir, "receipts")
             if (!dir.exists()) dir.mkdirs()
@@ -313,7 +322,6 @@ class AddReceiptViewModel(application: Application) : AndroidViewModel(applicati
         } catch (e: Exception) {
             null
         }
-    }
 
     // Utility for UI date text if needed by previews
     fun formattedDate(): String {
@@ -369,8 +377,14 @@ private fun AddReceiptViewModel.UiState.recomputeValidity(): AddReceiptViewModel
     val tipD = tip.toDoubleOrNull()
     val totalD = total.toDoubleOrNull()
     val valid =
-        !bill.isBlank() && !tip.isBlank() && !total.isBlank() &&
-            billD != null && tipD != null && totalD != null &&
-            billD > 0.0 && tipD >= 0.0 && totalD > 0.0
+        !bill.isBlank() &&
+            !tip.isBlank() &&
+            !total.isBlank() &&
+            billD != null &&
+            tipD != null &&
+            totalD != null &&
+            billD > 0.0 &&
+            tipD >= 0.0 &&
+            totalD > 0.0
     return copy(isFormValid = valid)
 }

@@ -97,7 +97,8 @@ fun AppNavigation() {
             }
 
             entry<Navigation.TippingGuide> {
-                com.tips.tipuous.ui.guide.TippingGuideScreen(navigator = navigator)
+                com.tips.tipuous.ui.guide
+                    .TippingGuideScreen(navigator = navigator)
             }
         }
 

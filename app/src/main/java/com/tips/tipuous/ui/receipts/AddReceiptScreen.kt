@@ -71,7 +71,9 @@ fun AddReceiptScreen(
     advancedSplitJson: String? = null,
 ) {
     val context = LocalContext.current
-    val viewModel: AddReceiptViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    val viewModel: AddReceiptViewModel =
+        androidx.lifecycle.viewmodel.compose
+            .viewModel()
     val state by viewModel.state.collectAsState()
 
     val numericKeyboardOptions =

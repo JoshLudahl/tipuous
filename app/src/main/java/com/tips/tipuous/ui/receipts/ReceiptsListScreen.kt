@@ -595,8 +595,7 @@ fun TrendChart(trends: List<MonthTrend>) {
                                                     )
                                                 }
                                             },
-                                        )
-                                        .then(
+                                        ).then(
                                             if (trend.isCurrentMonth) {
                                                 Modifier.shadow(
                                                     elevation = 8.dp,
@@ -607,8 +606,7 @@ fun TrendChart(trends: List<MonthTrend>) {
                                             } else {
                                                 Modifier
                                             },
-                                        )
-                                        .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
+                                        ).clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
                                         .background(
                                             if (trend.isCurrentMonth) {
                                                 MaterialTheme.colorScheme.tertiary

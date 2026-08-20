@@ -76,9 +76,10 @@ class TipCalculator {
 
             // Calculate individual subtotals for advanced people
             val advancedSubtotals =
-                advancedPeople.map { person ->
-                    person.id to person.items.sumOf { it.amount }
-                }.toMap()
+                advancedPeople
+                    .map { person ->
+                        person.id to person.items.sumOf { it.amount }
+                    }.toMap()
 
             val totalAdvancedSubtotal = advancedSubtotals.values.sum()
             val sharedSubtotal = (billAmount - totalAdvancedSubtotal).coerceAtLeast(0.0)
