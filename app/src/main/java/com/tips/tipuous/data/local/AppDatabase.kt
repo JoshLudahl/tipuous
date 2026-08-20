@@ -54,7 +54,7 @@ abstract class AppDatabase : RoomDatabase() {
                         AppDatabase::class.java,
                         "tipuous.db",
                     ).addMigrations(MIGRATION_2_3, MIGRATION_3_4)
-                    .fallbackToDestructiveMigration()
+                    .fallbackToDestructiveMigration(false)
                     .allowMainThreadQueries() // keep API non-suspend for minimal changes
                     .build()
                     .also { INSTANCE = it }
