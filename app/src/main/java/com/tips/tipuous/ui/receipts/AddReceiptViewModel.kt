@@ -2,10 +2,8 @@ package com.tips.tipuous.ui.receipts
 
 import android.app.Application
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
-import androidx.core.graphics.scale
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.tips.tipuous.data.ReceiptRepository
@@ -17,6 +15,7 @@ import com.tips.tipuous.model.Person
 import com.tips.tipuous.model.Receipt
 import com.tips.tipuous.model.RoundingMode
 import com.tips.tipuous.model.TipMode
+import com.tips.tipuous.utilities.BitmapUtils
 import com.tips.tipuous.utilities.ReceiptOcr
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -185,7 +184,11 @@ class AddReceiptViewModel(
                     try {
                         rec.imagePath?.let { path ->
                             val file = File(path)
-                            if (file.exists()) BitmapFactory.decodeFile(path) else null
+                            if (file.exists()) {
+                                BitmapUtils.decodeSampledBitmapFromFile(path, 1024, 1024)
+                            } else {
+                                null
+                            }
                         }
                     } catch (_: Exception) {
                         null
@@ -286,20 +289,17 @@ class AddReceiptViewModel(
         val context = getApplication<Application>()
         return try {
             val source = ImageDecoder.createSource(context.contentResolver, uri)
-            val original =
-                ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
-                    decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
+            ImageDecoder.decodeBitmap(source) { decoder, info, _ ->
+                decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
+                val w = info.size.width
+                val h = info.size.height
+                val maxDim = maxOf(w, h)
+                if (maxDim > maxSize) {
+                    val ratio = maxDim.toFloat() / maxSize
+                    val newW = (w / ratio).toInt().coerceAtLeast(1)
+                    val newH = (h / ratio).toInt().coerceAtLeast(1)
+                    decoder.setTargetSize(newW, newH)
                 }
-            val w = original.width
-            val h = original.height
-            val maxDim = maxOf(w, h)
-            if (maxDim > maxSize) {
-                val ratio = maxDim.toFloat() / maxSize
-                val newW = (w / ratio).toInt().coerceAtLeast(1)
-                val newH = (h / ratio).toInt().coerceAtLeast(1)
-                original.scale(newW, newH)
-            } else {
-                original
             }
         } catch (_: SecurityException) {
             null

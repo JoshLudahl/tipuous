@@ -1,6 +1,5 @@
 package com.tips.tipuous.ui.receipts
 
-import android.graphics.BitmapFactory
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.MutatePriority
@@ -69,6 +68,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tips.tipuous.model.Receipt
 import com.tips.tipuous.navigation.Navigation
 import com.tips.tipuous.navigation.Navigator
+import com.tips.tipuous.utilities.BitmapUtils
 import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
@@ -362,7 +362,11 @@ fun ReceiptsListContent(
                                 r.imagePath?.let { path ->
                                     try {
                                         val file = File(path)
-                                        if (file.exists()) BitmapFactory.decodeFile(path) else null
+                                        if (file.exists()) {
+                                            BitmapUtils.decodeSampledBitmapFromFile(path, 256, 256)
+                                        } else {
+                                            null
+                                        }
                                     } catch (_: Exception) {
                                         null
                                     }
