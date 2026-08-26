@@ -166,7 +166,7 @@ fun SettingsContent(
                                     else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
                                 },
                             colors =
-                                ToggleButtonDefaults.toggleButtonColors(
+                                ToggleButtonDefaults.colors(
                                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
                                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                                     checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
@@ -226,7 +226,7 @@ fun SettingsContent(
                                 },
                             contentPadding = PaddingValues(0.dp),
                             colors =
-                                ToggleButtonDefaults.toggleButtonColors(
+                                ToggleButtonDefaults.colors(
                                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
                                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                                     checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
@@ -293,7 +293,7 @@ fun SettingsContent(
                                 },
                             contentPadding = PaddingValues(0.dp),
                             colors =
-                                ToggleButtonDefaults.toggleButtonColors(
+                                ToggleButtonDefaults.colors(
                                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
                                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                                     checkedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,

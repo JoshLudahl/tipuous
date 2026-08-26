@@ -415,7 +415,7 @@ fun MainScreen(
                                             },
                                         contentPadding = PaddingValues(0.dp),
                                         colors =
-                                            ToggleButtonDefaults.toggleButtonColors(
+                                            ToggleButtonDefaults.colors(
                                                 containerColor =
                                                     MaterialTheme.colorScheme.secondaryContainer.copy(
                                                         alpha = 0.5f,
@@ -862,7 +862,7 @@ fun MainScreen(
                                             },
                                         contentPadding = PaddingValues(0.dp),
                                         colors =
-                                            ToggleButtonDefaults.toggleButtonColors(
+                                            ToggleButtonDefaults.colors(
                                                 containerColor =
                                                     MaterialTheme.colorScheme.secondaryContainer.copy(
                                                         alpha = 0.5f,

@@ -41,22 +41,17 @@ configure<ApplicationExtension> {
 
     buildTypes {
         release {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
-            )
+            optimization {
+                enable = true
+            }
         }
         debug {
-            isMinifyEnabled = false
+            optimization {
+                enable = false
+            }
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
             resValue(type = "string", name = "app_name", value = "Tipuous debug")
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
-            )
         }
     }
 
