@@ -24,8 +24,8 @@ configure<ApplicationExtension> {
         applicationId = "com.tips.tipuous"
         minSdk = 32
         targetSdk = targetVersion
-        versionCode = 38
-        versionName = "2026.08.27"
+        versionCode = 39
+        versionName = "2026.08.28"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
