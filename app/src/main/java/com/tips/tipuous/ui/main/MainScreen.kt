@@ -122,7 +122,7 @@ fun MainScreen(
     val customTipSliderState =
         rememberSliderState(
             value = customTipPercentState.toFloat(),
-            valueRange = 1f..50f,
+            trackRange = 1f..50f,
         )
     LaunchedEffect(customTipSliderState.value) {
         mainViewModel.updateCustomTipValue(customTipSliderState.value.toInt())
@@ -136,7 +136,7 @@ fun MainScreen(
     val splitSliderState =
         rememberSliderState(
             value = splitCountState.toFloat(),
-            valueRange = 1f..25f,
+            trackRange = 1f..25f,
         )
     LaunchedEffect(splitSliderState.value) {
         mainViewModel.updateSplitCount(splitSliderState.value.roundToInt())
