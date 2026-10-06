@@ -463,6 +463,7 @@ fun MainScreen(
                                 ) {
                                     Slider(
                                         state = customTipSliderState,
+                                        onValueChange = { customTipSliderState.value = it },
                                         modifier =
                                             Modifier
                                                 .weight(1f),
@@ -622,6 +623,7 @@ fun MainScreen(
                         ) {
                             Slider(
                                 state = splitSliderState,
+                                onValueChange = { splitSliderState.value = it },
                                 modifier =
                                     Modifier
                                         .weight(1f),
