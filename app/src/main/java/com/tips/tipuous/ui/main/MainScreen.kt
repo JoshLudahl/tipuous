@@ -90,7 +90,6 @@ import com.tips.tipuous.ui.composeables.AdvancedSplitSection
 import kotlinx.serialization.json.Json
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun MainScreen(
     mainViewModel: MainViewModel = viewModel(),
